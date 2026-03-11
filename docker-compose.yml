@@ -1,0 +1,23 @@
+services:
+  database:
+    image: gvenzl/oracle-xe:latest
+    container_name: oracle_bodega
+    ports:
+      - "1521:1521"
+    environment:
+      - ORACLE_PASSWORD=tu_password_segura
+      - APP_USER=BODEGA_USER
+      - APP_USER_PASSWORD=bodega_pass
+    volumes:
+      - ./db/init.sql:/container-entrypoint-initdb.d/init.sql
+    restart: always
+
+  web:
+    image: nginx:alpine
+    container_name: web_bodega
+    ports:
+      - "8080:80"
+    volumes:
+      - ./web:/usr/share/nginx/html
+    depends_on:
+      - database

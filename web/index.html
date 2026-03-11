@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <title>SWF de Mexico</title>
+    <style>
+        body{
+            font-family: sans-serif;
+            background-color: #272a4d;
+        }
+        .login{
+            border: solid 3px black;
+            border-radius: 10px;
+            margin: 0% 30%;
+            background-color: lightgray;
+        }
+
+        #login-form{
+            padding: 1%;
+            text-align: center;
+            font-size: 24px;
+            display: block;
+        }
+
+        h1{
+            text-align: center;
+        }
+
+        .input-login{
+            padding: 1%;
+        }
+
+        button{
+            border-radius: 5px;
+            height: 50px;
+            width: 100px;
+            background-color: blue;
+            color: white;
+            font-weight: bolder;
+            margin-top: 2%;
+            margin-bottom: 2%
+        }
+
+        footer{
+            background-color: lightskyblue;
+        }
+
+        #username{
+            font-size: 20px;
+            font-family: sans-serif;
+        }
+
+        #password{
+            font-size: 20px;
+            font-family: sans-serif;
+        }
+
+        #tipo_usuario{
+            font-size: 20px;
+            font-family: sans-serif;
+        }
+
+        #logo{
+            margin-left: 42%;
+            padding-bottom: 2%;
+        }
+    </style>
+</head>
+
+<body>
+    <img id="logo" src="images/SWF-LOGO.png">
+    <div class="login">
+        <h1>Iniciar Sesion</h1>
+        <form action="" method="post" id="login-form">
+            <div class="input-login">
+                <label for="username">Nombre: </label>
+                <input type="text" id="username" required>
+            </div>
+            <div class="input-login">
+                <label for="password">Contraseña: </label>
+                <input type="password" id="password" required>
+            </div>
+            <div class="input-login">
+                <label for="tipo_usuario">Tipo de usuario:</label>
+                <select id="tipo_usuario" rquired>
+                    <option value="Trabajador">Trabajador</option>
+                    <option value="Administrador">Administrador</option>
+                </select>
+            </div>
+            <div>
+                <button type="submit">Entrar</button>
+            </div>
+        </form>
+    </div>
+</body>
+
+<footer>
+    
+</footer>
+
+</html>
