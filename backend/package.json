@@ -1,0 +1,11 @@
+{
+  "name": "api-bodega",
+  "version": "1.0.0",
+  "description": "Backend para el sistema de inventario SWF",
+  "main": "server.js",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.19.0",
+    "oracledb": "^6.5.0"
+  }
+}

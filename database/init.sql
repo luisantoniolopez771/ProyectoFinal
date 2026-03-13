@@ -1,3 +1,6 @@
+ALTER SESSION SET CONTAINER = XEPDB1;
+ALTER SESSION SET CURRENT_SCHEMA = BODEGA_USER;
+
 CREATE TABLE Categorias (
     ID_Categoria NUMBER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     Nombre_Categoria  VARCHAR2(30) NOT NULL
@@ -52,3 +55,18 @@ CREATE TABLE Movimientos (
     CONSTRAINT ID_Pieza_Mov_Pie FOREIGN KEY (ID_Pieza) REFERENCES Piezas (ID_Pieza),
     CONSTRAINT ID_Usuario_Mov_Usu FOREIGN KEY (ID_Usuario) REFERENCES Usuarios (ID_Usuario)
 );
+
+INSERT INTO Categorias (Nombre_Categoria) VALUES ('Aros');
+INSERT INTO Categorias (Nombre_Categoria) VALUES ('Tornillos');
+INSERT INTO Categorias (Nombre_Categoria) VALUES ('Bastidores');
+
+INSERT INTO Ubicaciones (Anaquel, Nivel, Nivel_Uso) VALUES ('A1', 'N1', 5);
+INSERT INTO Ubicaciones (Anaquel, Nivel, Nivel_Uso) VALUES ('A1', 'N2', 3);
+
+INSERT INTO Usuarios (Nombre_Completo, Rol, Contrasena) VALUES ('Admin SWF', 'Administrador', 'admin123');
+
+INSERT INTO Piezas (ID_Categoria, ID_Ubicacion, Nombre, Marca, Medida, Area_Bordado, Stock_Actual, Stock_Minimo) 
+VALUES (1, 1, 'Aro Magnético', 'Tajima', '18x35', 'Grande', 12, 5);
+
+INSERT INTO Piezas (ID_Categoria, ID_Ubicacion, Nombre, Marca, Color_Tipo, Medida, Stock_Actual, Stock_Minimo) 
+VALUES (2, 2, 'Tornillo de ajuste', 'Pantogram', 'Negro', 'XXL', 45, 10);

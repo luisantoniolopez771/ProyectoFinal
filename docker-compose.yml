@@ -9,8 +9,27 @@ services:
       - APP_USER=BODEGA_USER
       - APP_USER_PASSWORD=bodega_pass
     volumes:
-      - ./db/init.sql:/container-entrypoint-initdb.d/init.sql
+      - ./database/init.sql:/container-entrypoint-initdb.d/init.sql:ro
     restart: always
+
+  
+  api:
+    image: node:20-alpine
+    container_name: api_bodega
+    working_dir: /app
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./backend:/app
+    environment:
+     
+      - DB_USER=BODEGA_USER
+      - DB_PASSWORD=bodega_pass
+
+      - DB_CONNECTION_STRING=database:1521/XEPDB1
+    command: sh -c "npm install && node server.js"
+    depends_on:
+      - database
 
   web:
     image: nginx:alpine
@@ -20,4 +39,4 @@ services:
     volumes:
       - ./web:/usr/share/nginx/html
     depends_on:
-      - database
+      - api
