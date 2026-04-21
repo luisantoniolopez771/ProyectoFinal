@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -42,10 +43,14 @@
             max-width: 90%;
             background-color: #ffffff;
             padding: 25px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
         }
 
-        h2 { text-align: center; color: #272a4d; margin-top: 0; }
+        h2 {
+            text-align: center;
+            color: #272a4d;
+            margin-top: 0;
+        }
 
         /* Formulario de Entrada (Ahora todos son inputs de texto) */
         .form-entrada {
@@ -77,10 +82,14 @@
             transition: 0.3s;
         }
 
-        .btn-add:hover { background-color: #72273b; }
+        .btn-add:hover {
+            background-color: #72273b;
+        }
 
         /* Tabla de Inventario */
-        .table-wrapper { overflow-x: auto; }
+        .table-wrapper {
+            overflow-x: auto;
+        }
 
         table {
             width: 100%;
@@ -88,9 +97,13 @@
             margin-top: 10px;
         }
 
-        thead { background-color: #72273b; color: white; }
+        thead {
+            background-color: #72273b;
+            color: white;
+        }
 
-        th, td {
+        th,
+        td {
             padding: 12px;
             text-align: left;
             border-bottom: 1px solid #eee;
@@ -107,7 +120,9 @@
             font-size: 12px;
         }
 
-        .btn-delete:hover { background-color: #a71d2a; }
+        .btn-delete:hover {
+            background-color: #a71d2a;
+        }
 
         footer {
             background-color: #72273b;
@@ -122,6 +137,7 @@
         }
     </style>
 </head>
+
 <body>
 
     <img id="logo" src="images/SWF-LOGO.png" alt="Logo SWF">
@@ -159,7 +175,7 @@
                     </tr>
                 </thead>
                 <tbody id="tabla-inventario">
-                    </tbody>
+                </tbody>
             </table>
         </div>
     </div>
@@ -211,6 +227,44 @@
                 fila.parentNode.removeChild(fila);
             }
         }
+
+        async function cargarInventario() {
+            try {
+                const respuesta = await fetch ('http://localhost:3000/api/inventario');
+
+        const resultado = await respuesta.json();
+
+        console.log ('Resultado consulta: ', resultado.datos)
+        if ( respuesta.ok ) {
+
+                    const tbody = document.getElementById('tabla-inventario');
+                    tbody.innerHTML = "";
+
+                    resultado.datos.forEach(pieza => {
+
+                        const fila = tbody.insertRow();
+                            fila.innerHTML = `
+                            <td>${pieza.NOMBRE}</td>
+                            <td>${pieza.MARCA}</td>
+                            <td>${pieza.MEDIDA}</td>
+                            <td>${pieza.CATEGORIA}</td>
+                            <td>${pieza.ANAQUEL}</td>
+                            <td>${pieza.STOCK}</td>
+                            <td><button class="btn-delete" onclick="eliminarFila(this)">Eliminar</button></td>
+                `;
+                    });
+
+                } else {
+                    console.error("Error desde el servidor:", resultado.error);
+                }
+
+            } catch (error) {
+                console.error("No se pudo conectar al backend:", error);
+            }
+        }
+
+        cargarInventario();
     </script>
 </body>
+
 </html>
