@@ -15,27 +15,40 @@ CREATE TABLE Maquinas (
 CREATE TABLE Ubicaciones (
     ID_Ubicacion NUMBER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     Anaquel VARCHAR2(5) NOT NULL,
-    Nivel VARCHAR2(5) NOT NUll,
-    Nivel_Uso NUMBER NOT NULL CHECK (Nivel_Uso BETWEEN 1 AND 5)
+    Nivel VARCHAR2(5) NOT NUll
+);
+
+CREATE TABLE Medidas (
+    ID_Medida NUMBER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    ID_Categoria NUMBER NOT NULL,
+    Valor_Medida VARCHAR2(50) NOT NULL,
+    CONSTRAINT ID_Cat_Med_Cat FOREIGN KEY (ID_Categoria) REFERENCES Categorias (ID_Categoria),
+    CONSTRAINT UQ_Categoria_Medida UNIQUE (ID_Categoria, Valor_Medida)
+);
+
+CREATE TABLE Marcas (
+    ID_Marca NUMBER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    Nombre_Marca VARCHAR2(50) UNIQUE NOT NULL
 );
 
 CREATE TABLE Piezas (
     ID_Pieza NUMBER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     ID_Categoria NUMBER NOT NULL,
+    ID_Medida NUMBER NOT NULL,
+    ID_Marca NUMBER NOT NULL,
     ID_Maquina NUMBER,
     ID_Ubicacion NUMBER,
     Nombre VARCHAR2(50) NOT NULL,
-    Marca VARCHAR2(50) NOT NULL,
     Descripcion VARCHAR2(50),
     Modelo VARCHAR2(50),
-    Medida VARCHAR2(50),
     Area_Bordado VARCHAR2(50),
     Color_Tipo VARCHAR2(50),
     Stock_Actual NUMBER(4) DEFAULT 0 CHECK (Stock_Actual >= 0),
-    Stock_Minimo NUMBER(4) DEFAULT 5,
     CONSTRAINT ID_Cat_Pie_Cat FOREIGN KEY (ID_Categoria) REFERENCES Categorias (ID_Categoria),
     CONSTRAINT ID_Maq_Pie_Maq FOREIGN KEY (ID_Maquina) REFERENCES Maquinas (ID_Maquina),
-    CONSTRAINT ID_Ubi_Pie_Ubi FOREIGN KEY (ID_Ubicacion) REFERENCES Ubicaciones (ID_Ubicacion)
+    CONSTRAINT ID_Ubi_Pie_Ubi FOREIGN KEY (ID_Ubicacion) REFERENCES Ubicaciones (ID_Ubicacion),
+    CONSTRAINT ID_Med_Pie_Med FOREIGN KEY (ID_Medida) REFERENCES Medidas (ID_Medida),
+    CONSTRAINT ID_Mar_Pie_Mar FOREIGN KEY (ID_Marca) REFERENCES Marcas (ID_Marca)
 );
 
 CREATE TABLE Usuarios (
@@ -56,17 +69,34 @@ CREATE TABLE Movimientos (
     CONSTRAINT ID_Usuario_Mov_Usu FOREIGN KEY (ID_Usuario) REFERENCES Usuarios (ID_Usuario)
 );
 
+INSERT INTO Usuarios (Nombre_Completo, Rol, Contrasena) VALUES ('Admin SWF', 'Administrador', 'admin123');
+
 INSERT INTO Categorias (Nombre_Categoria) VALUES ('Aros');
 INSERT INTO Categorias (Nombre_Categoria) VALUES ('Tornillos');
 INSERT INTO Categorias (Nombre_Categoria) VALUES ('Bastidores');
+INSERT INTO Categorias (Nombre_Categoria) VALUES ('Agujas');
 
-INSERT INTO Ubicaciones (Anaquel, Nivel, Nivel_Uso) VALUES ('A1', 'N1', 5);
-INSERT INTO Ubicaciones (Anaquel, Nivel, Nivel_Uso) VALUES ('A1', 'N2', 3);
+INSERT INTO Marcas (Nombre_Marca) VALUES ('SWF');
+INSERT INTO Marcas (Nombre_Marca) VALUES ('Tajima');
+INSERT INTO Marcas (Nombre_Marca) VALUES ('Pantogram');
+INSERT INTO Marcas (Nombre_Marca) VALUES ('Barudan');
+INSERT INTO Marcas (Nombre_Marca) VALUES ('Brother');
 
-INSERT INTO Usuarios (Nombre_Completo, Rol, Contrasena) VALUES ('Admin SWF', 'Administrador', 'admin123');
+INSERT INTO Medidas (ID_Categoria, Valor_Medida) VALUES (1, '18x35');
+INSERT INTO Medidas (ID_Categoria, Valor_Medida) VALUES (1, '15x15');
+INSERT INTO Medidas (ID_Categoria, Valor_Medida) VALUES (1, '12x12');
+INSERT INTO Medidas (ID_Categoria, Valor_Medida) VALUES (2, '5mm');
+INSERT INTO Medidas (ID_Categoria, Valor_Medida) VALUES (2, '10mm');
+INSERT INTO Medidas (ID_Categoria, Valor_Medida) VALUES (2, '15mm');
+INSERT INTO Medidas (ID_Categoria, Valor_Medida) VALUES (2, 'XXL');
+INSERT INTO Medidas (ID_Categoria, Valor_Medida) VALUES (3, 'Estándar');
+INSERT INTO Medidas (ID_Categoria, Valor_Medida) VALUES (4, '75/11');
+INSERT INTO Medidas (ID_Categoria, Valor_Medida) VALUES (4, '80/12');
 
-INSERT INTO Piezas (ID_Categoria, ID_Ubicacion, Nombre, Marca, Medida, Area_Bordado, Stock_Actual, Stock_Minimo) 
-VALUES (1, 1, 'Aro Magnético', 'Tajima', '18x35', 'Grande', 12, 5);
+INSERT INTO Ubicaciones (Anaquel, Nivel) VALUES ('A1', 'N1');
+INSERT INTO Ubicaciones (Anaquel, Nivel) VALUES ('A1', 'N2');
 
-INSERT INTO Piezas (ID_Categoria, ID_Ubicacion, Nombre, Marca, Color_Tipo, Medida, Stock_Actual, Stock_Minimo) 
-VALUES (2, 2, 'Tornillo de ajuste', 'Pantogram', 'Negro', 'XXL', 45, 10);
+INSERT INTO Piezas (ID_Categoria, ID_Ubicacion, ID_Marca, ID_Medida, Nombre, Area_Bordado, Stock_Actual) VALUES (1, 1, 2, 1, 'Aro Magnético', 'Grande', 12);
+INSERT INTO Piezas (ID_Categoria, ID_Ubicacion, ID_Marca, ID_Medida, Nombre, Color_Tipo, Stock_Actual) VALUES (2, 2, 3, 7, 'Tornillo de ajuste', 'Negro', 45);
+
+COMMIT;

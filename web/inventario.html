@@ -5,10 +5,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SWF de Mexico - Gestión de Inventario</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap"
+        rel="stylesheet">
     <style>
         /* Estilos base del ecosistema SWF */
         body {
-            font-family: sans-serif;
+            font-family: "Open Sans", light;
             background-color: #272a4d;
             margin: 0;
             padding-bottom: 60px;
@@ -143,24 +147,13 @@
     <img id="logo" src="images/SWF-LOGO.png" alt="Logo SWF">
 
     <nav>
-        <a href="#">Inventario</a>
-        <a href="#">Entradas/Salidas</a>
+        <a href="inventario.html">Inventario</a>
+        <a href="entradas_salidas.html">Entradas/Salidas</a>
         <a href="#">Cerrar Sesión</a>
     </nav>
 
     <div class="container">
         <h2>Panel de Inventario</h2>
-
-        <div class="form-entrada">
-            <input type="text" id="nombre" placeholder="Nombre">
-            <input type="text" id="marca" placeholder="Marca">
-            <input type="text" id="medida" placeholder="Medida">
-            <input type="text" id="categoria" placeholder="Categoría">
-            <input type="text" id="ubicacion" placeholder="Ubicación">
-            <input type="number" id="stock" placeholder="Stock">
-            <button class="btn-add" onclick="agregarFila()">+ Registrar</button>
-        </div>
-
         <div class="table-wrapper">
             <table>
                 <thead>
@@ -170,8 +163,11 @@
                         <th>Medida</th>
                         <th>Categoría</th>
                         <th>Ubicación</th>
-                        <th>Stock</th>
-                        <th>Acción</th>
+                        <th>Modelo</th>
+                        <th>Color</th>
+                        <th>Area Bordado</th>
+                        <th>Maquina</th>
+                        <th>Stock Actual</th>
                     </tr>
                 </thead>
                 <tbody id="tabla-inventario">
@@ -185,57 +181,14 @@
     </footer>
 
     <script>
-        function agregarFila() {
-            // Referencias a los campos
-            const inputs = {
-                nombre: document.getElementById('nombre'),
-                marca: document.getElementById('marca'),
-                medida: document.getElementById('medida'),
-                categoria: document.getElementById('categoria'),
-                ubicacion: document.getElementById('ubicacion'),
-                stock: document.getElementById('stock')
-            };
-
-            // Validación: Al menos nombre, categoría y stock deben tener datos
-            if (!inputs.nombre.value.trim() || !inputs.categoria.value.trim() || inputs.stock.value === "") {
-                alert("Por favor rellena al menos Nombre, Categoría y Stock.");
-                return;
-            }
-
-            const tbody = document.getElementById('tabla-inventario');
-            const row = tbody.insertRow();
-
-            // Llenado de celdas
-            row.innerHTML = `
-                <td>${inputs.nombre.value}</td>
-                <td>${inputs.marca.value}</td>
-                <td>${inputs.medida.value}</td>
-                <td>${inputs.categoria.value}</td>
-                <td>${inputs.ubicacion.value}</td>
-                <td>${inputs.stock.value}</td>
-                <td><button class="btn-delete" onclick="eliminarFila(this)">Eliminar</button></td>
-            `;
-
-            // Limpieza de campos y regreso del foco al inicio
-            Object.values(inputs).forEach(input => input.value = "");
-            inputs.nombre.focus();
-        }
-
-        function eliminarFila(btn) {
-            if (confirm("¿Seguro que quieres eliminar este registro?")) {
-                const fila = btn.parentNode.parentNode;
-                fila.parentNode.removeChild(fila);
-            }
-        }
-
         async function cargarInventario() {
             try {
-                const respuesta = await fetch ('http://localhost:3000/api/inventario');
+                const respuesta = await fetch('http://localhost:3000/api/inventario');
 
-        const resultado = await respuesta.json();
+                const resultado = await respuesta.json();
 
-        console.log ('Resultado consulta: ', resultado.datos)
-        if ( respuesta.ok ) {
+                console.log('Resultado consulta: ', resultado.datos)
+                if (respuesta.ok) {
 
                     const tbody = document.getElementById('tabla-inventario');
                     tbody.innerHTML = "";
@@ -243,14 +196,17 @@
                     resultado.datos.forEach(pieza => {
 
                         const fila = tbody.insertRow();
-                            fila.innerHTML = `
+                        fila.innerHTML = `
                             <td>${pieza.NOMBRE}</td>
                             <td>${pieza.MARCA}</td>
                             <td>${pieza.MEDIDA}</td>
                             <td>${pieza.CATEGORIA}</td>
-                            <td>${pieza.ANAQUEL}</td>
-                            <td>${pieza.STOCK}</td>
-                            <td><button class="btn-delete" onclick="eliminarFila(this)">Eliminar</button></td>
+                            <td>${pieza.ANAQUEL} - ${pieza.NIVEL}</td>
+                            <td>${pieza.MODELO}</td>
+                            <td>${pieza.COLOR_TIPO}</td>
+                            <td>${pieza.AREA_BORDADO}</td>
+                            <td>${pieza.MAQUINA}</td>
+                            <td>${pieza.STOCK_ACTUAL}</td>
                 `;
                     });
 
