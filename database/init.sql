@@ -64,6 +64,7 @@ CREATE TABLE Movimientos (
     ID_Usuario NUMBER NOT NULL,
     Tipo_Movimiento VARCHAR2(20) CHECK (Tipo_Movimiento IN ('ENTRADA', 'SALIDA')),
     Cantidad NUMBER(4) NOT NULL CHECK (Cantidad > 0),
+    Nota VARCHAR2(100),
     Fecha_Hora TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT ID_Pieza_Mov_Pie FOREIGN KEY (ID_Pieza) REFERENCES Piezas (ID_Pieza),
     CONSTRAINT ID_Usuario_Mov_Usu FOREIGN KEY (ID_Usuario) REFERENCES Usuarios (ID_Usuario)

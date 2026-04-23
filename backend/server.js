@@ -40,6 +40,7 @@ app.get('/api/test', async (req, res) => {
     }
 });
 
+// INICIO DE SESION
 app.post('/api/login', async (req, res) => {
     const usuarioRecibido = req.body.usuario;
     const passwordRecibido = req.body.password;
@@ -93,7 +94,11 @@ app.post('/api/login', async (req, res) => {
     }
 });
 
+app.listen(port, () => {
+    console.log(`API Backend de la Bodega corriendo en el puerto ${port}`);
+});
 
+//CARGAR INVENTARIO PRINCIPAL
 app.get('/api/inventario', async (req, res) => {
     let connection;
 
@@ -146,11 +151,8 @@ app.get('/api/inventario', async (req, res) => {
     }
 });
 
-app.listen(port, () => {
-    console.log(`API Backend de la Bodega corriendo en el puerto ${port}`);
-});
-
-app.get('/api/catalogos', async (req, res) => {
+//CARGAR CATEGORIAS
+app.get('/api/categorias', async (req, res) => {
     let connection;
 
     try {
@@ -159,14 +161,81 @@ app.get('/api/catalogos', async (req, res) => {
         const sqlCategorias = `SELECT * FROM Categorias`;
         const resCat = await connection.execute(sqlCategorias, [], { outFormat: oracledb.OUT_FORMAT_OBJECT });
 
-        const sqlUbicaciones = `SELECT * FROM Ubicaciones`;
-        const resUbi = await connection.execute(sqlUbicaciones, [], { outFormat: oracledb.OUT_FORMAT_OBJECT });
+        res.json({
+            exito: true,
+            categorias: resCat.rows,
+        });
 
-        const sqlMedidas = `SELECT * FROM Medidas`;
-        const resMed = await connection.execute(sqlMedidas, [], { outFormat: oracledb.OUT_FORMAT_OBJECT });
+    } catch (err) {
+        console.error("Error al traer los catálogos:", err);
+        res.status(500).json({ exito: false, error: "Error interno" });
+    } finally {
+        if (connection) {
+            try { await connection.close(); } catch (err) { console.error(err); }
+        }
+    }
+});
 
-        const sqlMarcas = `SELECT * FROM Marcas`;
-        const resMar = await connection.execute(sqlMarcas, [], { outFormat: oracledb.OUT_FORMAT_OBJECT });
+//CARGAR LOS PRODUCTOS POR CATEGORIA
+app.get('/api/productos-existentes/:idCategoria', async (req, res) => {
+    const idCat = req.params.idCategoria;
+    let connection;
+
+    try {
+        connection = await oracledb.getConnection(dbConfig);
+
+        const sqlProductos = `SELECT p.Nombre, m.Nombre_Marca as Marca, p.Stock_Actual AS Stock, p.ID_Pieza FROM Piezas p INNER JOIN Marcas m ON p.ID_Marca =  m.ID_Marca WHERE p.ID_Categoria = :idc`;
+
+        const resProductos = await connection.execute(sqlProductos, { idc: idCat }, { outFormat: oracledb.OUT_FORMAT_OBJECT });
+
+        res.json({
+            exito: true,
+            productos: resProductos.rows
+        });
+    } catch (err) {
+        console.error("Error buscando piezas por categoría:", err);
+        res.status(500).json({ exito: false, error: "Fallo al buscar los nombres" });
+    } finally {
+        if (connection) {
+            try { await connection.close(); } catch (err) { console.error(err); }
+        }
+    }
+});
+
+//CARGAR TODOS LOS PRODUCTOS EXISTENTES
+app.get('/api/productos-existentes', async (req, res) => {
+    let connection;
+
+    try {
+        connection = await oracledb.getConnection(dbConfig);
+
+        const sqlProductos = `SELECT p.Nombre, m.Nombre_Marca as Marca, p.Stock_Actual AS Stock, p.ID_Pieza FROM Piezas p INNER JOIN Marcas m ON p.ID_Marca =  m.ID_Marca`;
+
+        const resProductos = await connection.execute(sqlProductos, [], { outFormat: oracledb.OUT_FORMAT_OBJECT });
+
+        res.json({
+            exito: true,
+            productos: resProductos.rows
+        });
+    } catch (err) {
+        console.error("Error buscando piezas por categoría:", err);
+        res.status(500).json({ exito: false, error: "Fallo al buscar los nombres" });
+    } finally {
+        if (connection) {
+            try { await connection.close(); } catch (err) { console.error(err); }
+        }
+    }
+});
+
+//CARGAR LOS CATALOGOS PARA AGREGAR UN NUEVO PRODUCTO
+app.get('/api/catalogos', async (req, res) => {
+    let connection;
+
+    try {
+        connection = await oracledb.getConnection(dbConfig);
+
+        const sqlCategorias = `SELECT * FROM Categorias`;
+        const resCat = await connection.execute(sqlCategorias, [], { outFormat: oracledb.OUT_FORMAT_OBJECT });
 
         res.json({
             exito: true,
@@ -186,6 +255,7 @@ app.get('/api/catalogos', async (req, res) => {
     }
 });
 
+//FILTRADO DE PIEZAS POR CATEGORIA
 app.get('/api/piezas-por-categoria/:idCategoria', async (req, res) => {
     const idCat = req.params.idCategoria;
     let connection;
@@ -218,6 +288,52 @@ app.get('/api/piezas-por-categoria/:idCategoria', async (req, res) => {
     }
 });
 
+//REGISTRAR TRANSACCION
+app.post('/api/registrar-transaccion', async (req, res) => {
+    const idPieza = req.body.idPieza;
+    const cantidad = req.body.cantidad;
+    const transaccion = req.body.transaccion;
+    const motivo = req.body.motivo;
+    const idUsuario = 1;
+
+    let connection;
+
+    try {
+
+        let crearTransaccion = '';
+
+        if (transaccion === 'ENTRADA') {
+            crearTransaccion = `UPDATE Piezas SET Stock_Actual = Stock_Actual + :can WHERE ID_Pieza = :idp`;
+        } else {
+            crearTransaccion = `UPDATE Piezas SET Stock_Actual = Stock_Actual - :can WHERE ID_Pieza = :idp`;
+        };
+
+        connection = await oracledb.getConnection(dbConfig);
+
+        const registrarTransaccion = `INSERT INTO Movimientos (ID_Pieza, ID_Usuario, Tipo_Movimiento, Cantidad, nota) VALUES (:idp, :idu, :tip, :can, :mot)`;
+
+        const resultadoTransaccion = await connection.execute(crearTransaccion, {can: cantidad, idp: idPieza }, { outFormat: oracledb.OUT_FORMAT_OBJECT });
+
+        const resultadoRegistro = await connection.execute(registrarTransaccion, { idp: idPieza, idu: idUsuario, tip: transaccion, can: cantidad, mot: motivo }, { outFormat: oracledb.OUT_FORMAT_OBJECT });
+
+        await connection.commit();
+
+        res.json({ exito: true, mensaje: "Transacción registrada correctamente" });
+
+    } catch (err) {
+        if (connection) {
+            await connection.rollback();
+        }
+        console.error("Error en la transacción:", err);
+        res.status(500).json({ exito: false, error: "Error al registrar el movimiento" });
+    } finally {
+        if (connection) {
+            try { await connection.close(); } catch (err) { console.error(err); }
+        }
+    }
+});
+
+//REGISTRAR NUEVO PRODUCTO
 app.post('/api/registrar-pieza', async (req, res) => {
     const nombrePieza = req.body.pieza;
     const nombreMarca = req.body.marca;

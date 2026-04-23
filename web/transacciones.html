@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SWF de Mexico - Entradas y Salidas</title>
+
+    <link rel="icon" type="image/x-icon" href="images/SWF_ICO.ico">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap"
+        rel="stylesheet">
+    <style>
+        /* Estilos base del ecosistema SWF */
+        body {
+            font-family: "Open Sans", sans-serif;
+            background-color: #272a4d;
+            margin: 0;
+            padding-bottom: 60px;
+        }
+
+        #logo {
+            display: block;
+            margin: 20px auto;
+            max-width: 200px;
+        }
+
+        /* Navegación */
+        nav {
+            background-color: #332247;
+            padding: 15px;
+            text-align: center;
+            border-bottom: solid 3px #72273b;
+        }
+
+        nav a {
+            color: white;
+            text-decoration: none;
+            margin: 0 15px;
+            font-weight: bold;
+            transition: color 0.3s;
+        }
+
+        nav a:hover {
+            color: #d1b3bb;
+        }
+
+        /* Contenedor principal tipo Dashboard (Más ancho para monitores) */
+        .dashboard-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            max-width: 1400px;
+            /* Recuadros más amplios */
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+
+        /* Paneles Flexbox */
+        .panel-izquierdo {
+            flex: 2;
+            min-width: 600px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .panel-derecho {
+            flex: 1;
+            min-width: 350px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        /* Estilo de Tarjetas Blancas */
+        .tarjeta {
+            background-color: #ffffff;
+            border-radius: 10px;
+            padding: 25px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            border-top: 4px solid #72273b;
+        }
+
+        h3 {
+            color: #272a4d;
+            margin-top: 0;
+            margin-bottom: 20px;
+            font-size: 1.2rem;
+        }
+
+        /* Pestañas / Tabs */
+        .selector-pestanas {
+            display: flex;
+            gap: 15px;
+            border-bottom: 2px solid #eee;
+            margin-bottom: 20px;
+            padding-bottom: 5px;
+        }
+
+        .btn-tab {
+            background: none;
+            border: none;
+            font-weight: bold;
+            font-size: 14px;
+            color: #777;
+            cursor: pointer;
+            padding: 10px 15px;
+            transition: 0.3s;
+        }
+
+        .btn-tab.activo {
+            color: #272a4d;
+            border-bottom: 3px solid #72273b;
+            margin-bottom: -7px;
+            /* Compensa el borde interior */
+        }
+
+        /* Formularios en Grid */
+        .form-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-group label {
+            font-size: 11px;
+            font-weight: bold;
+            color: #555;
+            text-transform: uppercase;
+            margin-bottom: 5px;
+        }
+
+        .form-control {
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-family: "Open Sans", sans-serif;
+            font-size: 14px;
+            outline: none;
+        }
+
+        .form-control:focus {
+            border-color: #72273b;
+        }
+
+        /* Botonera del formulario */
+        .acciones-form {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .btn-principal {
+            background-color: #332247;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .btn-principal:hover {
+            background-color: #72273b;
+        }
+
+        .btn-secundario {
+            background-color: #f1f1f1;
+            color: #333;
+            border: 1px solid #ccc;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .btn-secundario:hover {
+            background-color: #e2e2e2;
+        }
+
+        .badge-estado {
+            background-color: #e8f5e9;
+            color: #2e7d32;
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        /* Tabla de Previas */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+        }
+
+        thead {
+            border-bottom: 2px solid #eee;
+        }
+
+        th {
+            color: #555;
+            text-align: left;
+            padding: 10px;
+            font-size: 11px;
+            text-transform: uppercase;
+        }
+
+        td {
+            padding: 12px 10px;
+            border-bottom: 1px solid #f5f5f5;
+            color: #333;
+        }
+
+        /* Panel Derecho: Estadísticas */
+        .grid-estadisticas {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .caja-stat {
+            border: 1px solid #eee;
+            border-radius: 8px;
+            padding: 15px;
+            background-color: #fafafa;
+        }
+
+        .stat-titulo {
+            font-size: 10px;
+            color: #888;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        .stat-valor {
+            font-size: 26px;
+            font-weight: bold;
+            color: #272a4d;
+            margin-top: 5px;
+        }
+
+        .lista-actividad {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            font-size: 13px;
+        }
+
+        .filtro-maestro {
+            margin-bottom: 20px;
+        }
+
+        /* Footer */
+        footer {
+            background-color: #72273b;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            height: 40px;
+            text-align: center;
+            color: white;
+            line-height: 40px;
+            font-weight: bold;
+            font-size: 14px;
+        }
+    </style>
+</head>
+
+<body>
+    <img id="logo" src="images/SWF-LOGO.png" alt="Logo SWF">
+
+    <nav>
+        <a href="inventario.html">Inventario</a>
+        <a href="transacciones.html">Entradas/Salidas</a>
+        <a href="#">Cerrar Sesión</a>
+    </nav>
+
+    <div class="dashboard-container">
+
+        <div class="panel-izquierdo">
+
+            <div class="tarjeta">
+                <div class="selector-pestanas">
+                    <button class="btn-tab activo">Ajuste existente</button>
+                    <button class="btn-tab" id="tabAlta">Alta producto nuevo</button>
+                </div>
+
+                <div class="form-group filtro-maestro">
+                    <label>1. Filtrar por Categoría</label>
+                    <select class="form-control" id="select-filtro-categoria" onchange="filtrarProductosPorCategoria()">
+                        <option value="">Todas las categorías</option>
+                    </select>
+                </div>
+
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>Producto Existente (Producto | Marca | Cantidad actual)</label>
+                        <select class="form-control" id="select-producto">
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Tipo de Movimiento</label>
+                        <select class="form-control" id="select-tipo">
+                            <option value="ENTRADA">Entrada (+)</option>
+                            <option value="SALIDA">Salida (-)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>Cantidad</label>
+                        <input type="number" class="form-control" id="input-cantidad" min="1">
+                    </div>
+                    <div class="form-group">
+                        <label>Motivo / Nota</label>
+                        <input type="text" class="form-control" id="input-motivo" placeholder="Ej. Compra proveedor">
+                    </div>
+                </div>
+
+                <div class="acciones-form">
+                    <button class="btn-principal" onclick="registrarTransaccion()">Registrar movimiento</button>
+                    <button class="btn-secundario" onclick="limpiarFormulario()">Limpiar</button>
+                    <span class="badge-estado" id="estado-mensaje" style="display:none;">Movimiento registrado</span>
+                </div>
+            </div>
+
+            <div class="tarjeta">
+                <h3>Vista previa de movimientos</h3>
+                <div style="overflow-x: auto;">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Fecha</th>
+                                <th>Producto</th>
+                                <th>Tipo</th>
+                                <th>Cantidad</th>
+                                <th>Usuario</th>
+                                <th>Stock Resultante</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tabla-movimientos">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="panel-derecho">
+
+            <div class="tarjeta">
+                <h3>Resumen Rápido</h3>
+                <div class="grid-estadisticas">
+                    <div class="caja-stat">
+                        <div class="stat-titulo">Movimientos Hoy</div>
+                        <div class="stat-valor" id="stat-hoy">--</div>
+                    </div>
+                    <div class="caja-stat">
+                        <div class="stat-titulo">Productos Activos</div>
+                        <div class="stat-valor" id="stat-activos">--</div>
+                    </div>
+                    <div class="caja-stat">
+                        <div class="stat-titulo">Entradas</div>
+                        <div class="stat-valor" style="color: #2e7d32;" id="stat-entradas">--</div>
+                    </div>
+                    <div class="caja-stat">
+                        <div class="stat-titulo">Salidas</div>
+                        <div class="stat-valor" style="color: #dc3545;" id="stat-salidas">--</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tarjeta">
+                <h3>Actividad reciente</h3>
+                <ul class="lista-actividad" id="lista-actividad">
+                </ul>
+            </div>
+        </div>
+
+    </div>
+
+    <footer>
+        @Proyecto final de desarrollo web 2026
+    </footer>
+    <script>
+
+        //LISTA DE CATEGORIAS
+        async function cargarCategorias() {
+            try {
+                const respuesta = await fetch('http://localhost:3000/api/categorias');
+                const resultado = await respuesta.json();
+
+                if (resultado.exito) {
+
+                    const selectCategoria = document.getElementById('select-filtro-categoria');
+                    resultado.categorias.forEach(cat => {
+                        const opcion = `<option value="${cat.ID_CATEGORIA}"> ${cat.NOMBRE_CATEGORIA} </option>`;
+                        selectCategoria.innerHTML += opcion;
+                    });
+                }
+            } catch (error) {
+                console.error("Error al cargar listas:", error);
+            }
+        }
+
+        cargarCategorias();
+
+        //FILTRADO DE PRODUCTOS POR CATEGORIAS
+        async function filtrarProductosPorCategoria() {
+            const selectCat = document.getElementById('select-filtro-categoria');
+            const selectNom = document.getElementById('select-producto');
+
+            const catSelected = selectCat.value;
+
+            let url = 'http://localhost:3000/api/productos-existentes';
+
+            if (catSelected !== "") {
+                url = `http://localhost:3000/api/productos-existentes/${catSelected}`;
+            }
+            try {
+                const respuesta = await fetch(url);
+                const resultado = await respuesta.json();
+
+                selectNom.innerHTML = '<option value="">Selecciona un producto...</option>';
+
+                if (resultado.exito) {
+                    resultado.productos.forEach(producto => {
+                        const opcion = `<option value="${producto.ID_PIEZA}">${producto.NOMBRE} | ${producto.MARCA} | ${producto.STOCK}</option>`;
+                        selectNom.innerHTML += opcion;
+                    });
+                }
+            } catch (error) {
+                console.error("Error al buscar los productos por categoria: ", error)
+            };
+        }
+
+        filtrarProductosPorCategoria();
+
+        //REGISTRAR TRANSACCION
+        async function registrarTransaccion() {
+            const productoTransaccion = document.getElementById('select-producto');
+            const productoCantidad = document.getElementById('input-cantidad');
+            const tipoTransaccion = document.getElementById('select-tipo');
+            const motivoTransaccion = document.getElementById('input-motivo');
+
+            const datosTransaccion = {
+                idPieza: productoTransaccion.value,
+                cantidad: productoCantidad.value,
+                transaccion: tipoTransaccion.value,
+                motivo: motivoTransaccion.value
+            };
+
+            try {
+                const respuesta = await fetch('http://localhost:3000/api/registrar-transaccion', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(datosTransaccion)
+                });
+                const resultado = await respuesta.json();
+
+                if (resultado.exito) {
+                    alert(resultado.mensaje);
+                    limpiarFormulario();
+                    filtrarProductosPorCategoria();
+                } else {
+                    alert("Error: " + resultado.error);
+                }
+            } catch (error) {
+                console.error("Error al realizar la transaccion: ", error)
+            };
+        }
+
+        function limpiarFormulario() {
+            document.getElementById('select-producto').innerHTML = '<option value="">Selecciona un producto...</option>';
+            document.getElementById('select-tipo').innerHTML = '<option value="ENTRADA">Entrada (+)</option>'
+            document.getElementById('input-cantidad').value = '';
+            document.getElementById('input-motivo').value = '';
+        }
+        /*
+                async function cargarCatalogos() {
+            try {
+                const respuesta = await fetch('http://localhost:3000/api/catalogos');
+                const resultado = await respuesta.json();
+
+                if (resultado.exito) {
+
+                    const selectCategoria = document.getElementById('categoria');
+                    resultado.categorias.forEach(cat => {
+                        const opcion = `<option value="${cat.ID_CATEGORIA}"> ${cat.NOMBRE_CATEGORIA} </option>`;
+                        selectCategoria.innerHTML += opcion;
+                    });
+
+                    const selectUbicacion = document.getElementById('ubicacion');
+                    resultado.ubicaciones.forEach(ubi => {
+                        const opcion = `<option value="${ubi.ID_UBICACION}"> ${ubi.ANAQUEL} - ${ubi.NIVEL} </option>`;
+                        selectUbicacion.innerHTML += opcion;
+                    });
+
+                    const selectMedida = document.getElementById('medida');
+                    resultado.medidas.forEach(med => {
+                        const opcion = `<option value="${med.ID_MEDIDA}"> ${med.VALOR_MEDIDA} </option>`;
+                        selectMedida.innerHTML += opcion;
+                    });
+
+                    const selectMarca = document.getElementById('marca');
+                    resultado.marcas.forEach(mar => {
+                        const opcion = `<option value="${mar.ID_MARCA}"> ${mar.NOMBRE_MARCA} </option>`;
+                        selectMarca.innerHTML += opcion;
+                    });
+                }
+            } catch (error) {
+                console.error("Error al cargar listas:", error);
+            }
+        }
+
+        const selectCategoria = document.getElementById('categoria');
+        const selectNombre = document.getElementById('nombre');
+        const selectMedida = document.getElementById('medida');
+
+        selectCategoria.addEventListener('change', async function () {
+            const idCatSelect = this.value;
+
+            selectNombre.innerHTML = '<option value="">Selecciona un Nombre...</option>';
+            selectMedida.innerHTML = '<option value="">Selecciona una Medida...</option>';
+
+            if (!idCatSelect) return;
+
+            try {
+                const respuesta = await fetch(`http://localhost:3000/api/piezas-por-categoria/${idCatSelect}`);
+                const resultado = await respuesta.json();
+
+                if (resultado.exito) {
+                    resultado.nombres.forEach(pieza => {
+                        const opcion = `<option value="${pieza.ID_PIEZA}">${pieza.NOMBRE}</option>`;
+                        selectNombre.innerHTML += opcion;
+                    });
+
+                    resultado.medidas.forEach(medida => {
+                        const opcion = `<option value="${medida.ID_MEDIDA}">${medida.VALOR_MEDIDA}</option>`;
+                        selectMedida.innerHTML += opcion;
+                    })
+                }
+            } catch (error) {
+                console.error("Error al buscar los nombres por categoria: ", error)
+            }
+        });
+
+        cargarCatalogos();
+        */
+    </script>
+</body>
