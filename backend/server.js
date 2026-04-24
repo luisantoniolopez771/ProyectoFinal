@@ -53,26 +53,22 @@ app.post('/api/login', async (req, res) => {
 
         const consultaLogin = `SELECT * FROM Usuarios WHERE Nombre_Completo = :usr AND Contrasena = :pwd`;
 
-        const resultLogin = await connection.execute(
-            consultaLogin,
-            {
-                usr: usuarioRecibido,
-                pwd: passwordRecibido
-            },
-            {
-                outFormat: oracledb.OUT_FORMAT_OBJECT
-            }
-        );
+        const resultLogin = await connection.execute(consultaLogin, { usr: usuarioRecibido, pwd: passwordRecibido }, { outFormat: oracledb.OUT_FORMAT_OBJECT });
 
         if (resultLogin.rows.length > 0) {
             const usuarioEncontrado = resultLogin.rows[0];
 
+            console.log("Fila del usuario desde Oracle:", usuarioEncontrado);
+
             const rolEncontrado = usuarioEncontrado.ROL;
+
+            const idUsuarioEncontrado = usuarioEncontrado.ID_USUARIO;
 
             res.json({
                 exito: true,
                 mensaje: usuarioRecibido,
-                rol: rolEncontrado
+                rol: rolEncontrado,
+                idUsuario: idUsuarioEncontrado
             });
         } else {
             res.status(401).json({
@@ -294,7 +290,8 @@ app.post('/api/registrar-transaccion', async (req, res) => {
     const cantidad = req.body.cantidad;
     const transaccion = req.body.transaccion;
     const motivo = req.body.motivo;
-    const idUsuario = 1;
+    console.log("Datos recibidos del Frontend:", req.body);
+    const idUsuario = parseInt(req.body.idUsuario);
 
     let connection;
 
@@ -302,19 +299,25 @@ app.post('/api/registrar-transaccion', async (req, res) => {
 
         let crearTransaccion = '';
 
+        let registrarTransaccion = '';
+
+        let sim = '';
+
         if (transaccion === 'ENTRADA') {
             crearTransaccion = `UPDATE Piezas SET Stock_Actual = Stock_Actual + :can WHERE ID_Pieza = :idp`;
+
+            registrarTransaccion = `INSERT INTO Movimientos (ID_Pieza, ID_Usuario, Tipo_Movimiento, Cantidad, Nota, Stock_Resultante) VALUES (:idp, :idu, :tip, :can, :mot, (SELECT Stock_Actual + :can FROM Piezas WHERE ID_Pieza = :idp))`;
         } else {
             crearTransaccion = `UPDATE Piezas SET Stock_Actual = Stock_Actual - :can WHERE ID_Pieza = :idp`;
+
+            registrarTransaccion = `INSERT INTO Movimientos (ID_Pieza, ID_Usuario, Tipo_Movimiento, Cantidad, Nota, Stock_Resultante) VALUES (:idp, :idu, :tip, :can, :mot, (SELECT Stock_Actual - :can FROM Piezas WHERE ID_Pieza = :idp))`;
         };
 
         connection = await oracledb.getConnection(dbConfig);
 
-        const registrarTransaccion = `INSERT INTO Movimientos (ID_Pieza, ID_Usuario, Tipo_Movimiento, Cantidad, nota) VALUES (:idp, :idu, :tip, :can, :mot)`;
-
-        const resultadoTransaccion = await connection.execute(crearTransaccion, {can: cantidad, idp: idPieza }, { outFormat: oracledb.OUT_FORMAT_OBJECT });
-
         const resultadoRegistro = await connection.execute(registrarTransaccion, { idp: idPieza, idu: idUsuario, tip: transaccion, can: cantidad, mot: motivo }, { outFormat: oracledb.OUT_FORMAT_OBJECT });
+        
+        const resultadoTransaccion = await connection.execute(crearTransaccion, { can: cantidad, idp: idPieza }, { outFormat: oracledb.OUT_FORMAT_OBJECT });
 
         await connection.commit();
 
@@ -351,3 +354,29 @@ app.post('/api/registrar-pieza', async (req, res) => {
 
     } catch { }
 });
+
+//CARGAR MOVIMIENTOS
+app.get('/api/consultar-movimientos', async (req, res) => {
+    let connection;
+
+    try {
+        connection = await oracledb.getConnection(dbConfig);
+
+        const consultaMovimientos = `SELECT m.Fecha_Hora, p.Nombre, m.Tipo_Movimiento AS TIPO, m.Cantidad, u.Nombre_Completo AS USUARIO, m.Stock_Resultante AS STOCK
+        FROM Movimientos m INNER JOIN Piezas p ON m.ID_Pieza = p.ID_Pieza
+        INNER JOIN Usuarios u ON m.ID_Usuario = u.ID_Usuario
+        ORDER BY m.Fecha_Hora DESC`;
+
+        const respuestaMovimientos = await connection.execute(consultaMovimientos, [], { outFormat: oracledb.OUT_FORMAT_OBJECT });
+
+        res.json({ exito: true, movimientos: respuestaMovimientos.rows });
+
+    } catch (err) {
+        console.error("Error al consultar los movimentos: ", err);
+        res.status(500).json({ exito: false, error: "Fallo al buscar los movimientos" });
+    } finally {
+        if (connection) {
+            try { await connection.close(); } catch (err) { console.error(err); }
+        }
+    }
+})

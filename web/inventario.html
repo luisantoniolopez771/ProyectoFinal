@@ -7,7 +7,7 @@
     <title>SWF de Mexico - Gestión de Inventario</title>
 
     <link rel="icon" type="image/x-icon" href="images/SWF_ICO.ico">
-    
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap"
@@ -152,7 +152,7 @@
     <nav>
         <a href="inventario.html">Inventario</a>
         <a href="transacciones.html">Entradas/Salidas</a>
-        <a href="#">Cerrar Sesión</a>
+        <a href="#" onclick="cerrarSesion()">Cerrar Sesión</a>
     </nav>
 
     <div class="container">
@@ -184,13 +184,20 @@
     </footer>
 
     <script>
+
+        //CERRAR SESION
+        function cerrarSesion() {
+            localStorage.clear();
+            window.location.href = "index.html";
+        }
+
+        //LLENAR LA TABLA CON TODOS LOS ELEMENTOS DISPONIBLES
         async function cargarInventario() {
             try {
                 const respuesta = await fetch('http://localhost:3000/api/inventario');
 
                 const resultado = await respuesta.json();
 
-                console.log('Resultado consulta: ', resultado.datos)
                 if (respuesta.ok) {
 
                     const tbody = document.getElementById('tabla-inventario');

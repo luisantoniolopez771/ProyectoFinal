@@ -65,12 +65,15 @@ CREATE TABLE Movimientos (
     Tipo_Movimiento VARCHAR2(20) CHECK (Tipo_Movimiento IN ('ENTRADA', 'SALIDA')),
     Cantidad NUMBER(4) NOT NULL CHECK (Cantidad > 0),
     Nota VARCHAR2(100),
+    Stock_Resultante NUMBER NOT NULL,
     Fecha_Hora TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT ID_Pieza_Mov_Pie FOREIGN KEY (ID_Pieza) REFERENCES Piezas (ID_Pieza),
     CONSTRAINT ID_Usuario_Mov_Usu FOREIGN KEY (ID_Usuario) REFERENCES Usuarios (ID_Usuario)
 );
 
+-------------------------------- INSERT PARA PRUEBAS -----------------------------------------------
 INSERT INTO Usuarios (Nombre_Completo, Rol, Contrasena) VALUES ('Admin SWF', 'Administrador', 'admin123');
+INSERT INTO Usuarios (Nombre_Completo, Rol, Contrasena) VALUES ('Trabajador SWF', 'Trabajador', 'trabajador123');
 
 INSERT INTO Categorias (Nombre_Categoria) VALUES ('Aros');
 INSERT INTO Categorias (Nombre_Categoria) VALUES ('Tornillos');

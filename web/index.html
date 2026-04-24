@@ -4,6 +4,9 @@
 <head>
     <meta charset="UTF-8">
     <title>SWF de Mexico</title>
+
+    <link rel="icon" type="image/x-icon" href="images/SWF_ICO.ico">
+    
     <style>
         body {
             font-family: sans-serif;
@@ -109,7 +112,7 @@
     <script>
         const formulario = document.getElementById('login-form');
 
-        formulario.addEventListener('submit', async function(event) {
+        formulario.addEventListener('submit', async function (event) {
             event.preventDefault();
 
             const usuarioCapturado = document.getElementById('username').value;
@@ -121,7 +124,7 @@
             };
 
             try {
-                const respuesta = await fetch ('http://localhost:3000/api/login', {
+                const respuesta = await fetch('http://localhost:3000/api/login', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -129,14 +132,17 @@
                     body: JSON.stringify(datosLogin)
                 });
 
-            const resultado = await respuesta.json();
+                const resultado = await respuesta.json();
 
-            if  (respuesta.ok) {
-                alert("¡Bienvenido, " + resultado.mensaje + "!");
-                window.location.href = "inventario.html";
-            } else {
-                alert("Error: " + resultado.error);
-            }
+                if (respuesta.ok) {
+                    localStorage.setItem('usuarioLogueado', resultado.mensaje);
+                    localStorage.setItem('rolUsuario', resultado.rol);
+                    localStorage.setItem('idUsuario', resultado.idUsuario);
+                    alert("¡Bienvenido, " + resultado.mensaje + "!");
+                    window.location.href = "inventario.html";
+                } else {
+                    alert("Error: " + resultado.error);
+                }
             } catch (error) {
                 alert("No se pudo conectar con el servidor. Verifica que Node esté corriendo.");
             }
