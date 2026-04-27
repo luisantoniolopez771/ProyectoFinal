@@ -152,6 +152,7 @@
     <nav>
         <a href="inventario.html">Inventario</a>
         <a href="transacciones.html">Entradas/Salidas</a>
+        <a href="panel-administracion.html" style="color: #d1b3bb;">Panel Admintrador</a>
         <a href="#" onclick="cerrarSesion()">Cerrar Sesión</a>
     </nav>
 
@@ -208,14 +209,14 @@
                         const fila = tbody.insertRow();
                         fila.innerHTML = `
                             <td>${pieza.NOMBRE}</td>
-                            <td>${pieza.MARCA}</td>
-                            <td>${pieza.MEDIDA}</td>
-                            <td>${pieza.CATEGORIA}</td>
+                            <td>${pieza.MARCA  || 'N/A'}</td>
+                            <td>${pieza.MEDIDA  || 'N/A'}</td>
+                            <td>${pieza.CATEGORIA  || 'N/A'}</td>
                             <td>${pieza.ANAQUEL} - ${pieza.NIVEL}</td>
-                            <td>${pieza.MODELO}</td>
-                            <td>${pieza.COLOR_TIPO}</td>
-                            <td>${pieza.AREA_BORDADO}</td>
-                            <td>${pieza.MAQUINA}</td>
+                            <td>${pieza.MODELO || 'N/A'}</td>
+                            <td>${pieza.COLOR_TIPO || 'N/A'}</td>
+                            <td>${pieza.AREA || 'N/A'}</td>
+                            <td>${pieza.MAQUINA || 'N/A'}</td>
                             <td>${pieza.STOCK_ACTUAL}</td>
                 `;
                     });

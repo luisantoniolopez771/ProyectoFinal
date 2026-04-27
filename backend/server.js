@@ -110,8 +110,8 @@ app.get('/api/inventario', async (req, res) => {
         u.Nivel, 
         p.Modelo, 
         p.Color_Tipo, 
-        p.Area_Bordado,
         mq.Nombre_Modelo AS Maquina, 
+        a.Nombre_Area AS Area,
         p.Stock_Actual
         FROM Piezas p
         INNER JOIN Categorias c ON p.ID_Categoria = c.ID_Categoria
@@ -119,6 +119,7 @@ app.get('/api/inventario', async (req, res) => {
         LEFT JOIN Medidas med ON p.ID_Medida = med.ID_Medida
         LEFT JOIN Ubicaciones u ON p.ID_Ubicacion = u.ID_Ubicacion
         LEFT JOIN Maquinas mq ON p.ID_Maquina = mq.ID_Maquina
+        LEFT JOIN Areas_Bordado a ON p.ID_Areas_Bordado = a.ID_Area
         `;
 
         const resultado = await connection.execute(
@@ -223,22 +224,28 @@ app.get('/api/productos-existentes', async (req, res) => {
     }
 });
 
-//CARGAR LOS CATALOGOS PARA AGREGAR UN NUEVO PRODUCTO
+//CARGAR LOS CATALOGOS PARA AGREGAR UN NUEVO PRODUCTO ---------------------------------------------------------------------------------------------------------
 app.get('/api/catalogos', async (req, res) => {
     let connection;
 
     try {
         connection = await oracledb.getConnection(dbConfig);
 
-        const sqlCategorias = `SELECT * FROM Categorias`;
-        const resCat = await connection.execute(sqlCategorias, [], { outFormat: oracledb.OUT_FORMAT_OBJECT });
+        const sqlCategorias = await connection.execute(`SELECT * FROM Categorias ORDER BY ID_Categoria ASC`, [], { outFormat: oracledb.OUT_FORMAT_OBJECT });
+        const sqlMarcas = await connection.execute(`SELECT * FROM Marcas ORDER BY ID_Marca ASC`, [], { outFormat: oracledb.OUT_FORMAT_OBJECT });
+        const sqlMedidas = await connection.execute(`SELECT * FROM Medidas ORDER BY ID_Medida ASC`, [], { outFormat: oracledb.OUT_FORMAT_OBJECT });
+        const sqlMaquinas = await connection.execute(`SELECT * FROM Maquinas ORDER BY ID_Maquina ASC`, [], { outFormat: oracledb.OUT_FORMAT_OBJECT });
+        const sqlUbicaciones = await connection.execute(`SELECT * FROM Ubicaciones ORDER BY ID_Ubicacion ASC`, [], { outFormat: oracledb.OUT_FORMAT_OBJECT });
+        const sqlAreasBordado = await connection.execute(`SELECT * FROM Areas_Bordado ORDER BY ID_Area ASC`, [], { outFormat: oracledb.OUT_FORMAT_OBJECT });
 
         res.json({
             exito: true,
-            categorias: resCat.rows,
-            ubicaciones: resUbi.rows,
-            medidas: resMed.rows,
-            marcas: resMar.rows
+            categorias: sqlCategorias.rows,
+            marcas: sqlMarcas.rows,
+            medidas: sqlMedidas.rows,
+            maquinas: sqlMaquinas.rows,
+            ubicaciones: sqlUbicaciones.rows,
+            areasbordado: sqlAreasBordado.rows
         });
 
     } catch (err) {
@@ -251,7 +258,7 @@ app.get('/api/catalogos', async (req, res) => {
     }
 });
 
-//FILTRADO DE PIEZAS POR CATEGORIA
+//FILTRADO DE PIEZAS POR CATEGORIA ----------------------------------------------------------------------------------------------------------------------------
 app.get('/api/piezas-por-categoria/:idCategoria', async (req, res) => {
     const idCat = req.params.idCategoria;
     let connection;
@@ -284,13 +291,12 @@ app.get('/api/piezas-por-categoria/:idCategoria', async (req, res) => {
     }
 });
 
-//REGISTRAR TRANSACCION
+//REGISTRAR TRANSACCION ---------------------------------------------------------------------------------------------------------------------------------------
 app.post('/api/registrar-transaccion', async (req, res) => {
     const idPieza = req.body.idPieza;
     const cantidad = req.body.cantidad;
     const transaccion = req.body.transaccion;
     const motivo = req.body.motivo;
-    console.log("Datos recibidos del Frontend:", req.body);
     const idUsuario = parseInt(req.body.idUsuario);
 
     let connection;
@@ -316,7 +322,7 @@ app.post('/api/registrar-transaccion', async (req, res) => {
         connection = await oracledb.getConnection(dbConfig);
 
         const resultadoRegistro = await connection.execute(registrarTransaccion, { idp: idPieza, idu: idUsuario, tip: transaccion, can: cantidad, mot: motivo }, { outFormat: oracledb.OUT_FORMAT_OBJECT });
-        
+
         const resultadoTransaccion = await connection.execute(crearTransaccion, { can: cantidad, idp: idPieza }, { outFormat: oracledb.OUT_FORMAT_OBJECT });
 
         await connection.commit();
@@ -336,26 +342,45 @@ app.post('/api/registrar-transaccion', async (req, res) => {
     }
 });
 
-//REGISTRAR NUEVO PRODUCTO
-app.post('/api/registrar-pieza', async (req, res) => {
-    const nombrePieza = req.body.pieza;
-    const nombreMarca = req.body.marca;
-    const medida = req.body.medida;
-    const categoria = req.body.categoria;
-    const ubicacion = req.body.ubicacion;
-    const stock = req.body.stock;
+//REGISTRAR NUEVO PRODUCTO ----------------------------------------------------------------------------------------------------------------------------------------
+app.post('/api/registrar-producto', async (req, res) => {
+    const nombre = req.body.nombre;
+    const stock = req.body.stock || 0;
+    const categoria = req.body.categoria || null;
+    const marca = req.body.marca || null;
+    const medida = req.body.medida || null;
+    const maquina = req.body.maquina || null;
+    const modelo = req.body.modelo || null;
+    const ubicacion = req.body.ubicacion || null;
+    const area = req.body.area || null;
+    const color = req.body.color || null;
 
     let connection;
 
     try {
         connection = await oracledb.getConnection(dbConfig);
 
-        const insertarPieza = `INSERT INTO Piezas (Nombre, Marca, Medida) VALUES ()`;
+        const altaPieza = `INSERT INTO Piezas (ID_Categoria, ID_Medida, ID_Marca, ID_Maquina, ID_Ubicacion, ID_Areas_Bordado, Nombre, Modelo, Color_Tipo, Stock_Actual) VALUES (:idcat, :idmed, :idmar, :idmaq, :idubi, :idare, :nom, :mod, :col, :sto)`;
 
-    } catch { }
+        const respuestaAltaPieza = await connection.execute(altaPieza, { idcat: categoria, idmed: medida, idmar: marca, idmaq: maquina, idubi: ubicacion, idare: area, nom: nombre, mod: modelo, col: color, sto: stock });
+
+        await connection.commit();
+
+        res.json({ exito: true, mensaje: "PRODUCTO AGREGADO CON EXITO" })
+
+    } catch (err) {
+
+        console.error("ERROR AL AGREGAR EL PRODUCTO: ", err);
+        res.status(500).json({ exito: false, error: "ERROR AL AGREGAR EL PRODUCTO" });
+
+    } finally {
+        if (connection) {
+            try { await connection.close(); } catch (err) { console.error(err); }
+        }
+    }
 });
 
-//CARGAR MOVIMIENTOS
+//CARGAR MOVIMIENTOS ----------------------------------------------------------------------------------------------------------------------------------------------------
 app.get('/api/consultar-movimientos', async (req, res) => {
     let connection;
 
@@ -380,3 +405,151 @@ app.get('/api/consultar-movimientos', async (req, res) => {
         }
     }
 })
+
+//REGISTRAR USUARIO NUEVO -----------------------------------------------------------------------------------------------------------------------------------------------
+app.post('/api/registrar-usuario', async (req, res) => {
+
+    const nombreUsuario = req.body.nombre;
+    const contraUsuario = req.body.contra;
+    const rolUsuario = req.body.rol;
+
+    let connection;
+
+    try {
+        connection = await oracledb.getConnection(dbConfig);
+
+        const altaUsuario = `INSERT INTO Usuarios (Nombre_Completo, Rol, Estado, Contrasena) VALUES ( :nom, :rol, 'ACTIVO', :con)`;
+
+        const resAltaUsuario = await connection.execute(altaUsuario, { nom: nombreUsuario, rol: rolUsuario, con: contraUsuario }, { outFormat: oracledb.OUT_FORMAT_OBJECT });
+
+        res.json({ exito: true, mensaje: "USUARIO REGISTRADO CON EXITO!" });
+
+        await connection.commit();
+
+    } catch (err) {
+
+        console.error("ERROR AL REGISTRAR EL USUARIO: ", err);
+        res.status(500).json({ exito: false, error: "ERROR AL REGISTRAR EL USUARIO" });
+
+    } finally {
+        if (connection) {
+            try { await connection.close(); } catch (err) { console.error(err); }
+        }
+    }
+})
+
+//MOSTRAR USUARIOS --------------------------------------------------------------------------------------------------------------------------------------------------------
+app.get('/api/mostrar-usuarios', async (req, res) => {
+
+    let connection;
+
+    try {
+
+        connection = await oracledb.getConnection(dbConfig);
+
+        const consultarUsuarios = `SELECT ID_Usuario, Nombre_Completo, Rol, Estado FROM Usuarios ORDER BY ID_Usuario ASC`;
+
+        const respuestaUsuarios = await connection.execute(consultarUsuarios, [], { outFormat: oracledb.OUT_FORMAT_OBJECT });
+
+        res.json({ exito: true, usuarios: respuestaUsuarios.rows });
+
+    } catch (err) {
+
+        console.error("ERROR AL CARGAR LOS USUARIOS: ", err);
+        res.status(500).json({ exito: false, error: "ERROR AL CARGAR LOS USUARIOS" });
+
+    } finally {
+        if (connection) {
+            try { await connection.close(); } catch (err) { console.error(err); }
+        }
+    }
+})
+
+//CAMBIAR ESTADO DE USUARIO ------------------------------------------------------------------------------------------------------------------------------------------------
+app.post('/api/cambiar-estado-usuario', async (req, res) => {
+
+    const idUsuario = req.body.idUsuario;
+    const estadoActual = req.body.estadoActual;
+
+    let connection;
+
+    try {
+        connection = await oracledb.getConnection(dbConfig);
+
+        let nuevoEstado = '';
+
+        if (estadoActual === 'ACTIVO') {
+
+            nuevoEstado = 'INACTIVO';
+
+        } else {
+
+            nuevoEstado = 'ACTIVO';
+
+        }
+
+        const actualizarUsuario = `UPDATE Usuarios SET Estado = :est WHERE ID_Usuario = :idu`;
+
+        const respuestaActualizarusuario = await connection.execute(actualizarUsuario, { est: nuevoEstado, idu: idUsuario }, { outFormat: oracledb.OUT_FORMAT_OBJECT });
+
+        await connection.commit();
+
+        res.json({ exito: true, mensaje: "ESTADO CAMBIADO CON EXITO" });
+
+    } catch (err) {
+
+        console.error("ERROR AL ACTUALIZAR EL ESTADO DEL USUARIO: ", err);
+        res.status(500).json({ exito: false, error: "ERROR AL ACTUALIZAR EL USUARIO" });
+
+    } finally {
+        if (connection) {
+            try { await connection.close(); } catch (err) { console.error(err); }
+        }
+    }
+})
+
+
+//ALTA TABLAS SECUNDARIAS ----------------------------------------------------------------------------------------------------------------------------------------------------
+app.post('/api/alta-catalogos', async (req, res) => {
+
+    const tipo = req.body.tipo;
+    const dato = req.body.dato;
+
+    let connection;
+
+    try {
+        connection = await oracledb.getConnection(dbConfig);
+
+        let altaTipo = '';
+
+        if ( tipo === 'CATEGORIA') {
+            altaTipo = `INSERT INTO Categorias (Nombre_Categoria) VALUES (:dat)`;
+        } else if ( tipo === 'MARCA') {
+            altaTipo = `INSERT INTO Marcas (Nombre_Marca) VALUES (:dat)`;
+        } else if ( tipo === 'MAQUINA' ) {
+            altaTipo = `INSERT INTO Maquinas (Nombre_Modelo) VALUES (:dat)`;
+        } else if ( tipo === 'MEDIDA' ) {
+            altaTipo = `INSERT INTO Medidas (Valor_Medida) VALUES (:dat)`;
+        } else {
+            altaTipo = `INSERT INTO Areas_Bordado (Nombre_Area) VALUES (:dat)`;
+        }
+
+        const resultadoAltaCatalogo = await connection.execute( altaTipo, { dat: dato}, { outFormat: oracledb.OUT_FORMAT_OBJECT } );
+
+        await connection.commit();
+
+        res.json({ exito: true, mensaje: dato + " AGREGADO CON EXITO " });
+
+    } catch (err) {
+
+        console.error("ERROR AL REALIZAR LA ALTA: ", err);
+        res.status(500).json({ exito:false, error: "ERROR AL DAR LA ALTA" });
+
+    } finally {
+        if(connection) {
+            try { await connection.close(); } catch (err) { console.error (err); }
+        }
+    }
+})
+
+
