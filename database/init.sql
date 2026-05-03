@@ -20,10 +20,7 @@ CREATE TABLE Ubicaciones (
 
 CREATE TABLE Medidas (
     ID_Medida NUMBER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    ID_Categoria NUMBER NOT NULL,
-    Valor_Medida VARCHAR2(50) NOT NULL,
-    CONSTRAINT ID_Cat_Med_Cat FOREIGN KEY (ID_Categoria) REFERENCES Categorias (ID_Categoria),
-    CONSTRAINT UQ_Categoria_Medida UNIQUE (ID_Categoria, Valor_Medida)
+    Valor_Medida VARCHAR2(50) NOT NULL
 );
 
 CREATE TABLE Marcas (
@@ -92,16 +89,16 @@ INSERT INTO Marcas (Nombre_Marca) VALUES ('Pantogram');
 INSERT INTO Marcas (Nombre_Marca) VALUES ('Barudan');
 INSERT INTO Marcas (Nombre_Marca) VALUES ('Brother');
 
-INSERT INTO Medidas (ID_Categoria, Valor_Medida) VALUES (1, '18x35');
-INSERT INTO Medidas (ID_Categoria, Valor_Medida) VALUES (1, '15x15');
-INSERT INTO Medidas (ID_Categoria, Valor_Medida) VALUES (1, '12x12');
-INSERT INTO Medidas (ID_Categoria, Valor_Medida) VALUES (2, '5mm');
-INSERT INTO Medidas (ID_Categoria, Valor_Medida) VALUES (2, '10mm');
-INSERT INTO Medidas (ID_Categoria, Valor_Medida) VALUES (2, '15mm');
-INSERT INTO Medidas (ID_Categoria, Valor_Medida) VALUES (2, 'XXL');
-INSERT INTO Medidas (ID_Categoria, Valor_Medida) VALUES (3, 'Estándar');
-INSERT INTO Medidas (ID_Categoria, Valor_Medida) VALUES (4, '75/11');
-INSERT INTO Medidas (ID_Categoria, Valor_Medida) VALUES (4, '80/12');
+INSERT INTO Medidas (Valor_Medida) VALUES ('18x35');
+INSERT INTO Medidas (Valor_Medida) VALUES ('15x15');
+INSERT INTO Medidas (Valor_Medida) VALUES ('12x12');
+INSERT INTO Medidas (Valor_Medida) VALUES ('5mm');
+INSERT INTO Medidas (Valor_Medida) VALUES ('10mm');
+INSERT INTO Medidas (Valor_Medida) VALUES ('15mm');
+INSERT INTO Medidas (Valor_Medida) VALUES ('XXL');
+INSERT INTO Medidas (Valor_Medida) VALUES ('Estándar');
+INSERT INTO Medidas (Valor_Medida) VALUES ('75/11');
+INSERT INTO Medidas (Valor_Medida) VALUES ('80/12');
 
 INSERT INTO Ubicaciones (Anaquel, Nivel) VALUES ('A1', 'N1');
 INSERT INTO Ubicaciones (Anaquel, Nivel) VALUES ('A1', 'N2');

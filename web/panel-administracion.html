@@ -265,7 +265,7 @@
     <nav>
         <a href="inventario.html">Inventario</a>
         <a href="transacciones.html">Entradas/Salidas</a>
-        <a href="panel-administracion.html" style="color: #d1b3bb;">Panel Admintrador</a>
+        <a href="panel-administracion.html">Panel Admintrador</a>
         <a href="#" onclick="cerrarSesion()">Cerrar Sesión</a>
     </nav>
 
@@ -505,14 +505,14 @@
                         <div class="form-group">
                             <label>Áreas de Bordado</label>
                             <div style="display: flex; gap: 10px; margin-bottom: 10px;">
-                                <input type="text" class="form-control" id="input-nueva-area" style="flex: 1;"
-                                    placeholder="Nueva área">
+                                <input type="text" class="form-control" id="input-nueva-area"
+                                    style="flex: 1; min-width: 0;" placeholder="Nueva área">
                                 <button class="btn-principal"
                                     onclick="agregarCatalogo('AREA', DATO = document.getElementById('input-nueva-area').value)">Añadir</button>
                             </div>
                             <div
                                 style="max-height: 150px; overflow-y: auto; border: 1px solid #eee; border-radius: 5px;">
-                                <table style="margin-top: 0;">
+                                <table style="margin-top: 0; width: 100%;">
                                     <thead style="position: sticky; top: 0; background: #f9f9f9;">
                                         <tr>
                                             <th>ID</th>
@@ -524,30 +524,37 @@
                                 </table>
                             </div>
                         </div>
-                    </div>
 
-                    <div class="form-group">
-                        <label>Ubicaciones (Anaquel y Nivel)</label>
-                        <div style="display: flex; gap: 10px; margin-bottom: 10px;">
-                            <input type="text" class="form-control" id="input-nuevo-anaquel" style="width: 50%;"
-                                placeholder="Anaquel (Ej. A)">
-                            <input type="text" class="form-control" id="input-nuevo-nivel" style="width: 50%;"
-                                placeholder="Nivel (Ej. 1)">
-                            <button class="btn-principal"
-                                onclick="agregarCatalogo('UBICACION', { anaquel: document.getElementById('input-nuevo-anaquel').value, nivel: document.getElementById('input-nuevo-nivel').value })">Añadir</button>
-                        </div>
+                        <div class="form-group">
+                            <label>Ubicaciones (Anaquel y Nivel)</label>
+                            <div style="display: flex; gap: 10px; margin-bottom: 10px;">
 
-                        <div style="max-height: 150px; overflow-y: auto; border: 1px solid #eee; border-radius: 5px;">
-                            <table style="margin-top: 0;">
-                                <thead style="position: sticky; top: 0; background: #f9f9f9;">
-                                    <tr>
-                                        <th>ID</th>
-                                        <th>Ubicación (Anaquel - Nivel)</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="tabla-ubicaciones-admin">
-                                </tbody>
-                            </table>
+                                <div style="display: flex; gap: 10px; flex: 1; min-width: 0;">
+                                    <input type="text" class="form-control" id="input-nuevo-anaquel"
+                                        style="width: 100%; min-width: 0;" placeholder="Anaquel">
+                                    <input type="text" class="form-control" id="input-nuevo-nivel"
+                                        style="width: 100%; min-width: 0;" placeholder="Nivel">
+                                </div>
+
+                                <button class="btn-principal" onclick="agregarCatalogo('UBICACION', { 
+                                anaquel: document.getElementById('input-nuevo-anaquel').value, 
+                                nivel: document.getElementById('input-nuevo-nivel').value 
+                                })">Añadir</button>
+                            </div>
+
+                            <div
+                                style="max-height: 150px; overflow-y: auto; border: 1px solid #eee; border-radius: 5px;">
+                                <table style="margin-top: 0; width: 100%;">
+                                    <thead style="position: sticky; top: 0; background: #f9f9f9;">
+                                        <tr>
+                                            <th>ID</th>
+                                            <th>Ubicación (Anaquel - Nivel)</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="tabla-ubicaciones-admin">
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -555,6 +562,7 @@
             </div>
         </div>
 
+        <!-------------------------------------------------------------- PANEL EMERGENCIA DE STOCK ---------------------------------------------------------------->
         <div class="panel-derecho">
             <div class="tarjeta" style="border-top-color: #dc3545;">
                 <h3 style="color: #dc3545;">⚠️ Alertas de Stock Crítico</h3>
@@ -829,12 +837,14 @@
                     const tbodyMaquinas = document.getElementById('tabla-maquinas-admin');
                     const tbodyMedidas = document.getElementById('tabla-medidas-admin');
                     const tbodyAreas = document.getElementById('tabla-areas-admin');
+                    const tbodyUbicaciones = document.getElementById('tabla-ubicaciones-admin');
 
                     tbodyCategorias.innerHTML = "";
                     tbodyMarcas.innerHTML = "";
                     tbodyMaquinas.innerHTML = "";
                     tbodyMedidas.innerHTML = "";
                     tbodyAreas.innerHTML = "";
+                    tbodyUbicaciones.innerHTML = "";
 
                     resultado.categorias.forEach(categoria => {
                         const fila = tbodyCategorias.insertRow();
@@ -875,6 +885,15 @@
                         <td>${area.NOMBRE_AREA}</td>
                         `;
                     })
+
+                    resultado.ubicaciones.forEach(ubi => {
+                        const fila = tbodyUbicaciones.insertRow();
+                        fila.innerHTML = `
+                        <td>${ubi.ID_UBICACION}</td>
+                        <td>${ubi.ANAQUEL} - ${ubi.NIVEL}</td>
+                        `;
+                    })
+
                 } else {
 
                     console.error("ERROR DESDE EL SERVIDOR:", resultado.error);
@@ -916,6 +935,41 @@
                 console.error("ERROR AL AGREGAR EL PRODUCTO:", error);
             }
         }
+
+        /* -------------------------------------------------------- CARGAR TABLA EMERGENCIA DE STOCK ---------------------------------------------------------------*/
+
+        async function consultarBajoStock() {
+
+            try {
+
+                const respuesta = await fetch('http://localhost:3000/api/emergencia-stock');
+
+                const resultado = await respuesta.json();
+
+                if (resultado.exito) {
+
+                    const listaEmergencias = document.getElementById('lista-alertas');
+                    listaEmergencias.innerHTML = "";
+
+                    resultado.emergencias.forEach(emergencia => {
+                        const li = document.createElement('li');
+                        li.style.marginBottom = "10px";
+                        li.style.borderBottom = "1px solid #eee";
+                        li.style.paddingBottom = "5px";
+                        li.innerText = `❗ ${emergencia.NOMBRE}, Stock actual: ${emergencia.STOCK_ACTUAL}`;
+
+                        listaEmergencias.appendChild(li);
+                    })
+                } else {
+
+                    console.error("ERROR DESDE EL SERVIDOR:", resultado.error);
+                }
+            } catch (error) {
+                console.error("ERROR AL CARGAR LAS EMERGENCIAS:", error);
+            }
+        }
+
+        consultarBajoStock();
     </script>
 </body>
 

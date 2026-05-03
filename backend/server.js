@@ -387,7 +387,7 @@ app.get('/api/consultar-movimientos', async (req, res) => {
     try {
         connection = await oracledb.getConnection(dbConfig);
 
-        const consultaMovimientos = `SELECT m.Fecha_Hora, p.Nombre, m.Tipo_Movimiento AS TIPO, m.Cantidad, u.Nombre_Completo AS USUARIO, m.Stock_Resultante AS STOCK
+        const consultaMovimientos = `SELECT m.Fecha_Hora, p.Nombre, m.Tipo_Movimiento AS TIPO, m.Cantidad, u.Nombre_Completo AS USUARIO, m.Stock_Resultante AS STOCK, m.NOTA
         FROM Movimientos m INNER JOIN Piezas p ON m.ID_Pieza = p.ID_Pieza
         INNER JOIN Usuarios u ON m.ID_Usuario = u.ID_Usuario
         ORDER BY m.Fecha_Hora DESC`;
@@ -530,8 +530,11 @@ app.post('/api/alta-catalogos', async (req, res) => {
             altaTipo = `INSERT INTO Maquinas (Nombre_Modelo) VALUES (:dat)`;
         } else if ( tipo === 'MEDIDA' ) {
             altaTipo = `INSERT INTO Medidas (Valor_Medida) VALUES (:dat)`;
-        } else {
+        } else if ( tipo === 'AREA') {
             altaTipo = `INSERT INTO Areas_Bordado (Nombre_Area) VALUES (:dat)`;
+        } else if ( tipo === 'UBICACION' ) {
+            altaTipo = `INSERT INTO Ubicaciones (Anaquel, Nivel) VALUES (:anaq, :niv)`;
+            parametros = { anaq: dato.anaquel, niv: dato.nivel }; 
         }
 
         const resultadoAltaCatalogo = await connection.execute( altaTipo, { dat: dato}, { outFormat: oracledb.OUT_FORMAT_OBJECT } );
@@ -552,4 +555,29 @@ app.post('/api/alta-catalogos', async (req, res) => {
     }
 })
 
+//CONSULTAR STOCK BAJOS ------------------------------------------------------------------------------------------------------------------------------------------------
+app.get('/api/emergencia-stock', async (req, res) => {
+
+    let connection;
+
+    try {
+        connection = await oracledb.getConnection(dbConfig);
+
+        const bajoStock = `SELECT Nombre, Stock_Actual FROM Piezas WHERE Stock_Actual < 6`;
+
+        const respuestaBajoStock = await connection.execute(bajoStock, [], { outFormat: oracledb.OUT_FORMAT_OBJECT });
+
+        res.json({ exito: true, emergencias: respuestaBajoStock.rows });
+
+    } catch (err) {
+
+        console.error("ERROR AL CONSULTAR LOS STOCK: ", err);
+        res.status(500).json({ exito: false, error: "ERROR AL CONSULTAR EL STOCK" });
+
+    } finally {
+        if(connection) {
+            try { await connection.close(); } catch (err) { console.error (err); }
+        }
+    }
+})
 

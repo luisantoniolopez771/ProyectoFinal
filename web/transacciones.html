@@ -5,15 +5,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SWF de Mexico - Entradas y Salidas</title>
-
     <link rel="icon" type="image/x-icon" href="images/SWF_ICO.ico">
-
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap"
-        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap" rel="stylesheet">
+
     <style>
-        /* Estilos base del ecosistema SWF */
         body {
             font-family: "Open Sans", sans-serif;
             background-color: #272a4d;
@@ -27,7 +24,6 @@
             max-width: 200px;
         }
 
-        /* Navegación */
         nav {
             background-color: #332247;
             padding: 15px;
@@ -47,35 +43,42 @@
             color: #d1b3bb;
         }
 
-        /* Contenedor principal tipo Dashboard (Más ancho para monitores) */
         .dashboard-container {
             display: flex;
-            flex-wrap: wrap;
             gap: 20px;
             max-width: 1400px;
-            /* Recuadros más amplios */
             margin: 30px auto;
             padding: 0 20px;
+            align-items: flex-start;
         }
 
-        /* Paneles Flexbox */
-        .panel-izquierdo {
-            flex: 2;
-            min-width: 600px;
+        .columna-principal {
+            flex: 3;
+            min-width: 800px;
             display: flex;
             flex-direction: column;
-            gap: 20px;
         }
 
-        .panel-derecho {
+        .fila-superior {
+            display: flex;
+            gap: 20px;
+            align-items: flex-start;
+            margin-bottom: 20px;
+        }
+
+        .tarjeta-formulario {
+            flex: 1.8;
+        }
+
+        .tarjeta-resumen {
             flex: 1;
-            min-width: 350px;
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
         }
 
-        /* Estilo de Tarjetas Blancas */
+        .columna-lateral {
+            flex: 1;
+            min-width: 280px;
+        }
+
         .tarjeta {
             background-color: #ffffff;
             border-radius: 10px;
@@ -91,7 +94,6 @@
             font-size: 1.2rem;
         }
 
-        /* Pestañas / Tabs */
         .selector-pestanas {
             display: flex;
             gap: 15px;
@@ -115,13 +117,18 @@
             color: #272a4d;
             border-bottom: 3px solid #72273b;
             margin-bottom: -7px;
-            /* Compensa el borde interior */
         }
 
-        /* Formularios en Grid */
         .form-grid {
             display: grid;
             grid-template-columns: 2fr 1fr;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .form-grid-inverso {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
             gap: 15px;
             margin-bottom: 20px;
         }
@@ -152,7 +159,6 @@
             border-color: #72273b;
         }
 
-        /* Botonera del formulario */
         .acciones-form {
             display: flex;
             gap: 10px;
@@ -197,7 +203,6 @@
             font-weight: bold;
         }
 
-        /* Tabla de Previas */
         table {
             width: 100%;
             border-collapse: collapse;
@@ -222,7 +227,6 @@
             color: #333;
         }
 
-        /* Panel Derecho: Estadísticas */
         .grid-estadisticas {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -262,7 +266,6 @@
             margin-bottom: 20px;
         }
 
-        /* Footer */
         footer {
             background-color: #72273b;
             position: fixed;
@@ -284,57 +287,80 @@
     <nav>
         <a href="inventario.html">Inventario</a>
         <a href="transacciones.html">Entradas/Salidas</a>
-        <a href="panel-administracion.html" style="color: #d1b3bb;">Panel Admintrador</a>
+        <a href="panel-administracion.html">Panel Admintrador</a>
         <a href="#" onclick="cerrarSesion()">Cerrar Sesión</a>
     </nav>
 
     <div class="dashboard-container">
 
-        <div class="panel-izquierdo">
+        <div class="columna-principal">
+            
+            <div class="fila-superior">
+                <div class="tarjeta tarjeta-formulario">
+                    <div class="selector-pestanas">
+                        <button class="btn-tab activo">Ajuste existente</button>
+                    </div>
 
-            <div class="tarjeta">
-                <div class="selector-pestanas">
-                    <button class="btn-tab activo">Ajuste existente</button>
-                    <button class="btn-tab" id="tabAlta">Alta producto nuevo</button>
-                </div>
-
-                <div class="form-group filtro-maestro">
-                    <label>1. Filtrar por Categoría</label>
-                    <select class="form-control" id="select-filtro-categoria" onchange="filtrarProductosPorCategoria()">
-                        <option value="">Todas las categorías</option>
-                    </select>
-                </div>
-
-                <div class="form-grid">
-                    <div class="form-group">
-                        <label>Producto Existente (Producto | Marca | Cantidad actual)</label>
-                        <select class="form-control" id="select-producto">
+                    <div class="form-group filtro-maestro">
+                        <label>1. Filtrar por Categoría</label>
+                        <select class="form-control" id="select-filtro-categoria" onchange="filtrarProductosPorCategoria()">
+                            <option value="">Todas las categorías</option>
                         </select>
                     </div>
-                    <div class="form-group">
-                        <label>Tipo de Movimiento</label>
-                        <select class="form-control" id="select-tipo">
-                            <option value="ENTRADA">Entrada (+)</option>
-                            <option value="SALIDA">Salida (-)</option>
-                        </select>
+
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label>Producto Existente (Producto | Marca | Cantidad actual)</label>
+                            <select class="form-control" id="select-producto">
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Tipo de Movimiento</label>
+                            <select class="form-control" id="select-tipo">
+                                <option value="ENTRADA">Entrada (+)</option>
+                                <option value="SALIDA">Salida (-)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-grid-inverso">
+                        <div class="form-group">
+                            <label>Cantidad</label>
+                            <input type="number" class="form-control" id="input-cantidad" min="1">
+                        </div>
+                        <div class="form-group">
+                            <label>Motivo / Nota</label>
+                            <input type="text" class="form-control" id="input-motivo" placeholder="Ej. Compra proveedor">
+                        </div>
+                    </div>
+
+                    <div class="acciones-form">
+                        <button class="btn-principal" onclick="registrarTransaccion()">Registrar movimiento</button>
+                        <button class="btn-secundario" onclick="limpiarFormulario()">Limpiar</button>
+                        <span class="badge-estado" id="estado-mensaje" style="display:none;">Movimiento registrado</span>
                     </div>
                 </div>
 
-                <div class="form-grid">
-                    <div class="form-group">
-                        <label>Cantidad</label>
-                        <input type="number" class="form-control" id="input-cantidad" min="1">
+                <div class="tarjeta tarjeta-resumen">
+                    <h3>Resumen Rápido</h3>
+                    <div class="grid-estadisticas">
+                        <div class="caja-stat">
+                            <div class="stat-titulo">Movimientos Hoy</div>
+                            <div class="stat-valor" id="stat-hoy">--</div>
+                        </div>
+                        <div class="caja-stat">
+                            <div class="stat-titulo">Productos Activos</div>
+                            <div class="stat-valor" id="stat-activos">--</div>
+                        </div>
+                        <div class="caja-stat">
+                            <div class="stat-titulo">Entradas</div>
+                            <div class="stat-valor" style="color: #2e7d32;" id="stat-entradas">--</div>
+                        </div>
+                        <div class="caja-stat">
+                            <div class="stat-titulo">Salidas</div>
+                            <div class="stat-valor" style="color: #dc3545;" id="stat-salidas">--</div>
+                        </div>
                     </div>
-                    <div class="form-group">
-                        <label>Motivo / Nota</label>
-                        <input type="text" class="form-control" id="input-motivo" placeholder="Ej. Compra proveedor">
-                    </div>
-                </div>
-
-                <div class="acciones-form">
-                    <button class="btn-principal" onclick="registrarTransaccion()">Registrar movimiento</button>
-                    <button class="btn-secundario" onclick="limpiarFormulario()">Limpiar</button>
-                    <span class="badge-estado" id="estado-mensaje" style="display:none;">Movimiento registrado</span>
                 </div>
             </div>
 
@@ -350,6 +376,7 @@
                                 <th>Cantidad</th>
                                 <th>Usuario</th>
                                 <th>Stock Resultante</th>
+                                <th>Motivo</th>
                             </tr>
                         </thead>
                         <tbody id="tabla-movimientos">
@@ -357,32 +384,10 @@
                     </table>
                 </div>
             </div>
+
         </div>
 
-        <div class="panel-derecho">
-
-            <div class="tarjeta">
-                <h3>Resumen Rápido</h3>
-                <div class="grid-estadisticas">
-                    <div class="caja-stat">
-                        <div class="stat-titulo">Movimientos Hoy</div>
-                        <div class="stat-valor" id="stat-hoy">--</div>
-                    </div>
-                    <div class="caja-stat">
-                        <div class="stat-titulo">Productos Activos</div>
-                        <div class="stat-valor" id="stat-activos">--</div>
-                    </div>
-                    <div class="caja-stat">
-                        <div class="stat-titulo">Entradas</div>
-                        <div class="stat-valor" style="color: #2e7d32;" id="stat-entradas">--</div>
-                    </div>
-                    <div class="caja-stat">
-                        <div class="stat-titulo">Salidas</div>
-                        <div class="stat-valor" style="color: #dc3545;" id="stat-salidas">--</div>
-                    </div>
-                </div>
-            </div>
-
+        <div class="columna-lateral">
             <div class="tarjeta">
                 <h3>Actividad reciente</h3>
                 <ul class="lista-actividad" id="lista-actividad">
@@ -529,6 +534,7 @@
                         <td>${movimiento.CANTIDAD}</td>
                         <td>${movimiento.USUARIO}</td>
                         <td>${movimiento.STOCK}</td>
+                        <td>${movimiento.NOTA || 'N/A'}</td>
                         `;
                     });
 
@@ -559,36 +565,36 @@
                         li.innerText = `${icono} ${mov.USUARIO} registró ${mov.CANTIDAD}x ${mov.NOMBRE}`;
 
                         listaActividad.appendChild(li);
-                        });
+                    });
 
-                    } else {
-                        console.error("Error desde el servidor:", resultado.error);
-                    }
-            } catch (error) {
-                    console.error("No se pudo conectar al backend:", error);
+                } else {
+                    console.error("Error desde el servidor:", resultado.error);
                 }
+            } catch (error) {
+                console.error("No se pudo conectar al backend:", error);
             }
+        }
 
         cargarMovimientos()
 
-            async function totalActivos() {
-                try {
-                    const respuesta = await fetch('http://localhost:3000/api/productos-existentes');
+        async function totalActivos() {
+            try {
+                const respuesta = await fetch('http://localhost:3000/api/productos-existentes');
 
-                    const resultado = await respuesta.json();
+                const resultado = await respuesta.json();
 
-                    if (respuesta.ok) {
+                if (respuesta.ok) {
 
-                        let totalProductos = resultado.productos;
-                        document.getElementById('stat-activos').innerText = totalProductos.length;
-                    }
-
-                } catch (error) {
-                    console.error("No se pudo conectar al backend:", error);
+                    let totalProductos = resultado.productos;
+                    document.getElementById('stat-activos').innerText = totalProductos.length;
                 }
-            }
 
-            totalActivos()
+            } catch (error) {
+                console.error("No se pudo conectar al backend:", error);
+            }
+        }
+
+        totalActivos()
         /*
                 async function cargarCatalogos() {
             try {
