@@ -119,3 +119,211 @@ INSERT INTO Areas_Bordado (Nombre_Area) VALUES ('Prenda Armada');
 COMMIT;
 
 ----------------------------- PROYECTO GESTION BASE DE DATOS -------------------------------
+CREATE TABLE Auditoria_Inventario (
+    ID_Auditoria NUMBER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    ID_Pieza NUMBER,
+    Nombre_Anterior VARCHAR2(50),
+    Accion VARCHAR2(20),
+    Usuario_Accion VARCHAR2(30),
+    Fecha_Accion TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+--- TRIGGER 1 ---
+CREATE OR REPLACE TRIGGER TRG_AUDITORIA_PIEZAS
+AFTER UPDATE OR DELETE ON Piezas
+FOR EACH ROW
+BEGIN
+    -- Si se actualiza y cambia el nombre
+    IF UPDATING THEN
+        IF :OLD.Nombre <> :NEW.Nombre THEN
+            INSERT INTO Auditoria_Inventario (
+                ID_Pieza,
+                Nombre_Anterior,
+                Accion,
+                Usuario_Accion,
+                Fecha_Accion
+            ) VALUES (
+                :OLD.ID_Pieza,
+                :OLD.Nombre,
+                'UPDATE',
+                USER,
+                CURRENT_TIMESTAMP
+            );
+        END IF;
+    END IF;
+
+    -- Si se elimina la pieza
+    IF DELETING THEN
+        INSERT INTO Auditoria_Inventario (
+            ID_Pieza,
+            Nombre_Anterior,
+            Accion,
+            Usuario_Accion,
+            Fecha_Accion
+        ) VALUES (
+            :OLD.ID_Pieza,
+            :OLD.Nombre,
+            'DELETE',
+            USER,
+            CURRENT_TIMESTAMP
+        );
+    END IF;
+END;
+/
+
+--- TRIGGER 2 ---
+CREATE OR REPLACE TRIGGER TRG_VALIDAR_CONTRASENA
+BEFORE INSERT ON Usuarios
+FOR EACH ROW
+BEGIN
+    IF LENGTH(:NEW.Contrasena) < 8 THEN
+        RAISE_APPLICATION_ERROR(
+            -20001,
+            'La contrasena debe tener al menos 8 caracteres'
+        );
+    END IF;
+END;
+/
+
+--- TRIGGER 3 ---
+CREATE OR REPLACE TRIGGER TRG_BODEGA_CERRADA_DOMINGO
+BEFORE INSERT ON Movimientos
+BEGIN
+    IF TO_CHAR(SYSDATE, 'DY', 'NLS_DATE_LANGUAGE=ENGLISH') = 'SUN' THEN
+        RAISE_APPLICATION_ERROR(
+            -20002,
+            'Bodega cerrada: no se permiten movimientos en domingo'
+        );
+    END IF;
+END;
+/
+
+--- PAQUETE 1 ---
+CREATE OR REPLACE PACKAGE PKG_BODEGA AS
+
+    PROCEDURE SP_Alta_Usuario(
+        p_nombre_completo IN VARCHAR2,
+        p_rol IN VARCHAR2,
+        p_estado IN VARCHAR2,
+        p_contrasena IN VARCHAR2
+    );
+
+    FUNCTION FN_Movimientos_Del_Mes(
+        p_id_usuario IN NUMBER
+    ) RETURN NUMBER;
+
+END PKG_BODEGA;
+/
+
+-- Cuerpo del paquete
+CREATE OR REPLACE PACKAGE BODY PKG_BODEGA AS
+
+    PROCEDURE SP_Alta_Usuario(
+        p_nombre_completo IN VARCHAR2,
+        p_rol IN VARCHAR2,
+        p_estado IN VARCHAR2,
+        p_contrasena IN VARCHAR2
+    )
+    IS
+    BEGIN
+        INSERT INTO Usuarios (
+            Nombre_Completo,
+            Rol,
+            Estado,
+            Contrasena
+        ) VALUES (
+            p_nombre_completo,
+            p_rol,
+            p_estado,
+            p_contrasena
+        );
+
+        COMMIT;
+    END SP_Alta_Usuario;
+
+
+    FUNCTION FN_Movimientos_Del_Mes(
+        p_id_usuario IN NUMBER
+    ) RETURN NUMBER
+    IS
+        v_total NUMBER;
+    BEGIN
+        SELECT COUNT(*)
+        INTO v_total
+        FROM Movimientos
+        WHERE ID_Usuario = p_id_usuario
+        AND EXTRACT(MONTH FROM Fecha_Hora) = EXTRACT(MONTH FROM CURRENT_DATE)
+        AND EXTRACT(YEAR FROM Fecha_Hora) = EXTRACT(YEAR FROM CURRENT_DATE);
+
+        RETURN v_total;
+    END FN_Movimientos_Del_Mes;
+
+END PKG_BODEGA;
+/
+
+--- CURSOR 1 EXPLICITO ---
+DECLARE
+    CURSOR cur_auditoria IS
+        SELECT ID_Auditoria,
+               ID_Pieza,
+               Nombre_Anterior,
+               Accion,
+               Usuario_Accion,
+               Fecha_Accion
+        FROM Auditoria_Inventario
+        WHERE Fecha_Accion >= SYSDATE - 7
+        ORDER BY Fecha_Accion DESC;
+
+    v_id_auditoria Auditoria_Inventario.ID_Auditoria%TYPE;
+    v_id_pieza Auditoria_Inventario.ID_Pieza%TYPE;
+    v_nombre Auditoria_Inventario.Nombre_Anterior%TYPE;
+    v_accion Auditoria_Inventario.Accion%TYPE;
+    v_usuario Auditoria_Inventario.Usuario_Accion%TYPE;
+    v_fecha Auditoria_Inventario.Fecha_Accion%TYPE;
+
+BEGIN
+    OPEN cur_auditoria;
+
+    LOOP
+        FETCH cur_auditoria INTO
+            v_id_auditoria,
+            v_id_pieza,
+            v_nombre,
+            v_accion,
+            v_usuario,
+            v_fecha;
+
+        EXIT WHEN cur_auditoria%NOTFOUND;
+
+        DBMS_OUTPUT.PUT_LINE(
+            'ID AUDITORIA: ' || v_id_auditoria ||
+            ' | PIEZA: ' || v_id_pieza ||
+            ' | NOMBRE: ' || v_nombre ||
+            ' | ACCION: ' || v_accion ||
+            ' | USUARIO: ' || v_usuario ||
+            ' | FECHA: ' || v_fecha
+        );
+    END LOOP;
+
+    CLOSE cur_auditoria;
+END;
+/
+
+--- CURSOR 2 IMPLICITO ---
+BEGIN
+    FOR empleado IN (
+        SELECT ID_Usuario,
+               Nombre_Completo,
+               Rol
+        FROM Usuarios
+        WHERE Estado = 'ACTIVO'
+    )
+    LOOP
+        DBMS_OUTPUT.PUT_LINE(
+            'ID: ' || empleado.ID_Usuario ||
+            ' | Nombre: ' || empleado.Nombre_Completo ||
+            ' | Rol: ' || empleado.Rol
+        );
+    END LOOP;
+END;
+/
