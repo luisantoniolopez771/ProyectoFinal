@@ -158,6 +158,10 @@
 
     <div class="container">
         <h2>Panel de Inventario</h2>
+        <div style="text-align: center; margin-bottom: 20px;">
+        <input type="text" id="buscador" placeholder="Buscar en inventario..." 
+           style="padding: 12px; width: 50%; min-width: 300px; border-radius: 25px; border: 2px solid #72273b ; outline: none;
+            box-shadow: 0 2px 5px rgba(0,0,0,0,2);">        
         <div class="table-wrapper">
             <table>
                 <thead>
@@ -231,7 +235,15 @@
         }
 
         cargarInventario();
+    document.getElementById('buscador').addEventListener('keyup', function() {
+            const textoBusqueda = this.value.toLowerCase();
+            const filas = document.querySelectorAll('#tabla-inventario tr');
+
+            filas.forEach(fila => {
+                const contenidoFila = fila.textContent.toLowerCase();
+                fila.style.display = contenidoFila.includes(textoBusqueda) ? '' : 'none';
+            });
+        });
     </script>
 </body>
-
 </html>
