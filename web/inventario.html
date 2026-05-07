@@ -281,47 +281,34 @@
                 });
             });
 
-            // Necesitamos DOS memorias globales ahora:
             let ordenAscendente = true;
-            let columnaActual = -1; // Para saber si el usuario cambió de columna
+            let columnaActual = -1; 
 
             function ordenarTabla(columnaIndex, tipoDato, elementoCabecera) {
-                const tbody = document.getElementById("tabla-inventario"); // Asegúrate de que tu tbody tenga este id
+                const tbody = document.getElementById("tabla-inventario"); 
                 const filas = Array.from(tbody.querySelectorAll("tr"));
 
-                // --- PARTE 1: LÓGICA DE DIRECCIÓN ---
-                // Si el usuario hace clic en una columna NUEVA, empezamos ordenando de la A a la Z
                 if (columnaActual !== columnaIndex) {
                     ordenAscendente = true;
-                    columnaActual = columnaIndex; // Guardamos esta columna como la nueva "actual"
+                    columnaActual = columnaIndex; 
                 } else {
-                    // Si hizo clic en la MISMA columna, invertimos el orden (de A-Z a Z-A)
                     ordenAscendente = !ordenAscendente;
                 }
 
-                // --- PARTE 2: EL EFECTO VISUAL DE LAS FLECHAS ---
-                // Paso A: Buscamos todas las flechitas de la tabla y las "reiniciamos" al estado neutro (↕)
                 const todosLosIconos = document.querySelectorAll(".icono-orden");
                 todosLosIconos.forEach(icono => icono.innerText = "↕");
 
-                // Paso B: Buscamos solo la flechita de la columna que recibió el clic y la cambiamos
-                // Si ordenAscendente es true ponemos '▲', si es false ponemos '▼'
                 const iconoClickeado = elementoCabecera.querySelector(".icono-orden");
                 iconoClickeado.innerText = ordenAscendente ? "▲" : "▼";
 
-                // --- PARTE 3: EL MOTOR DE ORDENAMIENTO (Igual que antes) ---
                 filas.sort((filaA, filaB) => {
                     const valorA = filaA.children[columnaIndex].innerText.trim();
                     const valorB = filaB.children[columnaIndex].innerText.trim();
 
                     if (tipoDato === 'numero') {
-                        return ordenAscendente
-                            ? parseFloat(valorA) - parseFloat(valorB)
-                            : parseFloat(valorB) - parseFloat(valorA);
+                        return ordenAscendente ? parseFloat(valorA) - parseFloat(valorB) : parseFloat(valorB) - parseFloat(valorA);
                     } else {
-                        return ordenAscendente
-                            ? valorA.localeCompare(valorB)
-                            : valorB.localeCompare(valorA);
+                        return ordenAscendente ? valorA.localeCompare(valorB) : valorB.localeCompare(valorA);
                     }
                 });
 
