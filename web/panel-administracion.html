@@ -265,7 +265,7 @@
     <nav>
         <a href="inventario.html">Inventario</a>
         <a href="transacciones.html">Entradas/Salidas</a>
-        <a href="panel-administracion.html">Panel Admintrador</a>
+        <a href="panel-administracion.html">Panel Adminstrador</a>
         <a href="#" onclick="cerrarSesion()">Cerrar Sesión</a>
     </nav>
 
@@ -594,8 +594,24 @@
 
         function cerrarSesion() {
             localStorage.clear();
-            window.location.href = "login.html";
+            window.location.href = "index.html";
         }
+
+        //COMPROBAR ROL TRABAJADOR -------------------------------------------------------------------------------------------------------------------
+        function comprobarRol() {
+
+            const rol = localStorage.getItem('rolUsuario');
+
+            if (!rol || rol.trim().toLocaleLowerCase() !== "administrador") {
+
+                alert("No tienes permisos para acceder a esta pagina");
+
+                window.location.href = "inventario.html"
+            }
+
+        }
+
+        comprobarRol();
 
         function limpiarFormularioUsuarios() {
             document.getElementById('input-usuario-nombre').innerText = "";

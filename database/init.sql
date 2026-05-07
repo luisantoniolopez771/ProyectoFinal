@@ -45,6 +45,7 @@ CREATE TABLE Piezas (
     Modelo VARCHAR2(50),
     Color_Tipo VARCHAR2(50),
     Stock_Actual NUMBER(4) DEFAULT 0 CHECK (Stock_Actual >= 0),
+    Estado VARCHAR2(20) DEFAULT 'ACTIVO',
     CONSTRAINT ID_Cat_Pie_Cat FOREIGN KEY (ID_Categoria) REFERENCES Categorias (ID_Categoria),
     CONSTRAINT ID_Maq_Pie_Maq FOREIGN KEY (ID_Maquina) REFERENCES Maquinas (ID_Maquina),
     CONSTRAINT ID_Ubi_Pie_Ubi FOREIGN KEY (ID_Ubicacion) REFERENCES Ubicaciones (ID_Ubicacion),

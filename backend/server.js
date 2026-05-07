@@ -40,7 +40,7 @@ app.get('/api/test', async (req, res) => {
     }
 });
 
-// INICIO DE SESION
+// INICIO DE SESION ---------------------------------------------------------------------------------------------------------------------------------------------------------------
 app.post('/api/login', async (req, res) => {
     const usuarioRecibido = req.body.usuario;
     const passwordRecibido = req.body.password;
@@ -94,7 +94,7 @@ app.listen(port, () => {
     console.log(`API Backend de la Bodega corriendo en el puerto ${port}`);
 });
 
-//CARGAR INVENTARIO PRINCIPAL
+//CARGAR INVENTARIO PRINCIPAL -----------------------------------------------------------------------------------------------------------------------------------------
 app.get('/api/inventario', async (req, res) => {
     let connection;
 
@@ -120,6 +120,7 @@ app.get('/api/inventario', async (req, res) => {
         LEFT JOIN Ubicaciones u ON p.ID_Ubicacion = u.ID_Ubicacion
         LEFT JOIN Maquinas mq ON p.ID_Maquina = mq.ID_Maquina
         LEFT JOIN Areas_Bordado a ON p.ID_Areas_Bordado = a.ID_Area
+        WHERE p.Estado = 'ACTIVO'
         `;
 
         const resultado = await connection.execute(
@@ -148,7 +149,7 @@ app.get('/api/inventario', async (req, res) => {
     }
 });
 
-//CARGAR CATEGORIAS
+//CARGAR CATEGORIAS ----------------------------------------------------------------------------------------------------------------------------------------------
 app.get('/api/categorias', async (req, res) => {
     let connection;
 
@@ -173,7 +174,7 @@ app.get('/api/categorias', async (req, res) => {
     }
 });
 
-//CARGAR LOS PRODUCTOS POR CATEGORIA
+//CARGAR LOS PRODUCTOS POR CATEGORIA ---------------------------------------------------------------------------------------------------------------------------
 app.get('/api/productos-existentes/:idCategoria', async (req, res) => {
     const idCat = req.params.idCategoria;
     let connection;
@@ -199,7 +200,7 @@ app.get('/api/productos-existentes/:idCategoria', async (req, res) => {
     }
 });
 
-//CARGAR TODOS LOS PRODUCTOS EXISTENTES
+//CARGAR TODOS LOS PRODUCTOS EXISTENTES ------------------------------------------------------------------------------------------------------------------------
 app.get('/api/productos-existentes', async (req, res) => {
     let connection;
 
@@ -537,7 +538,7 @@ app.post('/api/alta-catalogos', async (req, res) => {
             parametros = { anaq: dato.anaquel, niv: dato.nivel }; 
         }
 
-        const resultadoAltaCatalogo = await connection.execute( altaTipo, { dat: dato}, { outFormat: oracledb.OUT_FORMAT_OBJECT } );
+        const resultadoAltaCatalogo = await connection.execute( altaTipo, { dat: dato, parametros}, { outFormat: oracledb.OUT_FORMAT_OBJECT } );
 
         await connection.commit();
 

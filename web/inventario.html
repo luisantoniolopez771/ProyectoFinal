@@ -152,70 +152,104 @@
     <nav>
         <a href="inventario.html">Inventario</a>
         <a href="transacciones.html">Entradas/Salidas</a>
-        <a href="panel-administracion.html">Panel Admintrador</a>
+        <a href="panel-administracion.html" id="panel-admin">Panel Adminstrador</a>
         <a href="#" onclick="cerrarSesion()">Cerrar Sesión</a>
     </nav>
 
     <div class="container">
         <h2>Panel de Inventario</h2>
         <div style="text-align: center; margin-bottom: 20px;">
-        <input type="text" id="buscador" placeholder="Buscar en inventario..." 
-           style="padding: 12px; width: 50%; min-width: 300px; border-radius: 25px; border: 2px solid #72273b ; outline: none;
-            box-shadow: 0 2px 5px rgba(0,0,0,0,2);">        
-        <div class="table-wrapper">
-            <table>
-                <thead>
-                    <tr>
-                        <th>Nombre</th>
-                        <th>Marca</th>
-                        <th>Medida</th>
-                        <th>Categoría</th>
-                        <th>Ubicación</th>
-                        <th>Modelo</th>
-                        <th>Color</th>
-                        <th>Area Bordado</th>
-                        <th>Maquina</th>
-                        <th>Stock Actual</th>
-                    </tr>
-                </thead>
-                <tbody id="tabla-inventario">
-                </tbody>
-            </table>
+            <input type="text" id="buscador" placeholder="Buscar en inventario..." style="padding: 12px; width: 50%; min-width: 300px; border-radius: 25px; border: 2px solid #72273b ; outline: none;
+            box-shadow: 0 2px 5px rgba(0,0,0,0,2);">
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th style="cursor: pointer;" onclick="ordenarTabla(0, 'texto', this)">Nombre <span
+                                    class="icono-orden">↕</span></th>
+                            <th style="cursor: pointer;" onclick="ordenarTabla(1, 'texto', this)">Marca <span
+                                    class="icono-orden">↕</span></th>
+                            <th style="cursor: pointer;" onclick="ordenarTabla(2, 'texto', this)">Medida <span
+                                    class="icono-orden">↕</span></th>
+                            <th style="cursor: pointer;" onclick="ordenarTabla(3, 'texto', this)">Categoría <span
+                                    class="icono-orden">↕</span></th>
+                            <th style="cursor: pointer;" onclick="ordenarTabla(4, 'texto', this)">Ubicación <span
+                                    class="icono-orden">↕</span></th>
+                            <th style="cursor: pointer;" onclick="ordenarTabla(5, 'texto', this)">Modelo <span
+                                    class="icono-orden">↕</span></th>
+                            <th style="cursor: pointer;" onclick="ordenarTabla(6, 'texto', this)">Color <span
+                                    class="icono-orden">↕</span></th>
+                            <th style="cursor: pointer;" onclick="ordenarTabla(7, 'texto', this)">Area Bordado <span
+                                    class="icono-orden">↕</span></th>
+                            <th style="cursor: pointer;" onclick="ordenarTabla(8, 'texto', this)">Maquina <span
+                                    class="icono-orden">↕</span></th>
+                            <th style="cursor: pointer;" onclick="ordenarTabla(9, 'numero', this)">Stock Actual <span
+                                    class="icono-orden">↕</span></th>
+                        </tr>
+                    </thead>
+                    <tbody id="tabla-inventario">
+                    </tbody>
+                </table>
+            </div>
         </div>
-    </div>
 
-    <footer>
-        @Proyecto final de desarrollo web 2026
-    </footer>
+        <footer>
+            @Proyecto final de desarrollo web 2026
+        </footer>
 
-    <script>
+        <script>
 
-        //CERRAR SESION
-        function cerrarSesion() {
-            localStorage.clear();
-            window.location.href = "index.html";
-        }
+            //CERRAR SESION ------------------------------------------------------------------------------------------------------------------------------
+            function cerrarSesion() {
+                localStorage.clear();
+                window.location.href = "index.html";
+            }
 
-        //LLENAR LA TABLA CON TODOS LOS ELEMENTOS DISPONIBLES
-        async function cargarInventario() {
-            try {
-                const respuesta = await fetch('http://localhost:3000/api/inventario');
+            //COMPROBAR ROL TRABAJADOR -------------------------------------------------------------------------------------------------------------------
+            function comprobarRol() {
 
-                const resultado = await respuesta.json();
+                const rol = localStorage.getItem('rolUsuario');
 
-                if (respuesta.ok) {
+                if (rol === "Trabajador") document.getElementById("panel-admin").style.display = "none";
 
-                    const tbody = document.getElementById('tabla-inventario');
-                    tbody.innerHTML = "";
+            }
 
-                    resultado.datos.forEach(pieza => {
+            function validarSesion() {
 
-                        const fila = tbody.insertRow();
-                        fila.innerHTML = `
+                const idu = localStorage.getItem('idUsuario');
+
+                if (idu == null) {
+
+                    alert("Se necesita iniciar sesion!");
+
+                    window.location.href = "index.html";
+                }
+            }
+
+            validarSesion();
+
+            comprobarRol();
+
+            //LLENAR LA TABLA CON TODOS LOS ELEMENTOS DISPONIBLES ----------------------------------------------------------------------------------------
+            async function cargarInventario() {
+                try {
+                    const respuesta = await fetch('http://localhost:3000/api/inventario');
+
+                    const resultado = await respuesta.json();
+
+                    if (respuesta.ok) {
+
+                        const tbody = document.getElementById('tabla-inventario');
+                        tbody.innerHTML = "";
+
+                        resultado.datos.forEach(pieza => {
+
+                            const fila = tbody.insertRow();
+                            fila.innerHTML = `
                             <td>${pieza.NOMBRE}</td>
-                            <td>${pieza.MARCA  || 'N/A'}</td>
-                            <td>${pieza.MEDIDA  || 'N/A'}</td>
-                            <td>${pieza.CATEGORIA  || 'N/A'}</td>
+                            <td>${pieza.MARCA || 'N/A'}</td>
+                            <td>${pieza.MEDIDA || 'N/A'}</td>
+                            <td>${pieza.CATEGORIA || 'N/A'}</td>
                             <td>${pieza.ANAQUEL} - ${pieza.NIVEL}</td>
                             <td>${pieza.MODELO || 'N/A'}</td>
                             <td>${pieza.COLOR_TIPO || 'N/A'}</td>
@@ -223,27 +257,78 @@
                             <td>${pieza.MAQUINA || 'N/A'}</td>
                             <td>${pieza.STOCK_ACTUAL}</td>
                 `;
-                    });
+                        });
 
+                    } else {
+                        console.error("Error desde el servidor:", resultado.error);
+                    }
+
+                } catch (error) {
+                    console.error("No se pudo conectar al backend:", error);
+                }
+            }
+
+            cargarInventario();
+
+            // FILTRAR PRODUCTOS POR BUSQUEDA ----------------------------------------------------------------------------------------------------------------
+            document.getElementById('buscador').addEventListener('keyup', function () {
+                const textoBusqueda = this.value.toLowerCase();
+                const filas = document.querySelectorAll('#tabla-inventario tr');
+
+                filas.forEach(fila => {
+                    const contenidoFila = fila.textContent.toLowerCase();
+                    fila.style.display = contenidoFila.includes(textoBusqueda) ? '' : 'none';
+                });
+            });
+
+            // Necesitamos DOS memorias globales ahora:
+            let ordenAscendente = true;
+            let columnaActual = -1; // Para saber si el usuario cambió de columna
+
+            function ordenarTabla(columnaIndex, tipoDato, elementoCabecera) {
+                const tbody = document.getElementById("tabla-inventario"); // Asegúrate de que tu tbody tenga este id
+                const filas = Array.from(tbody.querySelectorAll("tr"));
+
+                // --- PARTE 1: LÓGICA DE DIRECCIÓN ---
+                // Si el usuario hace clic en una columna NUEVA, empezamos ordenando de la A a la Z
+                if (columnaActual !== columnaIndex) {
+                    ordenAscendente = true;
+                    columnaActual = columnaIndex; // Guardamos esta columna como la nueva "actual"
                 } else {
-                    console.error("Error desde el servidor:", resultado.error);
+                    // Si hizo clic en la MISMA columna, invertimos el orden (de A-Z a Z-A)
+                    ordenAscendente = !ordenAscendente;
                 }
 
-            } catch (error) {
-                console.error("No se pudo conectar al backend:", error);
+                // --- PARTE 2: EL EFECTO VISUAL DE LAS FLECHAS ---
+                // Paso A: Buscamos todas las flechitas de la tabla y las "reiniciamos" al estado neutro (↕)
+                const todosLosIconos = document.querySelectorAll(".icono-orden");
+                todosLosIconos.forEach(icono => icono.innerText = "↕");
+
+                // Paso B: Buscamos solo la flechita de la columna que recibió el clic y la cambiamos
+                // Si ordenAscendente es true ponemos '▲', si es false ponemos '▼'
+                const iconoClickeado = elementoCabecera.querySelector(".icono-orden");
+                iconoClickeado.innerText = ordenAscendente ? "▲" : "▼";
+
+                // --- PARTE 3: EL MOTOR DE ORDENAMIENTO (Igual que antes) ---
+                filas.sort((filaA, filaB) => {
+                    const valorA = filaA.children[columnaIndex].innerText.trim();
+                    const valorB = filaB.children[columnaIndex].innerText.trim();
+
+                    if (tipoDato === 'numero') {
+                        return ordenAscendente
+                            ? parseFloat(valorA) - parseFloat(valorB)
+                            : parseFloat(valorB) - parseFloat(valorA);
+                    } else {
+                        return ordenAscendente
+                            ? valorA.localeCompare(valorB)
+                            : valorB.localeCompare(valorA);
+                    }
+                });
+
+                // --- PARTE 4: DIBUJAR EN PANTALLA ---
+                filas.forEach(fila => tbody.appendChild(fila));
             }
-        }
-
-        cargarInventario();
-    document.getElementById('buscador').addEventListener('keyup', function() {
-            const textoBusqueda = this.value.toLowerCase();
-            const filas = document.querySelectorAll('#tabla-inventario tr');
-
-            filas.forEach(fila => {
-                const contenidoFila = fila.textContent.toLowerCase();
-                fila.style.display = contenidoFila.includes(textoBusqueda) ? '' : 'none';
-            });
-        });
-    </script>
+        </script>
 </body>
+
 </html>
