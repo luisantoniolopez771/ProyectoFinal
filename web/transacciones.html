@@ -8,278 +8,8 @@
     <link rel="icon" type="image/x-icon" href="images/SWF_ICO.ico">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap"
-        rel="stylesheet">
-
-    <style>
-        body {
-            font-family: "Open Sans", sans-serif;
-            background-color: #272a4d;
-            margin: 0;
-            padding-bottom: 60px;
-        }
-
-        #logo {
-            display: block;
-            margin: 20px auto;
-            max-width: 200px;
-        }
-
-        nav {
-            background-color: #332247;
-            padding: 15px;
-            text-align: center;
-            border-bottom: solid 3px #72273b;
-        }
-
-        nav a {
-            color: white;
-            text-decoration: none;
-            margin: 0 15px;
-            font-weight: bold;
-            transition: color 0.3s;
-        }
-
-        nav a:hover {
-            color: #d1b3bb;
-        }
-
-        .dashboard-container {
-            display: flex;
-            gap: 20px;
-            max-width: 1400px;
-            margin: 30px auto;
-            padding: 0 20px;
-            align-items: flex-start;
-        }
-
-        .columna-principal {
-            flex: 3;
-            min-width: 800px;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .fila-superior {
-            display: flex;
-            gap: 20px;
-            align-items: flex-start;
-            margin-bottom: 20px;
-        }
-
-        .tarjeta-formulario {
-            flex: 1.8;
-        }
-
-        .tarjeta-resumen {
-            flex: 1;
-        }
-
-        .columna-lateral {
-            flex: 1;
-            min-width: 280px;
-        }
-
-        .tarjeta {
-            background-color: #ffffff;
-            border-radius: 10px;
-            padding: 25px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
-            border-top: 4px solid #72273b;
-        }
-
-        h3 {
-            color: #272a4d;
-            margin-top: 0;
-            margin-bottom: 20px;
-            font-size: 1.2rem;
-        }
-
-        .selector-pestanas {
-            display: flex;
-            gap: 15px;
-            border-bottom: 2px solid #eee;
-            margin-bottom: 20px;
-            padding-bottom: 5px;
-        }
-
-        .btn-tab {
-            background: none;
-            border: none;
-            font-weight: bold;
-            font-size: 14px;
-            color: #777;
-            cursor: pointer;
-            padding: 10px 15px;
-            transition: 0.3s;
-        }
-
-        .btn-tab.activo {
-            color: #272a4d;
-            border-bottom: 3px solid #72273b;
-            margin-bottom: -7px;
-        }
-
-        .form-grid {
-            display: grid;
-            grid-template-columns: 2fr 1fr;
-            gap: 15px;
-            margin-bottom: 20px;
-        }
-
-        .form-grid-inverso {
-            display: grid;
-            grid-template-columns: 1fr 2fr;
-            gap: 15px;
-            margin-bottom: 20px;
-        }
-
-        .form-group {
-            display: flex;
-            flex-direction: column;
-        }
-
-        .form-group label {
-            font-size: 11px;
-            font-weight: bold;
-            color: #555;
-            text-transform: uppercase;
-            margin-bottom: 5px;
-        }
-
-        .form-control {
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            font-family: "Open Sans", sans-serif;
-            font-size: 14px;
-            outline: none;
-        }
-
-        .form-control:focus {
-            border-color: #72273b;
-        }
-
-        .acciones-form {
-            display: flex;
-            gap: 10px;
-            align-items: center;
-        }
-
-        .btn-principal {
-            background-color: #332247;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 5px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: 0.3s;
-        }
-
-        .btn-principal:hover {
-            background-color: #72273b;
-        }
-
-        .btn-secundario {
-            background-color: #f1f1f1;
-            color: #333;
-            border: 1px solid #ccc;
-            padding: 10px 20px;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: 0.3s;
-        }
-
-        .btn-secundario:hover {
-            background-color: #e2e2e2;
-        }
-
-        .badge-estado {
-            background-color: #e8f5e9;
-            color: #2e7d32;
-            padding: 5px 10px;
-            border-radius: 15px;
-            font-size: 12px;
-            font-weight: bold;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 13px;
-        }
-
-        thead {
-            border-bottom: 2px solid #eee;
-        }
-
-        th {
-            color: #555;
-            text-align: left;
-            padding: 10px;
-            font-size: 11px;
-            text-transform: uppercase;
-        }
-
-        td {
-            padding: 12px 10px;
-            border-bottom: 1px solid #f5f5f5;
-            color: #333;
-        }
-
-        .grid-estadisticas {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px;
-            margin-bottom: 25px;
-        }
-
-        .caja-stat {
-            border: 1px solid #eee;
-            border-radius: 8px;
-            padding: 15px;
-            background-color: #fafafa;
-        }
-
-        .stat-titulo {
-            font-size: 10px;
-            color: #888;
-            font-weight: bold;
-            text-transform: uppercase;
-        }
-
-        .stat-valor {
-            font-size: 26px;
-            font-weight: bold;
-            color: #272a4d;
-            margin-top: 5px;
-        }
-
-        .lista-actividad {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-            font-size: 13px;
-        }
-
-        .filtro-maestro {
-            margin-bottom: 20px;
-        }
-
-        footer {
-            background-color: #72273b;
-            position: fixed;
-            bottom: 0;
-            width: 100%;
-            height: 40px;
-            text-align: center;
-            color: white;
-            line-height: 40px;
-            font-weight: bold;
-            font-size: 14px;
-        }
-    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/estilos.css">
 </head>
 
 <body>
@@ -288,33 +18,29 @@
     <nav>
         <a href="inventario.html">Inventario</a>
         <a href="transacciones.html">Entradas/Salidas</a>
-        <a href="panel-administracion.html" id="panel-admin">Panel Admintrador</a>
+        <a href="panel-administracion.html" id="panel-admin">Panel Administrador</a>
         <a href="#" onclick="cerrarSesion()">Cerrar Sesión</a>
     </nav>
 
     <div class="dashboard-container">
-
         <div class="columna-principal">
-
             <div class="fila-superior">
                 <div class="tarjeta tarjeta-formulario">
                     <div class="selector-pestanas">
                         <button class="btn-tab activo">Ajuste existente</button>
                     </div>
 
-                    <div class="form-group filtro-maestro">
+                    <div class="form-group" style="margin-bottom: 20px;">
                         <label>1. Filtrar por Categoría</label>
-                        <select class="form-control" id="select-filtro-categoria"
-                            onchange="filtrarProductosPorCategoria()">
+                        <select class="form-control" id="select-filtro-categoria" onchange="filtrarProductosPorCategoria()">
                             <option value="">Todas las categorías</option>
                         </select>
                     </div>
 
                     <div class="form-grid">
                         <div class="form-group">
-                            <label>Producto Existente (Producto | Marca | Cantidad actual)</label>
-                            <select class="form-control" id="select-producto">
-                            </select>
+                            <label>Producto Existente</label>
+                            <select class="form-control" id="select-producto"></select>
                         </div>
                         <div class="form-group">
                             <label>Tipo de Movimiento</label>
@@ -332,16 +58,13 @@
                         </div>
                         <div class="form-group">
                             <label>Motivo / Nota</label>
-                            <input type="text" class="form-control" id="input-motivo"
-                                placeholder="Ej. Compra proveedor">
+                            <input type="text" class="form-control" id="input-motivo" placeholder="Ej. Compra proveedor">
                         </div>
                     </div>
 
                     <div class="acciones-form">
                         <button class="btn-principal" onclick="registrarTransaccion()">Registrar movimiento</button>
                         <button class="btn-secundario" onclick="limpiarFormulario()">Limpiar</button>
-                        <span class="badge-estado" id="estado-mensaje" style="display:none;">Movimiento
-                            registrado</span>
                     </div>
                 </div>
 
@@ -370,7 +93,7 @@
 
             <div class="tarjeta">
                 <h3>Vista previa de movimientos</h3>
-                <div style="overflow-x: auto;">
+                <div class="table-wrapper">
                     <table>
                         <thead>
                             <tr>
@@ -388,7 +111,6 @@
                     </table>
                 </div>
             </div>
-
         </div>
 
         <div class="columna-lateral">
@@ -398,302 +120,13 @@
                 </ul>
             </div>
         </div>
-
     </div>
 
     <footer>
         @Proyecto final de desarrollo web 2026
     </footer>
-    <script>
 
-        //CERRAR SESION
-        function cerrarSesion() {
-            localStorage.clear(); // Borra la memoria
-            window.location.href = "index.html"; // Lo manda al inicio
-        }
-
-        //COMPROBAR ROL TRABAJADOR -------------------------------------------------------------------------------------------------------------------
-        function comprobarRol() {
-
-            const rol = localStorage.getItem('rolUsuario');
-
-            if (rol === "Trabajador") document.getElementById("panel-admin").style.display = "none";
-
-        }
-
-        function validarSesion() {
-
-            const idu = localStorage.getItem('idUsuario');
-
-            if (idu == null) {
-
-                alert("Se necesita iniciar sesion!");
-
-                window.location.href = "index.html";
-            }
-        }
-
-        validarSesion();
-
-        comprobarRol();
-
-        //LISTA DE CATEGORIAS
-        async function cargarCategorias() {
-            try {
-                const respuesta = await fetch('http://localhost:3000/api/categorias');
-                const resultado = await respuesta.json();
-
-                if (resultado.exito) {
-
-                    const selectCategoria = document.getElementById('select-filtro-categoria');
-                    resultado.categorias.forEach(cat => {
-                        const opcion = `<option value="${cat.ID_CATEGORIA}"> ${cat.NOMBRE_CATEGORIA} </option>`;
-                        selectCategoria.innerHTML += opcion;
-                    });
-                }
-            } catch (error) {
-                console.error("Error al cargar listas:", error);
-            }
-        }
-
-        cargarCategorias();
-
-        //FILTRADO DE PRODUCTOS POR CATEGORIAS
-        async function filtrarProductosPorCategoria() {
-            const selectCat = document.getElementById('select-filtro-categoria');
-            const selectNom = document.getElementById('select-producto');
-
-            const catSelected = selectCat.value;
-
-            let url = 'http://localhost:3000/api/productos-existentes';
-
-            if (catSelected !== "") {
-                url = `http://localhost:3000/api/productos-existentes/${catSelected}`;
-            }
-            try {
-                const respuesta = await fetch(url);
-                const resultado = await respuesta.json();
-
-                selectNom.innerHTML = '<option value="">Selecciona un producto...</option>';
-
-                if (resultado.exito) {
-                    resultado.productos.forEach(producto => {
-                        const opcion = `<option value="${producto.ID_PIEZA}">${producto.NOMBRE} | ${producto.MARCA} | ${producto.STOCK}</option>`;
-                        selectNom.innerHTML += opcion;
-                    });
-                }
-            } catch (error) {
-                console.error("Error al buscar los productos por categoria: ", error)
-            };
-        }
-
-        filtrarProductosPorCategoria();
-
-        //REGISTRAR TRANSACCION
-        async function registrarTransaccion() {
-            const productoTransaccion = document.getElementById('select-producto');
-            const productoCantidad = document.getElementById('input-cantidad');
-            const tipoTransaccion = document.getElementById('select-tipo');
-            const motivoTransaccion = document.getElementById('input-motivo');
-            const idUsuarioTransaccion = localStorage.getItem('idUsuario') || 1;
-
-            const datosTransaccion = {
-                idPieza: productoTransaccion.value,
-                cantidad: productoCantidad.value,
-                transaccion: tipoTransaccion.value,
-                motivo: motivoTransaccion.value,
-                idUsuario: idUsuarioTransaccion
-            };
-
-            try {
-                const respuesta = await fetch('http://localhost:3000/api/registrar-transaccion', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(datosTransaccion)
-                });
-                const resultado = await respuesta.json();
-
-                if (resultado.exito) {
-                    alert(resultado.mensaje);
-                    limpiarFormulario();
-                    filtrarProductosPorCategoria();
-                    cargarMovimientos();
-                } else {
-                    alert("Error: " + resultado.error);
-                }
-            } catch (error) {
-                console.error("Error al realizar la transaccion: ", error)
-            };
-        }
-
-        function limpiarFormulario() {
-            document.getElementById('select-producto').innerHTML = '<option value="">Selecciona un producto...</option>';
-            document.getElementById('input-cantidad').value = '';
-            document.getElementById('input-motivo').value = '';
-        }
-
-        async function cargarMovimientos() {
-            try {
-                const respuesta = await fetch('http://localhost:3000/api/consultar-movimientos');
-
-                const resultado = await respuesta.json();
-
-                if (respuesta.ok) {
-                    const listaMovimientos = document.getElementById('tabla-movimientos');
-
-                    listaMovimientos.innerHTML = "";
-
-                    resultado.movimientos.forEach(movimiento => {
-                        const fila = listaMovimientos.insertRow();
-
-                        const fechaLocal = new Date(movimiento.FECHA_HORA).toLocaleString('es-MX');
-
-                        const colorTipo = movimiento.TIPO === 'ENTRADA' ? 'color: #2e7d32; font-weight: bold;' : 'color: #dc3545; font-weight: bold;';
-
-                        const fechaPlana = movimiento.FECHA_HORA;
-
-                        const fecha = fechaPlana.slice(0, 10);
-
-                        fila.innerHTML = `
-                        <td>${fecha}</td>
-                        <td>${movimiento.NOMBRE}</td>
-                        <td style="${colorTipo}">${movimiento.TIPO}</td>
-                        <td>${movimiento.CANTIDAD}</td>
-                        <td>${movimiento.USUARIO}</td>
-                        <td>${movimiento.STOCK}</td>
-                        <td>${movimiento.NOTA || 'N/A'}</td>
-                        `;
-                    });
-
-                    const fechaHoy = new Date().toLocaleDateString('es-MX');
-
-                    const movimientosHoy = resultado.movimientos.filter(mov => {
-                        const fechaMov = new Date(mov.FECHA_HORA).toLocaleDateString('es-MX');
-                        return fechaMov === fechaHoy;
-                    });
-
-                    document.getElementById('stat-hoy').innerText = movimientosHoy.length;
-
-                    const entradasHoy = movimientosHoy.filter(mov => mov.TIPO === 'ENTRADA').length;
-                    const salidasHoy = movimientosHoy.filter(mov => mov.TIPO === 'SALIDA').length;
-
-                    document.getElementById('stat-entradas').innerText = entradasHoy;
-                    document.getElementById('stat-salidas').innerText = salidasHoy;
-
-                    const listaActividad = document.getElementById('lista-actividad');
-                    listaActividad.innerHTML = "";
-
-                    resultado.movimientos.slice(0, 4).forEach(mov => {
-                        const icono = mov.TIPO === 'ENTRADA' ? '🟢' : '🔴';
-                        const li = document.createElement('li');
-                        li.style.marginBottom = "10px";
-                        li.style.borderBottom = "1px solid #eee";
-                        li.style.paddingBottom = "5px";
-                        li.innerText = `${icono} ${mov.USUARIO} registró ${mov.CANTIDAD}x ${mov.NOMBRE}`;
-
-                        listaActividad.appendChild(li);
-                    });
-
-                } else {
-                    console.error("Error desde el servidor:", resultado.error);
-                }
-            } catch (error) {
-                console.error("No se pudo conectar al backend:", error);
-            }
-        }
-
-        cargarMovimientos()
-
-        async function totalActivos() {
-            try {
-                const respuesta = await fetch('http://localhost:3000/api/productos-existentes');
-
-                const resultado = await respuesta.json();
-
-                if (respuesta.ok) {
-
-                    let totalProductos = resultado.productos;
-                    document.getElementById('stat-activos').innerText = totalProductos.length;
-                }
-
-            } catch (error) {
-                console.error("No se pudo conectar al backend:", error);
-            }
-        }
-
-        totalActivos()
-        /*
-                async function cargarCatalogos() {
-            try {
-                const respuesta = await fetch('http://localhost:3000/api/catalogos');
-                const resultado = await respuesta.json();
-
-                if (resultado.exito) {
-
-                    const selectCategoria = document.getElementById('categoria');
-                    resultado.categorias.forEach(cat => {
-                        const opcion = `<option value="${cat.ID_CATEGORIA}"> ${cat.NOMBRE_CATEGORIA} </option>`;
-                        selectCategoria.innerHTML += opcion;
-                    });
-
-                    const selectUbicacion = document.getElementById('ubicacion');
-                    resultado.ubicaciones.forEach(ubi => {
-                        const opcion = `<option value="${ubi.ID_UBICACION}"> ${ubi.ANAQUEL} - ${ubi.NIVEL} </option>`;
-                        selectUbicacion.innerHTML += opcion;
-                    });
-
-                    const selectMedida = document.getElementById('medida');
-                    resultado.medidas.forEach(med => {
-                        const opcion = `<option value="${med.ID_MEDIDA}"> ${med.VALOR_MEDIDA} </option>`;
-                        selectMedida.innerHTML += opcion;
-                    });
-
-                    const selectMarca = document.getElementById('marca');
-                    resultado.marcas.forEach(mar => {
-                        const opcion = `<option value="${mar.ID_MARCA}"> ${mar.NOMBRE_MARCA} </option>`;
-                        selectMarca.innerHTML += opcion;
-                    });
-                }
-            } catch (error) {
-                console.error("Error al cargar listas:", error);
-            }
-        }
-
-        const selectCategoria = document.getElementById('categoria');
-        const selectNombre = document.getElementById('nombre');
-        const selectMedida = document.getElementById('medida');
-
-        selectCategoria.addEventListener('change', async function () {
-            const idCatSelect = this.value;
-
-            selectNombre.innerHTML = '<option value="">Selecciona un Nombre...</option>';
-            selectMedida.innerHTML = '<option value="">Selecciona una Medida...</option>';
-
-            if (!idCatSelect) return;
-
-            try {
-                const respuesta = await fetch(`http://localhost:3000/api/piezas-por-categoria/${idCatSelect}`);
-                const resultado = await respuesta.json();
-
-                if (resultado.exito) {
-                    resultado.nombres.forEach(pieza => {
-                        const opcion = `<option value="${pieza.ID_PIEZA}">${pieza.NOMBRE}</option>`;
-                        selectNombre.innerHTML += opcion;
-                    });
-
-                    resultado.medidas.forEach(medida => {
-                        const opcion = `<option value="${medida.ID_MEDIDA}">${medida.VALOR_MEDIDA}</option>`;
-                        selectMedida.innerHTML += opcion;
-                    })
-                }
-            } catch (error) {
-                console.error("Error al buscar los nombres por categoria: ", error)
-            }
-        });
-
-        cargarCatalogos();
-        */
-    </script>
+    <script src="js/transacciones.js"></script>
 </body>
+
+</html>

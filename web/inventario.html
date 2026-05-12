@@ -5,186 +5,42 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SWF de Mexico - Gestión de Inventario</title>
-
     <link rel="icon" type="image/x-icon" href="images/SWF_ICO.ico">
-
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap"
-        rel="stylesheet">
-    <style>
-        /* Estilos base del ecosistema SWF */
-        body {
-            font-family: "Open Sans", light;
-            background-color: #272a4d;
-            margin: 0;
-            padding-bottom: 60px;
-        }
-
-        #logo {
-            display: block;
-            margin: 20px auto;
-            max-width: 200px;
-        }
-
-        /* Navegación */
-        nav {
-            background-color: #332247;
-            padding: 15px;
-            text-align: center;
-            border-bottom: solid 3px #72273b;
-        }
-
-        nav a {
-            color: white;
-            text-decoration: none;
-            margin: 0 15px;
-            font-weight: bold;
-        }
-
-        /* Contenedor principal */
-        .container {
-            border: solid 4px #72273b;
-            border-radius: 10px;
-            margin: 20px auto;
-            max-width: 90%;
-            background-color: #ffffff;
-            padding: 25px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
-        }
-
-        h2 {
-            text-align: center;
-            color: #272a4d;
-            margin-top: 0;
-        }
-
-        /* Formulario de Entrada (Ahora todos son inputs de texto) */
-        .form-entrada {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-            gap: 12px;
-            background: #f8f9fa;
-            padding: 20px;
-            border-radius: 8px;
-            margin-bottom: 25px;
-            border: 1px solid #ddd;
-        }
-
-        .form-entrada input {
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            outline: none;
-        }
-
-        .btn-add {
-            background-color: #332247;
-            color: white;
-            border: none;
-            padding: 10px;
-            border-radius: 4px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: 0.3s;
-        }
-
-        .btn-add:hover {
-            background-color: #72273b;
-        }
-
-        /* Tabla de Inventario */
-        .table-wrapper {
-            overflow-x: auto;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 10px;
-        }
-
-        thead {
-            background-color: #72273b;
-            color: white;
-        }
-
-        th,
-        td {
-            padding: 12px;
-            text-align: left;
-            border-bottom: 1px solid #eee;
-        }
-
-        /* Botón Eliminar */
-        .btn-delete {
-            background-color: #dc3545;
-            color: white;
-            border: none;
-            padding: 6px 10px;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 12px;
-        }
-
-        .btn-delete:hover {
-            background-color: #a71d2a;
-        }
-
-        footer {
-            background-color: #72273b;
-            position: fixed;
-            bottom: 0;
-            width: 100%;
-            height: 40px;
-            text-align: center;
-            color: white;
-            line-height: 40px;
-            font-weight: bold;
-        }
-    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/estilos.css">
 </head>
 
 <body>
-
     <img id="logo" src="images/SWF-LOGO.png" alt="Logo SWF">
 
     <nav>
         <a href="inventario.html">Inventario</a>
         <a href="transacciones.html">Entradas/Salidas</a>
-        <a href="panel-administracion.html" id="panel-admin">Panel Adminstrador</a>
+        <a href="panel-administracion.html" id="panel-admin">Panel Administrador</a>
         <a href="#" onclick="cerrarSesion()">Cerrar Sesión</a>
     </nav>
 
     <div class="container">
         <h2>Panel de Inventario</h2>
         <div style="text-align: center; margin-bottom: 20px;">
-            <input type="text" id="buscador" placeholder="Buscar en inventario..." style="padding: 12px; width: 50%; min-width: 300px; border-radius: 25px; border: 2px solid #72273b ; outline: none;
-            box-shadow: 0 2px 5px rgba(0,0,0,0,2);">
+            <input type="text" id="buscador" class="input-buscador" placeholder="Buscar en inventario...">
+            
             <div class="table-wrapper">
                 <table>
                     <thead>
                         <tr>
-                            <th style="cursor: pointer;" onclick="ordenarTabla(0, 'texto', this)">Nombre <span
-                                    class="icono-orden">↕</span></th>
-                            <th style="cursor: pointer;" onclick="ordenarTabla(1, 'texto', this)">Marca <span
-                                    class="icono-orden">↕</span></th>
-                            <th style="cursor: pointer;" onclick="ordenarTabla(2, 'texto', this)">Medida <span
-                                    class="icono-orden">↕</span></th>
-                            <th style="cursor: pointer;" onclick="ordenarTabla(3, 'texto', this)">Categoría <span
-                                    class="icono-orden">↕</span></th>
-                            <th style="cursor: pointer;" onclick="ordenarTabla(4, 'texto', this)">Ubicación <span
-                                    class="icono-orden">↕</span></th>
-                            <th style="cursor: pointer;" onclick="ordenarTabla(5, 'texto', this)">Modelo <span
-                                    class="icono-orden">↕</span></th>
-                            <th style="cursor: pointer;" onclick="ordenarTabla(6, 'texto', this)">Color <span
-                                    class="icono-orden">↕</span></th>
-                            <th style="cursor: pointer;" onclick="ordenarTabla(7, 'texto', this)">Area Bordado <span
-                                    class="icono-orden">↕</span></th>
-                            <th style="cursor: pointer;" onclick="ordenarTabla(8, 'texto', this)">Maquina <span
-                                    class="icono-orden">↕</span></th>
-                            <th style="cursor: pointer;" onclick="ordenarTabla(9, 'numero', this)">Stock Actual <span
-                                    class="icono-orden">↕</span></th>
+                            <th style="cursor: pointer;" onclick="ordenarTabla(0, 'texto', this)">Nombre <span class="icono-orden">↕</span></th>
+                            <th style="cursor: pointer;" onclick="ordenarTabla(1, 'texto', this)">Marca <span class="icono-orden">↕</span></th>
+                            <th style="cursor: pointer;" onclick="ordenarTabla(2, 'texto', this)">Medida <span class="icono-orden">↕</span></th>
+                            <th style="cursor: pointer;" onclick="ordenarTabla(3, 'texto', this)">Categoría <span class="icono-orden">↕</span></th>
+                            <th style="cursor: pointer;" onclick="ordenarTabla(4, 'texto', this)">Ubicación <span class="icono-orden">↕</span></th>
+                            <th style="cursor: pointer;" onclick="ordenarTabla(5, 'texto', this)">Modelo <span class="icono-orden">↕</span></th>
+                            <th style="cursor: pointer;" onclick="ordenarTabla(6, 'texto', this)">Color <span class="icono-orden">↕</span></th>
+                            <th style="cursor: pointer;" onclick="ordenarTabla(7, 'texto', this)">Area Bordado <span class="icono-orden">↕</span></th>
+                            <th style="cursor: pointer;" onclick="ordenarTabla(8, 'texto', this)">Maquina <span class="icono-orden">↕</span></th>
+                            <th style="cursor: pointer;" onclick="ordenarTabla(9, 'numero', this)">Stock Actual <span class="icono-orden">↕</span></th>
                         </tr>
                     </thead>
                     <tbody id="tabla-inventario">
@@ -192,130 +48,13 @@
                 </table>
             </div>
         </div>
+    </div>
 
-        <footer>
-            @Proyecto final de desarrollo web 2026
-        </footer>
+    <footer>
+        @Proyecto final de desarrollo web 2026
+    </footer>
 
-        <script>
-
-            //CERRAR SESION ------------------------------------------------------------------------------------------------------------------------------
-            function cerrarSesion() {
-                localStorage.clear();
-                window.location.href = "index.html";
-            }
-
-            //COMPROBAR ROL TRABAJADOR -------------------------------------------------------------------------------------------------------------------
-            function comprobarRol() {
-
-                const rol = localStorage.getItem('rolUsuario');
-
-                if (rol === "Trabajador") document.getElementById("panel-admin").style.display = "none";
-
-            }
-
-            function validarSesion() {
-
-                const idu = localStorage.getItem('idUsuario');
-
-                if (idu == null) {
-
-                    alert("Se necesita iniciar sesion!");
-
-                    window.location.href = "index.html";
-                }
-            }
-
-            validarSesion();
-
-            comprobarRol();
-
-            //LLENAR LA TABLA CON TODOS LOS ELEMENTOS DISPONIBLES ----------------------------------------------------------------------------------------
-            async function cargarInventario() {
-                try {
-                    const respuesta = await fetch('http://localhost:3000/api/inventario');
-
-                    const resultado = await respuesta.json();
-
-                    if (respuesta.ok) {
-
-                        const tbody = document.getElementById('tabla-inventario');
-                        tbody.innerHTML = "";
-
-                        resultado.datos.forEach(pieza => {
-
-                            const fila = tbody.insertRow();
-                            fila.innerHTML = `
-                            <td>${pieza.NOMBRE}</td>
-                            <td>${pieza.MARCA || 'N/A'}</td>
-                            <td>${pieza.MEDIDA || 'N/A'}</td>
-                            <td>${pieza.CATEGORIA || 'N/A'}</td>
-                            <td>${pieza.ANAQUEL} - ${pieza.NIVEL}</td>
-                            <td>${pieza.MODELO || 'N/A'}</td>
-                            <td>${pieza.COLOR_TIPO || 'N/A'}</td>
-                            <td>${pieza.AREA || 'N/A'}</td>
-                            <td>${pieza.MAQUINA || 'N/A'}</td>
-                            <td>${pieza.STOCK_ACTUAL}</td>
-                `;
-                        });
-
-                    } else {
-                        console.error("Error desde el servidor:", resultado.error);
-                    }
-
-                } catch (error) {
-                    console.error("No se pudo conectar al backend:", error);
-                }
-            }
-
-            cargarInventario();
-
-            // FILTRAR PRODUCTOS POR BUSQUEDA ----------------------------------------------------------------------------------------------------------------
-            document.getElementById('buscador').addEventListener('keyup', function () {
-                const textoBusqueda = this.value.toLowerCase();
-                const filas = document.querySelectorAll('#tabla-inventario tr');
-
-                filas.forEach(fila => {
-                    const contenidoFila = fila.textContent.toLowerCase();
-                    fila.style.display = contenidoFila.includes(textoBusqueda) ? '' : 'none';
-                });
-            });
-
-            let ordenAscendente = true;
-            let columnaActual = -1; 
-
-            function ordenarTabla(columnaIndex, tipoDato, elementoCabecera) {
-                const tbody = document.getElementById("tabla-inventario"); 
-                const filas = Array.from(tbody.querySelectorAll("tr"));
-
-                if (columnaActual !== columnaIndex) {
-                    ordenAscendente = true;
-                    columnaActual = columnaIndex; 
-                } else {
-                    ordenAscendente = !ordenAscendente;
-                }
-
-                const todosLosIconos = document.querySelectorAll(".icono-orden");
-                todosLosIconos.forEach(icono => icono.innerText = "↕");
-
-                const iconoClickeado = elementoCabecera.querySelector(".icono-orden");
-                iconoClickeado.innerText = ordenAscendente ? "▲" : "▼";
-
-                filas.sort((filaA, filaB) => {
-                    const valorA = filaA.children[columnaIndex].innerText.trim();
-                    const valorB = filaB.children[columnaIndex].innerText.trim();
-
-                    if (tipoDato === 'numero') {
-                        return ordenAscendente ? parseFloat(valorA) - parseFloat(valorB) : parseFloat(valorB) - parseFloat(valorA);
-                    } else {
-                        return ordenAscendente ? valorA.localeCompare(valorB) : valorB.localeCompare(valorA);
-                    }
-                });
-
-                // --- PARTE 4: DIBUJAR EN PANTALLA ---
-                filas.forEach(fila => tbody.appendChild(fila));
-            }
-        </script>
+    <script src="js/inventario.js"></script>
 </body>
 
 </html>
