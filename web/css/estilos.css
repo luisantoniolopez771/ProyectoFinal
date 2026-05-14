@@ -209,7 +209,7 @@ button:hover, .btn-principal:hover, .btn-add:hover { background-color: #72273b; 
 .table-wrapper { overflow-x: auto; width: 100%; display: block; }
 table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 13px; }
 thead { background-color: #72273b; color: white; border-bottom: 2px solid #eee; }
-th { padding: 10px; text-align: left; font-size: 11px; text-transform: uppercase; color: white; }
+th { padding: 10px; text-align: center; font-size: 11px; text-transform: uppercase; color: white; }
 td { padding: 12px 10px; border-bottom: 1px solid #eee; color: #333; }
 
 .badge-estado { padding: 5px 10px; border-radius: 15px; font-size: 12px; font-weight: bold; display: inline-block; }
