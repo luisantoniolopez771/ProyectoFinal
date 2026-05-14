@@ -1,3 +1,4 @@
+//ALTERNAR PESTAÑAS -----------------------------------------------------------------------------------------------------------------------------------------
 function cambiarPestana(idSeccion, boton) {
     const secciones = document.querySelectorAll('.seccion-admin');
     secciones.forEach(sec => sec.classList.remove('activa'));
@@ -9,11 +10,13 @@ function cambiarPestana(idSeccion, boton) {
     boton.classList.add('activo');
 }
 
+//CERRAR SESION ---------------------------------------------------------------------------------------------------------------------------------------------
 function cerrarSesion() {
     localStorage.clear();
     window.location.href = "index.html";
 }
 
+//COMPROBAR ROL ADMINISTRADOR -------------------------------------------------------------------------------------------------------------------------------
 function comprobarRol() {
     const rol = localStorage.getItem('rolUsuario');
     if (!rol || rol.trim().toLocaleLowerCase() !== "administrador") {
@@ -24,6 +27,7 @@ function comprobarRol() {
 
 comprobarRol();
 
+//LIMPIAR FORMULARIO ----------------------------------------------------------------------------------------------------------------------------------------
 function limpiarFormularioUsuarios() {
     document.getElementById('input-usuario-nombre').value = "";
     document.getElementById('input-usuario-pass').value = "";
@@ -31,6 +35,7 @@ function limpiarFormularioUsuarios() {
 
 limpiarFormularioUsuarios();
 
+//REGISTRAR NUEVO USUARIO -----------------------------------------------------------------------------------------------------------------------------------
 async function registrarUsuario() {
     const nombreUsuario = document.getElementById('input-usuario-nombre');
     const contraUsuario = document.getElementById('input-usuario-pass');
@@ -61,6 +66,7 @@ async function registrarUsuario() {
     }
 }
 
+//MOSTRAR USUARIOS ------------------------------------------------------------------------------------------------------------------------------------------
 async function mostrarUsuarios() {
     try {
         const respuesta = await fetch('http://localhost:3000/api/mostrar-usuarios');
@@ -120,6 +126,7 @@ async function cambiarEstadoUsuario(idUsuario, estadoActual) {
     }
 }
 
+//CARGAR CATALOGOS INVENTARIO -----------------------------------------------------------------------------------------------------------------------------
 async function cargarCatalogos() {
     try {
         const respuesta = await fetch('http://localhost:3000/api/catalogos');
@@ -163,6 +170,7 @@ async function cargarCatalogos() {
 
 cargarCatalogos();
 
+//ALTA DE PIEZA ----------------------------------------------------------------------------------------------------------------------------------------
 async function altaProducto() {
     const nombreProducto = document.getElementById('input-prod-nombre');
     const stockInicial = document.getElementById('input-prod-stock');
@@ -203,6 +211,7 @@ async function altaProducto() {
     }
 }
 
+//TABLAS SECUNDARIAS ------------------------------------------------------------------------------------------------------------------------------------
 async function mostrarTablasSecundarias() {
     try {
         const respuesta = await fetch('http://localhost:3000/api/catalogos');
@@ -248,6 +257,7 @@ async function mostrarTablasSecundarias() {
 
 mostrarTablasSecundarias();
 
+//AGREGAR A CATALOGO -------------------------------------------------------------------------------------------------------------------------------------
 async function agregarCatalogo(TIPO, DATO) {
     const datosTransaccion = { tipo: TIPO, dato: DATO };
     try {
@@ -266,6 +276,7 @@ async function agregarCatalogo(TIPO, DATO) {
     }
 }
 
+//ALERTAS STOCK -------------------------------------------------------------------------------------------------------------------------------------------
 async function consultarBajoStock() {
     try {
         const respuesta = await fetch('http://localhost:3000/api/emergencia-stock');
