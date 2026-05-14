@@ -8,7 +8,8 @@
     <link rel="icon" type="image/x-icon" href="images/SWF_ICO.ico">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap"
+        rel="stylesheet">
     <link rel="stylesheet" href="css/estilos.css">
 </head>
 
@@ -25,22 +26,57 @@
     <div class="container">
         <h2>Panel de Inventario</h2>
         <div style="text-align: center; margin-bottom: 20px;">
-            <input type="text" id="buscador" class="input-buscador" placeholder="Buscar en inventario...">
-            
+
+            <input type="text" id="buscador-maquina" class="input-buscador" placeholder="Buscar en maquinas...">
             <div class="table-wrapper">
                 <table>
                     <thead>
                         <tr>
-                            <th style="cursor: pointer;" onclick="ordenarTabla(0, 'texto', this)">Nombre <span class="icono-orden">↕</span></th>
-                            <th style="cursor: pointer;" onclick="ordenarTabla(1, 'texto', this)">Marca <span class="icono-orden">↕</span></th>
-                            <th style="cursor: pointer;" onclick="ordenarTabla(2, 'texto', this)">Medida <span class="icono-orden">↕</span></th>
-                            <th style="cursor: pointer;" onclick="ordenarTabla(3, 'texto', this)">Categoría <span class="icono-orden">↕</span></th>
-                            <th style="cursor: pointer;" onclick="ordenarTabla(4, 'texto', this)">Ubicación <span class="icono-orden">↕</span></th>
-                            <th style="cursor: pointer;" onclick="ordenarTabla(5, 'texto', this)">Modelo <span class="icono-orden">↕</span></th>
-                            <th style="cursor: pointer;" onclick="ordenarTabla(6, 'texto', this)">Color <span class="icono-orden">↕</span></th>
-                            <th style="cursor: pointer;" onclick="ordenarTabla(7, 'texto', this)">Area Bordado <span class="icono-orden">↕</span></th>
-                            <th style="cursor: pointer;" onclick="ordenarTabla(8, 'texto', this)">Maquina <span class="icono-orden">↕</span></th>
-                            <th style="cursor: pointer;" onclick="ordenarTabla(9, 'numero', this)">Stock Actual <span class="icono-orden">↕</span></th>
+                            <th style="cursor: pointer;" onclick="ordenarTablaMaquinas(0, 'texto', this)">No. Serie
+                                <span class="icono-orden">↕</span></th>
+                            <th style="cursor: pointer;" onclick="ordenarTablaMaquinas(1, 'texto', this)">Marca <span
+                                    class="icono-orden">↕</span></th>
+                            <th style="cursor: pointer;" onclick="ordenarTablaMaquinas(2, 'texto', this)">Modelo <span
+                                    class="icono-orden">↕</span></th>
+                            <th style="cursor: pointer;" onclick="ordenarTablaMaquinas(3, 'texto', this)">Área de
+                                Bordado <span class="icono-orden">↕</span></th>
+                            <th style="cursor: pointer;" onclick="ordenarTablaMaquinas(4, 'texto', this)">Tipo de
+                                Bastidor <span class="icono-orden">↕</span></th>
+                            <th style="cursor: pointer;" onclick="ordenarTablaMaquinas(5, 'texto', this)">Descripción
+                                <span class="icono-orden">↕</span></th>
+                            <th style="cursor: pointer;">Piezas</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tabla-maquinas">
+                    </tbody>
+                </table>
+            </div>
+
+            <input type="text" id="buscador" class="input-buscador" placeholder="Buscar en inventario...">
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th style="cursor: pointer;" onclick="ordenarTabla(0, 'texto', this)">Nombre <span
+                                    class="icono-orden">↕</span></th>
+                            <th style="cursor: pointer;" onclick="ordenarTabla(1, 'texto', this)">Marca <span
+                                    class="icono-orden">↕</span></th>
+                            <th style="cursor: pointer;" onclick="ordenarTabla(2, 'texto', this)">Medida <span
+                                    class="icono-orden">↕</span></th>
+                            <th style="cursor: pointer;" onclick="ordenarTabla(3, 'texto', this)">Categoría <span
+                                    class="icono-orden">↕</span></th>
+                            <th style="cursor: pointer;" onclick="ordenarTabla(4, 'texto', this)">Ubicación <span
+                                    class="icono-orden">↕</span></th>
+                            <th style="cursor: pointer;" onclick="ordenarTabla(5, 'texto', this)">Modelo <span
+                                    class="icono-orden">↕</span></th>
+                            <th style="cursor: pointer;" onclick="ordenarTabla(6, 'texto', this)">Color <span
+                                    class="icono-orden">↕</span></th>
+                            <th style="cursor: pointer;" onclick="ordenarTabla(7, 'texto', this)">Area Bordado <span
+                                    class="icono-orden">↕</span></th>
+                            <th style="cursor: pointer;" onclick="ordenarTabla(8, 'texto', this)">Maquina <span
+                                    class="icono-orden">↕</span></th>
+                            <th style="cursor: pointer;" onclick="ordenarTabla(9, 'numero', this)">Stock Actual <span
+                                    class="icono-orden">↕</span></th>
                         </tr>
                     </thead>
                     <tbody id="tabla-inventario">

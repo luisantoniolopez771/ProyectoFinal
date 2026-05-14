@@ -1,8 +1,10 @@
+//CERRAR SESION -------------------------------------------------------------------------------------------------------------------------
 function cerrarSesion() {
     localStorage.clear();
     window.location.href = "index.html";
 }
 
+//COMPROBAR ROL ADMINISTRADOR -----------------------------------------------------------------------------------------------------------
 function comprobarRol() {
     const rol = localStorage.getItem('rolUsuario');
     if (rol === "Trabajador") {
@@ -10,6 +12,7 @@ function comprobarRol() {
     }
 }
 
+//VALIDAR INICIO DE SESION --------------------------------------------------------------------------------------------------------------
 function validarSesion() {
     const idu = localStorage.getItem('idUsuario');
     if (idu == null) {
@@ -21,28 +24,47 @@ function validarSesion() {
 validarSesion();
 comprobarRol();
 
+//CARGAR TABLA DE PIEZAS ----------------------------------------------------------------------------------------------------------------
 async function cargarInventario() {
     try {
         const respuesta = await fetch('http://localhost:3000/api/inventario');
         const resultado = await respuesta.json();
 
         if (respuesta.ok) {
-            const tbody = document.getElementById('tabla-inventario');
-            tbody.innerHTML = "";
+            const tbodyInventario = document.getElementById('tabla-inventario');
+            const tbodyMaquina = document.getElementById('tabla-maquinas');
+            tbodyInventario.innerHTML = "";
+            tbodyMaquina.innerHTML = "";
 
-            resultado.datos.forEach(pieza => {
-                const fila = tbody.insertRow();
+            resultado.datosInventario.forEach(pieza => {
+                const fila = tbodyInventario.insertRow();
                 fila.innerHTML = `
                     <td>${pieza.NOMBRE}</td>
                     <td>${pieza.MARCA || 'N/A'}</td>
                     <td>${pieza.MEDIDA || 'N/A'}</td>
                     <td>${pieza.CATEGORIA || 'N/A'}</td>
-                    <td>${pieza.ANAQUEL} - ${pieza.NIVEL}</td>
+                    <td>${pieza.UBICACION || 'N/A'}</td>
                     <td>${pieza.MODELO || 'N/A'}</td>
                     <td>${pieza.COLOR_TIPO || 'N/A'}</td>
                     <td>${pieza.AREA || 'N/A'}</td>
                     <td>${pieza.MAQUINA || 'N/A'}</td>
                     <td>${pieza.STOCK_ACTUAL}</td>
+                `;
+            });
+
+            resultado.datosMaquina.forEach(maquina => {
+
+                botonAccion = `<a href="#" style="color:#272a4d; font-weight:bold;" onclick="cambiarEstadoUsuario(${maquina.ID_MAQUINA})">Ver Piezas</a>`;
+
+                const fila = tbodyMaquina.insertRow();
+                fila.innerHTML = `
+                <td>${maquina.NOSERIE}</td>
+                <td>${maquina.MARCA}</td>
+                <td>${maquina.MODELO}</td>
+                <td>${maquina.AREA || 'N/A'}</td>
+                <td>${maquina.BASTIDOR || 'N/A'}</td>
+                <td>${maquina.DESCRIPCION || 'N/A'}</td>
+                <td>${botonAccion}</td>
                 `;
             });
         } else {
@@ -55,6 +77,7 @@ async function cargarInventario() {
 
 cargarInventario();
 
+//FILTRO DE BUSQUEDA INVENTARIO -----------------------------------------------------------------------------------------------------------
 document.getElementById('buscador').addEventListener('keyup', function () {
     const textoBusqueda = this.value.toLowerCase();
     const filas = document.querySelectorAll('#tabla-inventario tr');
@@ -65,6 +88,18 @@ document.getElementById('buscador').addEventListener('keyup', function () {
     });
 });
 
+//FILTRO DE BUSQUEDA MAQUINA -------------------------------------------------------------------------------------------------------------
+document.getElementById('buscador-maquina').addEventListener('keyup', function () {
+    const textoBusqueda = this.value.toLowerCase();
+    const filas = document.querySelectorAll('#tabla-maquinas tr');
+
+    filas.forEach(fila => {
+        const contenidoFila = fila.textContent.toLowerCase();
+        fila.style.display = contenidoFila.includes(textoBusqueda) ? '' : 'none';
+    });
+});
+
+//FILTRO DE TABLA ------------------------------------------------------------------------------------------------------------------------
 let ordenAscendente = true;
 let columnaActual = -1; 
 

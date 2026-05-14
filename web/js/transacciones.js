@@ -1,8 +1,10 @@
+//CERRAR SESION -------------------------------------------------------------------------------------------------------------------------
 function cerrarSesion() {
     localStorage.clear();
     window.location.href = "index.html";
 }
 
+//COMPROBAR ROL ADMINISTRADOR -----------------------------------------------------------------------------------------------------------
 function comprobarRol() {
     const rol = localStorage.getItem('rolUsuario');
     if (rol === "Trabajador") {
@@ -10,6 +12,7 @@ function comprobarRol() {
     }
 }
 
+//VALIDAR INICIO DE SESION --------------------------------------------------------------------------------------------------------------
 function validarSesion() {
     const idu = localStorage.getItem('idUsuario');
     if (idu == null) {
@@ -21,6 +24,7 @@ function validarSesion() {
 validarSesion();
 comprobarRol();
 
+//CARGAR FILTROS CATEGORIAS -------------------------------------------------------------------------------------------------------------
 async function cargarCategorias() {
     try {
         const respuesta = await fetch('http://localhost:3000/api/categorias');
@@ -39,15 +43,14 @@ async function cargarCategorias() {
 
 cargarCategorias();
 
+//FILTRAR PRODUCTOS POR CATEGORIA ------------------------------------------------------------------------------------------------------
 async function filtrarProductosPorCategoria() {
     const selectCat = document.getElementById('select-filtro-categoria');
     const selectNom = document.getElementById('select-producto');
     const catSelected = selectCat.value;
 
-    let url = 'http://localhost:3000/api/productos-existentes';
-    if (catSelected !== "") {
-        url = `http://localhost:3000/api/productos-existentes/${catSelected}`;
-    }
+    let url = `http://localhost:3000/api/productos-existentes/${catSelected}`;
+
     try {
         const respuesta = await fetch(url);
         const resultado = await respuesta.json();
@@ -66,12 +69,13 @@ async function filtrarProductosPorCategoria() {
 
 filtrarProductosPorCategoria();
 
+//REGISTRAR TRANSACCION ----------------------------------------------------------------------------------------------------------------
 async function registrarTransaccion() {
     const productoTransaccion = document.getElementById('select-producto');
     const productoCantidad = document.getElementById('input-cantidad');
     const tipoTransaccion = document.getElementById('select-tipo');
     const motivoTransaccion = document.getElementById('input-motivo');
-    const idUsuarioTransaccion = localStorage.getItem('idUsuario') || 1;
+    const idUsuarioTransaccion = localStorage.getItem('idUsuario');
 
     const datosTransaccion = {
         idPieza: productoTransaccion.value,
@@ -102,12 +106,14 @@ async function registrarTransaccion() {
     }
 }
 
+//LIMPIAR FORMULARIO --------------------------------------------------------------------------------------------------------------------
 function limpiarFormulario() {
     document.getElementById('select-producto').innerHTML = '<option value="">Selecciona un producto...</option>';
     document.getElementById('input-cantidad').value = '';
     document.getElementById('input-motivo').value = '';
 }
 
+//CARGAR TODOS LOS MOVIMIENTOS ----------------------------------------------------------------------------------------------------------
 async function cargarMovimientos() {
     try {
         const respuesta = await fetch('http://localhost:3000/api/consultar-movimientos');
@@ -162,12 +168,13 @@ async function cargarMovimientos() {
 
 cargarMovimientos();
 
+//CARGAR TODOS LOS PRODUCTOS ACTIVOS -------------------------------------------------------------------------------------------------
 async function totalActivos() {
     try {
-        const respuesta = await fetch('http://localhost:3000/api/productos-existentes');
+        const respuesta = await fetch('http://localhost:3000/api/inventario');
         const resultado = await respuesta.json();
         if (respuesta.ok) {
-            document.getElementById('stat-activos').innerText = resultado.productos.length;
+            document.getElementById('stat-activos').innerText = resultado.datosInventario.length +resultado.datosMaquina.length ;
         }
     } catch (error) {
         console.error("No se pudo conectar al backend:", error);
