@@ -146,8 +146,8 @@ CREATE TABLE Auditoria_Inventario (
 );
 
 --- TRIGGER 1 ---
-CREATE OR REPLACE TRIGGER TRG_AUDITORIA_PIEZAS
-AFTER UPDATE OR DELETE ON Piezas
+CREATE OR REPLACE TRIGGER TRG_AUDITORIA_PIEZA
+AFTER UPDATE OR DELETE ON Pieza
 FOR EACH ROW
 BEGIN
     -- Si se actualiza y cambia el nombre
@@ -190,7 +190,7 @@ END;
 
 --- TRIGGER 2 ---
 CREATE OR REPLACE TRIGGER TRG_VALIDAR_CONTRASENA
-BEFORE INSERT ON Usuarios
+BEFORE INSERT ON Usuario
 FOR EACH ROW
 BEGIN
     IF LENGTH(:NEW.Contrasena) < 8 THEN
@@ -204,7 +204,7 @@ END;
 
 --- TRIGGER 3 ---
 CREATE OR REPLACE TRIGGER TRG_BODEGA_CERRADA_DOMINGO
-BEFORE INSERT ON Movimientos
+BEFORE INSERT ON Movimiento
 BEGIN
     IF TO_CHAR(SYSDATE, 'DY', 'NLS_DATE_LANGUAGE=ENGLISH') = 'SUN' THEN
         RAISE_APPLICATION_ERROR(
@@ -243,7 +243,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_BODEGA AS
     )
     IS
     BEGIN
-        INSERT INTO Usuarios (
+        INSERT INTO Usuario (
             Nombre_Completo,
             Rol,
             Estado,
@@ -267,7 +267,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_BODEGA AS
     BEGIN
         SELECT COUNT(*)
         INTO v_total
-        FROM Movimientos
+        FROM Movimiento
         WHERE ID_Usuario = p_id_usuario
         AND EXTRACT(MONTH FROM Fecha_Hora) = EXTRACT(MONTH FROM CURRENT_DATE)
         AND EXTRACT(YEAR FROM Fecha_Hora) = EXTRACT(YEAR FROM CURRENT_DATE);
@@ -332,7 +332,7 @@ BEGIN
         SELECT ID_Usuario,
                Nombre_Completo,
                Rol
-        FROM Usuarios
+        FROM Usuario
         WHERE Estado = 'ACTIVO'
     )
     LOOP
@@ -344,7 +344,7 @@ BEGIN
     END LOOP;
 END;
 /
-
+-----------------------------------------------------------------------------
 --- TRIGGER 4 ---
 CREATE OR REPLACE TRIGGER TRG_AUDITORIA_MOV_MASIVO
 AFTER INSERT ON Movimiento
