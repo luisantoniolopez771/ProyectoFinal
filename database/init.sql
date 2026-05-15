@@ -346,53 +346,76 @@ END;
 /
 
 --- TRIGGER 4 ---
-CREATE OR REPLACE TRIGGER TRG_ACTUALIZAR_STOCK_AUTO
-AFTER INSERT ON Movimientos
+CREATE OR REPLACE TRIGGER TRG_AUDITORIA_MOV_MASIVO
+AFTER INSERT ON Movimiento
 FOR EACH ROW
 BEGIN
-    IF :NEW.Tipo_Movimiento = 'ENTRADA' THEN
-        UPDATE Piezas 
-        SET Stock_Actual = Stock_Actual + :NEW.Cantidad
-        WHERE ID_Pieza = :NEW.ID_Pieza;
-    ELSIF :NEW.Tipo_Movimiento = 'SALIDA' THEN
-        UPDATE Piezas 
-        SET Stock_Actual = Stock_Actual - :NEW.Cantidad
-        WHERE ID_Pieza = :NEW.ID_Pieza;
+    -- Si el movimiento es mayor a 50 unidades, dispara la alerta
+    IF :NEW.Cantidad > 50 THEN
+        INSERT INTO Auditoria_Inventario (
+            ID_Pieza, 
+            Nombre_Anterior,
+            Accion, 
+            Usuario_Accion 
+        ) VALUES (
+            :NEW.ID_Pieza,
+            'MOV_GRANDE: ' || :NEW.Tipo_Movimiento,
+            'ALERTA_CANTIDAD',
+            USER
+        );
+        
+        DBMS_OUTPUT.PUT_LINE('Se ha registrado un movimiento masivo de ' || :NEW.Cantidad || ' unidades.');
     END IF;
 END;
 /
 
 --- TRIGGER 5 ---
 CREATE OR REPLACE TRIGGER TRG_VALIDAR_STOCK_MINIMO
-BEFORE UPDATE OF Stock_Actual ON Piezas
+BEFORE UPDATE OF Stock_Actual ON Pieza
 FOR EACH ROW
 BEGIN
+    -- Comprobamos que el nuevo stock no sea negativo
     IF :NEW.Stock_Actual < 0 THEN
-        RAISE_APPLICATION_ERROR(-20003, 'Stock Insuficiente.');
+        RAISE_APPLICATION_ERROR(-20003, 'Stock Insuficiente para completar la operacion.');
     END IF;
 END;
 /
 
 --- TRIGGER 6 ---
 CREATE OR REPLACE TRIGGER TRG_SEGURIDAD_CATEGORIAS
-BEFORE DELETE ON Categorias
+BEFORE DELETE ON Categoria
 FOR EACH ROW
 DECLARE
     v_conteo NUMBER;
 BEGIN
     SELECT COUNT(*) INTO v_conteo 
-    FROM Piezas 
+    FROM Pieza
     WHERE ID_Categoria = :OLD.ID_Categoria;
 
     IF v_conteo > 0 THEN
-        RAISE_APPLICATION_ERROR(-20004, 'No se puede eliminar, aún hay piezas en esta categoria.');
+        RAISE_APPLICATION_ERROR(-20004, 'No se puede eliminar la categoria porque tiene piezas asociadas.');
     END IF;
 END;
 /
 
---- PAQUETE 2---
-CREATE OR REPLACE PACKAGE PKG_OPERACIONES AS
+--- TRIGGER 7 ---
+CREATE OR REPLACE TRIGGER TRG_ACTUALIZAR_STOCK_AUTO
+AFTER INSERT ON Movimiento
+FOR EACH ROW
+BEGIN
+    -- Si es ENTRADA, sumamos; si es SALIDA, restamos
+    IF :NEW.Tipo_Movimiento = 'ENTRADA' THEN
+        UPDATE Pieza SET Stock_Actual = Stock_Actual + :NEW.Cantidad 
+        WHERE ID_Pieza = :NEW.ID_Pieza;
+    ELSIF :NEW.Tipo_Movimiento = 'SALIDA' THEN
+        UPDATE Pieza SET Stock_Actual = Stock_Actual - :NEW.Cantidad 
+        WHERE ID_Pieza = :NEW.ID_Pieza;
+    END IF;
+END;
+/
 
+--- PAQUETE 2 ---
+CREATE OR REPLACE PACKAGE PKG_OPERACIONES AS
     PROCEDURE SP_Procesar_Salida(
         p_id_pieza IN NUMBER,
         p_cantidad IN NUMBER,
@@ -402,11 +425,9 @@ CREATE OR REPLACE PACKAGE PKG_OPERACIONES AS
     FUNCTION FN_Estado_Pieza(
         p_stock_actual IN NUMBER
     ) RETURN VARCHAR2;
-
 END PKG_OPERACIONES;
 /
 
---- CUERPO DEL PAQUETE ---
 CREATE OR REPLACE PACKAGE BODY PKG_OPERACIONES AS
 
     -- 1. PROCEDIMIENTO: SP_Procesar_Salida
@@ -416,8 +437,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_OPERACIONES AS
         p_id_usuario IN NUMBER
     ) IS
     BEGIN
-        -- Intentamos insertar el movimiento de SALIDA
-        INSERT INTO Movimientos (
+        INSERT INTO Movimiento (
             ID_Pieza, 
             ID_Usuario, 
             Tipo_Movimiento, 
@@ -429,26 +449,27 @@ CREATE OR REPLACE PACKAGE BODY PKG_OPERACIONES AS
             p_id_usuario,
             'SALIDA',
             p_cantidad,
-            'Salida procesada',
-            0 
+            'Salida procesada via PKG',
+            0
         );
-        COMMIT;
-        DBMS_OUTPUT.PUT_LINE('Salida autorizada y guardada en base de datos.');
+    
+        DBMS_OUTPUT.PUT_LINE('>>> Intento de salida registrado correctamente.');
 
     EXCEPTION
         WHEN OTHERS THEN
             ROLLBACK;
-            DBMS_OUTPUT.PUT_LINE('TRANSACCIÓN CANCELADA: ' || SQLERRM);
+            DBMS_OUTPUT.PUT_LINE('ERROR EN OPERACION: ' || SQLERRM);
+            RAISE; 
     END SP_Procesar_Salida;
-
 
     -- 2. FUNCIÓN: FN_Estado_Pieza
     FUNCTION FN_Estado_Pieza(
         p_stock_actual IN NUMBER
     ) RETURN VARCHAR2 IS
     BEGIN
-        IF p_stock_actual < 5 THEN
-            RETURN 'CRÍTICO';
+        -- Lógica de negocio para stock en la bodega
+        IF p_stock_actual <= 5 THEN
+            RETURN 'CRÍTICO - Reabastecer';
         ELSE
             RETURN 'ÓPTIMO';
         END IF;
@@ -459,70 +480,66 @@ END PKG_OPERACIONES;
 
 --- CURSOR 3 EXPLÍCITO ---
 SET SERVEROUTPUT ON;
-
 DECLARE
     CURSOR cur_reabastecimiento IS
         SELECT p.Nombre, 
                p.Stock_Actual, 
                m.Nombre_Marca,
                p.Modelo
-        FROM Piezas p
-        JOIN Marcas m ON p.ID_Marca = m.ID_Marca;
-
-    v_estado VARCHAR2(10);
+        FROM Pieza p
+        JOIN Marca m ON p.ID_Marca = m.ID_Marca;
+    v_estado VARCHAR2(30);
     v_contador NUMBER := 0;
 
 BEGIN
-    DBMS_OUTPUT.PUT_LINE(' REPORTE DE REABASTECIMIENTO');
+    DBMS_OUTPUT.PUT_LINE('REPORTE DE REABASTECIMIENTO');
     DBMS_OUTPUT.PUT_LINE(RPAD('PIEZA', 25) || RPAD('MARCA', 15) || 'STOCK');
-
     FOR r_pieza IN cur_reabastecimiento LOOP
         v_estado := PKG_OPERACIONES.FN_Estado_Pieza(r_pieza.Stock_Actual);
 
-        IF v_estado = 'CRÍTICO' THEN
+        IF v_estado LIKE 'CRÍTICO%' THEN 
             v_contador := v_contador + 1;
-            
+        
             DBMS_OUTPUT.PUT_LINE(
                 RPAD(r_pieza.Nombre, 25) || 
                 RPAD(r_pieza.Nombre_Marca, 15) || 
                 LPAD(r_pieza.Stock_Actual, 5)
             );
-        END IF;
-        
+        END IF;   
     END LOOP;
-    DBMS_OUTPUT.PUT_LINE(' ');
     IF v_contador > 0 THEN
-        DBMS_OUTPUT.PUT_LINE('Total de artículos para reabastecer: ' || v_contador);
+        DBMS_OUTPUT.PUT_LINE('Total de articulos para reabastecer: ' || v_contador);
     ELSE
-        DBMS_OUTPUT.PUT_LINE('El inventario se encuentra en niveles ÓPTIMOS.');
+        DBMS_OUTPUT.PUT_LINE('El inventario se encuentra en niveles OPTIMOS.');
     END IF;
-    DBMS_OUTPUT.PUT_LINE(' ');
-
 END;
 /
 
 --- CURSOR 4 IMPLÍCITO:
 SET SERVEROUTPUT ON; 
-
 DECLARE
     v_total_piezas NUMBER := 0;
     v_anaquel_buscado VARCHAR2(5) := 'A1'; 
 BEGIN
-    SELECT SUM(p.Stock_Actual)
+    SELECT NVL(SUM(p.Stock_Actual), 0)
     INTO v_total_piezas
-    FROM Piezas p
-    JOIN Ubicaciones u ON p.ID_Ubicacion = u.ID_Ubicacion
+    FROM Pieza p
+    JOIN Ubicacion u ON p.ID_Ubicacion = u.ID_Ubicacion
     WHERE u.Anaquel = v_anaquel_buscado;
 
-    IF v_total_piezas IS NULL THEN
-        v_total_piezas := 0;
-    END IF;
+    DBMS_OUTPUT.PUT_LINE('REPORTE DE CAPACIDAD POR ANAQUEL');
     DBMS_OUTPUT.PUT_LINE('Anaquel consultado: ' || v_anaquel_buscado);
     DBMS_OUTPUT.PUT_LINE('Total de piezas almacenadas: ' || v_total_piezas);
+    
+    IF v_total_piezas > 100 THEN
+        DBMS_OUTPUT.PUT_LINE('ESTADO: Anaquel con alta carga.');
+    ELSIF v_total_piezas = 0 THEN
+        DBMS_OUTPUT.PUT_LINE('ESTADO: Anaquel vacio o no asignado.');
+    ELSE
+        DBMS_OUTPUT.PUT_LINE('ESTADO: Espacio disponible.');
+    END IF;
 
 EXCEPTION
-    WHEN NO_DATA_FOUND THEN
-        DBMS_OUTPUT.PUT_LINE('Error: Anaquel ' || v_anaquel_buscado || ' inexistente.');
     WHEN OTHERS THEN
         DBMS_OUTPUT.PUT_LINE('Ocurrió un error inesperado: ' || SQLERRM);
 END;
