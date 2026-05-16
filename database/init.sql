@@ -44,7 +44,6 @@ CREATE TABLE Pieza (
     ID_Categoria NUMBER NOT NULL,
     ID_Medida NUMBER NOT NULL,
     ID_Marca NUMBER NOT NULL,
-    ID_Maquina NUMBER,
     ID_Ubicacion NUMBER,
     ID_Area_Bordado NUMBER,
     Nombre VARCHAR2(50) NOT NULL,
@@ -53,11 +52,18 @@ CREATE TABLE Pieza (
     Stock_Actual NUMBER(4) DEFAULT 0 CHECK (Stock_Actual >= 0),
     Estado VARCHAR2(20) DEFAULT 'ACTIVO',
     CONSTRAINT ID_Cat_Pie_Cat FOREIGN KEY (ID_Categoria) REFERENCES Categoria (ID_Categoria),
-    CONSTRAINT ID_Maq_Pie_Maq FOREIGN KEY (ID_Maquina) REFERENCES Maquina (ID_Maquina),
     CONSTRAINT ID_Ubi_Pie_Ubi FOREIGN KEY (ID_Ubicacion) REFERENCES Ubicacion (ID_Ubicacion),
     CONSTRAINT ID_Med_Pie_Med FOREIGN KEY (ID_Medida) REFERENCES Medida (ID_Medida),
     CONSTRAINT ID_Mar_Pie_Mar FOREIGN KEY (ID_Marca) REFERENCES Marca (ID_Marca),
     CONSTRAINT ID_Are_Pie_Are FOREIGN KEY (ID_Area_Bordado) REFERENCES Area_Bordado (ID_Area)
+);
+
+CREATE TABLE Compatibilidad (
+    ID_Pieza NUMBER NOT NULL,
+    ID_Maquina NUMBER NOT NULL,
+    CONSTRAINT PK_Compatibilidad PRIMARY KEY (ID_Pieza, ID_Maquina),
+    CONSTRAINT FK_Compat_Prod FOREIGN KEY (ID_Pieza) REFERENCES Pieza(ID_Pieza),
+    CONSTRAINT FK_Compat_Maq FOREIGN KEY (ID_Maquina) REFERENCES Maquina(ID_Maquina)
 );
 
 CREATE TABLE Usuario (

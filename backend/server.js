@@ -108,8 +108,7 @@ app.get('/api/inventario', async (req, res) => {
         c.Nombre_Categoria AS Categoria, 
         u.Anaquel || '-' || u.Nivel AS Ubicacion, 
         p.Modelo, 
-        p.Color_Tipo, 
-         mq.Nombre_Modelo AS Maquina, 
+        p.Color_Tipo,  
         a.Nombre_Area AS Area,
         p.Stock_Actual
         FROM Pieza p
@@ -117,7 +116,6 @@ app.get('/api/inventario', async (req, res) => {
         INNER JOIN Marca m ON p.ID_Marca = m.ID_Marca
         LEFT JOIN Medida med ON p.ID_Medida = med.ID_Medida
         LEFT JOIN Ubicacion u ON p.ID_Ubicacion = u.ID_Ubicacion
-        LEFT JOIN Maquina mq ON p.ID_Maquina = mq.ID_Maquina
         LEFT JOIN Area_Bordado a ON p.ID_Area_Bordado = a.ID_Area
         WHERE p.Estado = 'ACTIVO'
         ORDER BY p.Nombre ASC`;
@@ -191,7 +189,7 @@ app.get('/api/productos-existentes/:idCategoria', async (req, res) => {
         connection = await oracledb.getConnection(dbConfig);
 
         if (idCat !== "x") {
-            sqlProductos =  `SELECT p.Nombre, m.Nombre_Marca as Marca, p.Stock_Actual AS Stock, p.ID_Pieza FROM Pieza p INNER JOIN Marca m ON p.ID_Marca =  m.ID_Marca WHERE p.ID_Categoria = :idc`;
+            sqlProductos = `SELECT p.Nombre, m.Nombre_Marca as Marca, p.Stock_Actual AS Stock, p.ID_Pieza FROM Pieza p INNER JOIN Marca m ON p.ID_Marca =  m.ID_Marca WHERE p.ID_Categoria = :idc`;
 
             resProductos = await connection.execute(sqlProductos, { idc: idCat }, { outFormat: oracledb.OUT_FORMAT_OBJECT });
 
@@ -412,7 +410,6 @@ app.get('/api/catalogos', async (req, res) => {
             categorias: sqlCategorias.rows,
             marcas: sqlMarcas.rows,
             medidas: sqlMedidas.rows,
-            maquinas: sqlMaquinas.rows,
             ubicaciones: sqlUbicaciones.rows,
             areasbordado: sqlAreasBordado.rows
         });
@@ -447,16 +444,49 @@ app.post('/api/registrar-producto', async (req, res) => {
 
         const altaPieza = `INSERT INTO Pieza (ID_Categoria, ID_Medida, ID_Marca, ID_Maquina, ID_Ubicacion, ID_Area_Bordado, Nombre, Modelo, Color_Tipo, Stock_Actual) VALUES (:idcat, :idmed, :idmar, :idmaq, :idubi, :idare, :nom, :mod, :col, :sto)`;
 
-        const respuestaAltaPieza = await connection.execute(altaPieza, { idcat: categoria, idmed: medida, idmar: marca, idmaq: maquina, idubi: ubicacion, idare: area, nom: nombre, mod: modelo, col: color, sto: stock });
+        const respuestaAltaPieza = await connection.execute(altaPieza, { idcat: categoria, idmed: medida, idmar: marca, idmaq: maquina, idubi: ubicacion, idare: area, nom: nombre, mod: modelo, col: color, sto: stock }, { outFormat: oracledb.OUT_FORMAT_OBJECT });
 
         await connection.commit();
 
-        res.json({ exito: true, mensaje: "PRODUCTO AGREGADO CON EXITO" })
+        res.json({ exito: true, mensaje: "PRODUCTO AGREGADO CON EXITO" });
 
     } catch (err) {
 
         console.error("ERROR AL AGREGAR EL PRODUCTO: ", err);
         res.status(500).json({ exito: false, error: "ERROR AL AGREGAR EL PRODUCTO" });
+
+    } finally {
+        if (connection) {
+            try { await connection.close(); } catch (err) { console.error(err); }
+        }
+    }
+});
+
+//REGISTRAR MAQUINA ----------------------------------------------------------------------------------------------------------------------------------------------------------
+app.post('/api/registrar-maquina', async (req, res) => {
+    const modelo = req.body.modelo;
+    const serie = req.body.serie;
+    const marca = req.body.marca;
+    const area = req.body.area;
+    const bastidor = req.body.bastidor;
+    const descripcion = req.body.descripcion;
+
+    let connection;
+
+    try {
+        connection = await oracledb.getConnection(dbConfig);
+
+        const altaMaquina = `INSERT INTO Maquina (ID_Marca, ID_Area, Nombre_Modelo, NoSerie, Tipo_Bastidor, Descripcion_Maquina) VALUES (:idmar, :idare, :nom, :ser, :bas, :des)`;
+
+        const respuestaAltaMaquina = await connection.execute(altaMaquina, { idmar: marca, idare: area, nom: modelo, ser: serie, bas: bastidor, des: descripcion }, { outFormat: oracledb.OUT_FORMAT_OBJECT });
+
+        await connection.commit();
+
+        res.json({ exito: true, mensaje: "MAQUINA AGREGADA CON EXITO" });
+    } catch (err) {
+
+        console.error("ERROR AL AGREGAR LA MAQUINA: ", err);
+        res.status(500).json({ exito: false, error: "ERROR AL AGREGAR LA MAQUINA" });
 
     } finally {
         if (connection) {
@@ -485,23 +515,19 @@ app.post('/api/alta-catalogos', async (req, res) => {
         if (tipo === 'CATEGORIA') {
             altaTipo = `INSERT INTO Categoria (Nombre_Categoria) VALUES (:dat)`;
 
-            resultadoAltaCatalogo = await connection.execute(altaTipo, { dat: dato}, { outFormat: oracledb.OUT_FORMAT_OBJECT });
+            resultadoAltaCatalogo = await connection.execute(altaTipo, { dat: dato }, { outFormat: oracledb.OUT_FORMAT_OBJECT });
         } else if (tipo === 'MARCA') {
             altaTipo = `INSERT INTO Marca (Nombre_Marca) VALUES (:dat)`;
 
-            resultadoAltaCatalogo = await connection.execute(altaTipo, { dat: dato}, { outFormat: oracledb.OUT_FORMAT_OBJECT });
-        } else if (tipo === 'MAQUINA') {
-            altaTipo = `INSERT INTO Maquina (Nombre_Modelo) VALUES (:dat)`;
-
-            resultadoAltaCatalogo = await connection.execute(altaTipo, { dat: dato}, { outFormat: oracledb.OUT_FORMAT_OBJECT });
+            resultadoAltaCatalogo = await connection.execute(altaTipo, { dat: dato }, { outFormat: oracledb.OUT_FORMAT_OBJECT });
         } else if (tipo === 'MEDIDA') {
             altaTipo = `INSERT INTO Medida (Valor_Medida) VALUES (:dat)`;
 
-            resultadoAltaCatalogo = await connection.execute(altaTipo, { dat: dato}, { outFormat: oracledb.OUT_FORMAT_OBJECT });
+            resultadoAltaCatalogo = await connection.execute(altaTipo, { dat: dato }, { outFormat: oracledb.OUT_FORMAT_OBJECT });
         } else if (tipo === 'AREA') {
             altaTipo = `INSERT INTO Area_Bordado (Nombre_Area) VALUES (:dat)`;
 
-            resultadoAltaCatalogo = await connection.execute(altaTipo, { dat: dato}, { outFormat: oracledb.OUT_FORMAT_OBJECT });
+            resultadoAltaCatalogo = await connection.execute(altaTipo, { dat: dato }, { outFormat: oracledb.OUT_FORMAT_OBJECT });
         } else if (tipo === 'UBICACION') {
             altaTipo = `INSERT INTO Ubicacion (Anaquel, Nivel) VALUES (:anaq, :niv)`;
             parametros = { anaq: dato.anaquel, niv: dato.nivel };
@@ -521,6 +547,95 @@ app.post('/api/alta-catalogos', async (req, res) => {
     } finally {
         if (connection) {
             try { await connection.close(); } catch (err) { console.error(err); }
+        }
+    }
+});
+
+//LLENAR TABLA PIEZAS Y MAQUINAS ---------------------------------------------------------------------------------------------------------------------------------------
+app.get('/api/consulta-piezas-maquinas', async (req, res) => {
+
+    let connection;
+
+    try {
+        connection = await oracledb.getConnection(dbConfig);
+
+        const consultaPiezas = `SELECT ID_Pieza, Nombre FROM Pieza`;
+
+        const consultaMaquinas = `SELECT ID_Maquina, Nombre_Modelo FROM Maquina`;
+
+        const consultaCompatibilidad = `SELECT p.ID_Pieza, p.Nombre AS Pieza, m.ID_Maquina, m.Nombre_Modelo AS Maquina FROM Compatibilidad c
+        INNER JOIN Pieza p ON p.ID_Pieza = c.ID_Pieza
+        INNER JOIN Maquina m ON m.ID_Maquina = c.ID_Maquina`;
+
+        const respuestaPiezas = await connection.execute(consultaPiezas, [], { outFormat: oracledb.OUT_FORMAT_OBJECT });
+
+        const respuestaMaquinas = await connection.execute(consultaMaquinas, [], { outFormat: oracledb.OUT_FORMAT_OBJECT });
+
+        const respuestaCombatibilidad = await connection.execute(consultaCompatibilidad, [], { outFormat: oracledb.OUT_FORMAT_OBJECT });
+
+        res.json({ exito: true, piezas: respuestaPiezas.rows, maquinas: respuestaMaquinas.rows, relaciones: respuestaCombatibilidad.rows });
+
+    } catch (err) {
+
+        console.error("ERROR AL CONSULTAR LAS PIEZAS Y/O MAQUINAS: ", err);
+        res.status(500).json({ exito: false, error: "ERROR AL CONSULTAR LAS PIEZAS Y/O STOCK" });
+
+    } finally {
+        if (connection) {
+            try { await connection.close() } catch (err) { console.error(err); }
+        }
+    }
+});
+
+//VINCULAR PIEZA Y MAQUINA --------------------------------------------------------------------------------------------------------------------------------------------
+app.post('/api/vincular-pieza-maquina', async (req, res) => {
+    const idPieza = req.body.pieza;
+    const idMaquina = req.body.maquina;
+
+    let connection;
+    try {
+        connection = await oracledb.getConnection(dbConfig);
+
+        const altaVinvulacion = `INSERT INTO Compatibilidad (ID_Pieza, ID_Maquina) VALUES (:idp, :idm)`;
+
+        const respuestaVinculacion = await connection.execute(altaVinvulacion, { idp: idPieza, idm: idMaquina }, { outFormat: oracledb.OUT_FORMAT_OBJECT });
+
+        res.json({ exito: true, mensaje: "VINCULACION REALIZADA CON EXITO" });
+
+        await connection.commit();
+
+    } catch (err) {
+
+        console.error("ERROR AL REALIZAR LA VINCULACION: ", err);
+        res.status(500).json({ exito: false, error: "ERROR AL REALIZAR LA VINCULACION" });
+
+    } finally {
+        if (connection) {
+            try { await connection.close() } catch (err) { console.error(err); }
+        }
+    }
+});
+
+//BORRAR RELACION PIEZA Y MAQUINA --------------------------------------------------------------------------------------------------------------------------------------
+app.post('/api/borrar-relacion', async (req, res) => {
+    const idPieza = req.body.pieza;
+    const idMaquina = req.body.maquina;
+
+    let connection;
+    try {
+        connection = await oracledb.getConnection(dbConfig);
+
+        const bajaVinculacion = `DELETE FROM Compatibilidad WHERE ID_Pieza = :idp AND ID_Maquina = :idm`;
+
+        const resBajaVinculacion = await connection.execute(bajaVinculacion, { idp: idPieza, idm: idMaquina }, { outFormat: oracledb.OUT_FORMAT_OBJECT });
+
+        res.json({ exito: true, mensaje: "RELACION BORRADA CON EXITO" });
+
+        await connection.commit();
+
+    } catch (err) {
+        if (connection) {
+            try { await connection.close() } catch (err) { console.error(err); }
         }
     }
 });

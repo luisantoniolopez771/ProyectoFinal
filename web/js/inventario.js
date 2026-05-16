@@ -47,7 +47,6 @@ async function cargarInventario() {
                     <td>${pieza.MODELO || 'N/A'}</td>
                     <td>${pieza.COLOR_TIPO || 'N/A'}</td>
                     <td>${pieza.AREA || 'N/A'}</td>
-                    <td>${pieza.MAQUINA || 'N/A'}</td>
                     <td>${pieza.STOCK_ACTUAL}</td>
                 `;
             });

@@ -105,7 +105,7 @@ nav a:hover {
 }
 
 /* Eliminamos los min-width gigantescos que rompían el celular */
-.panel-izquierdo { flex: 2; min-width: 280px; display: flex; flex-direction: column; gap: 20px; }
+.panel-izquierdo { flex: 3.5; min-width: 280px; display: flex; flex-direction: column; gap: 20px; }
 .panel-derecho { flex: 1; min-width: 280px; display: flex; flex-direction: column; gap: 20px; }
 .columna-principal { flex: 3; min-width: 280px; display: flex; flex-direction: column; width: 100%; }
 .columna-lateral { flex: 1; min-width: 280px; width: 100%; }
@@ -170,7 +170,7 @@ h3 { text-align: left; margin-top: 0; margin-bottom: 20px; font-size: 1.2rem; }
     width: 100%;
 }
 
-.selector-pestanas { display: flex; gap: 15px; border-bottom: 2px solid #eee; margin-bottom: 20px; padding-bottom: 5px; flex-wrap: wrap; }
+.selector-pestanas { display: flex; gap: 5px; border-bottom: 2px solid #eee; margin-bottom: 20px; padding-bottom: 5px; flex-wrap: wrap; }
 .btn-tab { background: none; border: none; font-weight: bold; font-size: 14px; color: #777; cursor: pointer; padding: 10px 15px; transition: 0.3s; }
 .btn-tab.activo { color: #272a4d; border-bottom: 3px solid #72273b; margin-bottom: -7px; }
 
