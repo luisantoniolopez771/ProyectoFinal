@@ -94,9 +94,13 @@ INSERT INTO Usuario (Nombre_Completo, Rol, Estado, Contrasena) VALUES ('Trabajad
 
 -- CATEGORIAS
 INSERT INTO Categoria (Nombre_Categoria) VALUES ('Aros');
-INSERT INTO Categoria (Nombre_Categoria) VALUES ('Tornillos');
+INSERT INTO Categoria (Nombre_Categoria) VALUES ('Aros de gorra');
 INSERT INTO Categoria (Nombre_Categoria) VALUES ('Bastidores');
-INSERT INTO Categoria (Nombre_Categoria) VALUES ('Agujas');
+INSERT INTO Categoria (Nombre_Categoria) VALUES ('Tornillos');
+INSERT INTO Categoria (Nombre_Categoria) VALUES ('Huaraches');
+INSERT INTO Categoria (Nombre_Categoria) VALUES ('Grapas');
+INSERT INTO Categoria (Nombre_Categoria) VALUES ('Brazos');
+INSERT INTO Categoria (Nombre_Categoria) VALUES ('Embastadores');
 
 -- MARCAS
 INSERT INTO Marca (Nombre_Marca) VALUES ('SWF');
@@ -104,40 +108,130 @@ INSERT INTO Marca (Nombre_Marca) VALUES ('Tajima');
 INSERT INTO Marca (Nombre_Marca) VALUES ('Pantogram');
 INSERT INTO Marca (Nombre_Marca) VALUES ('Barudan');
 INSERT INTO Marca (Nombre_Marca) VALUES ('Brother');
+INSERT INTO Marca (Nombre_Marca) VALUES ('Ultra Stitch');
+INSERT INTO Marca (Nombre_Marca) VALUES ('Feiya');
+INSERT INTO Marca (Nombre_Marca) VALUES ('Happy');
+INSERT INTO Marca (Nombre_Marca) VALUES ('ZSK');
+INSERT INTO Marca (Nombre_Marca) VALUES ('Toyota');
 
 -- MEDIDAS
+INSERT INTO Medida (Valor_Medida) VALUES ('09x35');
+INSERT INTO Medida (Valor_Medida) VALUES ('12x35');
+INSERT INTO Medida (Valor_Medida) VALUES ('15x35');
 INSERT INTO Medida (Valor_Medida) VALUES ('18x35');
-INSERT INTO Medida (Valor_Medida) VALUES ('15x15');
-INSERT INTO Medida (Valor_Medida) VALUES ('12x12');
+INSERT INTO Medida (Valor_Medida) VALUES ('21x35');
+INSERT INTO Medida (Valor_Medida) VALUES ('30x30/35');
+INSERT INTO Medida (Valor_Medida) VALUES ('24x24/35');
+INSERT INTO Medida (Valor_Medida) VALUES ('09x40');
+INSERT INTO Medida (Valor_Medida) VALUES ('12x40');
+INSERT INTO Medida (Valor_Medida) VALUES ('15x40');
+INSERT INTO Medida (Valor_Medida) VALUES ('18x40');
+INSERT INTO Medida (Valor_Medida) VALUES ('30x30/40');
+INSERT INTO Medida (Valor_Medida) VALUES ('33x30/40');
+INSERT INTO Medida (Valor_Medida) VALUES ('45x35/40');
+INSERT INTO Medida (Valor_Medida) VALUES ('09x45');
+INSERT INTO Medida (Valor_Medida) VALUES ('12x45');
+INSERT INTO Medida (Valor_Medida) VALUES ('15x45');
+INSERT INTO Medida (Valor_Medida) VALUES ('18x45');
+INSERT INTO Medida (Valor_Medida) VALUES ('24x24/45');
+INSERT INTO Medida (Valor_Medida) VALUES ('30x30/45');
+INSERT INTO Medida (Valor_Medida) VALUES ('09x50')
+INSERT INTO Medida (Valor_Medida) VALUES ('12x50');
+INSERT INTO Medida (Valor_Medida) VALUES ('15x50');
+INSERT INTO Medida (Valor_Medida) VALUES ('18x50');
+INSERT INTO Medida (Valor_Medida) VALUES ('30x30/50');
+INSERT INTO Medida (Valor_Medida) VALUES ('33x45/50');
+INSERT INTO Medida (Valor_Medida) VALUES ('42x34/50');
+INSERT INTO Medida (Valor_Medida) VALUES ('50x50');
 INSERT INTO Medida (Valor_Medida) VALUES ('5mm');
 INSERT INTO Medida (Valor_Medida) VALUES ('10mm');
 INSERT INTO Medida (Valor_Medida) VALUES ('15mm');
 INSERT INTO Medida (Valor_Medida) VALUES ('XXL');
 INSERT INTO Medida (Valor_Medida) VALUES ('Estándar');
-INSERT INTO Medida (Valor_Medida) VALUES ('75/11');
-INSERT INTO Medida (Valor_Medida) VALUES ('80/12');
 
 -- UBICACIONES
 INSERT INTO Ubicacion (Anaquel, Nivel) VALUES ('A1', 'N1');
 INSERT INTO Ubicacion (Anaquel, Nivel) VALUES ('A1', 'N2');
+INSERT INTO Ubicacion (Anaquel, Nivel) VALUES ('A1', 'N3');
+INSERT INTO Ubicacion (Anaquel, Nivel) VALUES ('A1', 'N4');
+INSERT INTO Ubicacion (Anaquel, Nivel) VALUES ('A1', 'N5');
+INSERT INTO Ubicacion (Anaquel, Nivel) VALUES ('A2', 'N1');
+INSERT INTO Ubicacion (Anaquel, Nivel) VALUES ('A2', 'N2');
+INSERT INTO Ubicacion (Anaquel, Nivel) VALUES ('A2', 'N3');
+INSERT INTO Ubicacion (Anaquel, Nivel) VALUES ('A2', 'N4');
+INSERT INTO Ubicacion (Anaquel, Nivel) VALUES ('A2', 'N5');
+INSERT INTO Ubicacion (Anaquel, Nivel) VALUES ('A3', 'N1');
+INSERT INTO Ubicacion (Anaquel, Nivel) VALUES ('A3', 'N2');
+INSERT INTO Ubicacion (Anaquel, Nivel) VALUES ('A3', 'N3');
+INSERT INTO Ubicacion (Anaquel, Nivel) VALUES ('A3', 'N4');
+INSERT INTO Ubicacion (Anaquel, Nivel) VALUES ('A3', 'N5');
+INSERT INTO Ubicacion (Anaquel, Nivel) VALUES ('A4', 'N1');
+INSERT INTO Ubicacion (Anaquel, Nivel) VALUES ('A4', 'N2');
+INSERT INTO Ubicacion (Anaquel, Nivel) VALUES ('A4', 'N3');
+INSERT INTO Ubicacion (Anaquel, Nivel) VALUES ('A4', 'N4');
+INSERT INTO Ubicacion (Anaquel, Nivel) VALUES ('A4', 'N5');
+INSERT INTO Ubicacion (Anaquel, Nivel) VALUES ('A5', 'N1');
+INSERT INTO Ubicacion (Anaquel, Nivel) VALUES ('A5', 'N2');
+INSERT INTO Ubicacion (Anaquel, Nivel) VALUES ('A5', 'N3');
+INSERT INTO Ubicacion (Anaquel, Nivel) VALUES ('A5', 'N4');
+INSERT INTO Ubicacion (Anaquel, Nivel) VALUES ('A5', 'N5');
+INSERT INTO Ubicacion (Anaquel, Nivel) VALUES ('A6', 'N1');
+INSERT INTO Ubicacion (Anaquel, Nivel) VALUES ('A6', 'N2');
+INSERT INTO Ubicacion (Anaquel, Nivel) VALUES ('A6', 'N3');
+INSERT INTO Ubicacion (Anaquel, Nivel) VALUES ('A6', 'N4');
+INSERT INTO Ubicacion (Anaquel, Nivel) VALUES ('A6', 'N5');
 
 -- AREAS DE BORDADO
-INSERT INTO Area_Bordado (Nombre_Area) VALUES ('Plano');
-INSERT INTO Area_Bordado (Nombre_Area) VALUES ('Gorra');
-INSERT INTO Area_Bordado (Nombre_Area) VALUES ('Tubular');
-INSERT INTO Area_Bordado (Nombre_Area) VALUES ('Prenda Armada');
+INSERT INTO Area_Bordado (Nombre_Area) VALUES ('27x35');
+INSERT INTO Area_Bordado (Nombre_Area) VALUES ('30x36');
+INSERT INTO Area_Bordado (Nombre_Area) VALUES ('40x46');
+INSERT INTO Area_Bordado (Nombre_Area) VALUES ('45x51');
+INSERT INTO Area_Bordado (Nombre_Area) VALUES ('50x56');
+INSERT INTO Area_Bordado (Nombre_Area) VALUES ('40x60');
 
 -- MAQUINAS
 INSERT INTO Maquina (ID_Marca, ID_Area, Nombre_Modelo, NoSerie, Descripcion_Maquina) VALUES (1, 1, 'SWF/E-T1501C', 'SWF001', 'Máquina SWF de 1 cabeza');
-
-INSERT INTO Maquina (ID_Marca, ID_Area, Nombre_Modelo, NoSerie, Descripcion_Maquina) VALUES (2, 4, 'TFMX-C', 'TAJ001', 'Máquina Tajima cilíndrica');
-
 INSERT INTO Maquina (ID_Marca, ID_Area, Nombre_Modelo, NoSerie, Descripcion_Maquina) VALUES (1, 2, 'SWF/K-UH1504-45', 'SWF002', 'Máquina SWF de 4 cabezas');
+INSERT INTO Maquina (ID_Marca, ID_Area, Nombre_Modelo, NoSerie, Descripcion_Maquina) VALUES (1, 3, 'SWF/K-Uk1508-45', 'SWF003', 'Máquina SWF de 8 cabezas');
+INSERT INTO Maquina (ID_Marca, ID_Area, Nombre_Modelo, NoSerie, Descripcion_Maquina) VALUES (1, 4, 'SWF/KE-1506-45', 'SWF004', 'Máquina SWF de 6 cabezas');
+INSERT INTO Maquina (ID_Marca, ID_Area, Nombre_Modelo, NoSerie, Descripcion_Maquina) VALUES (1, 5, 'SWF/K-UHD1502-45', 'SWF005', 'Máquina SWF Dual de 2 cabezas');
+INSERT INTO Maquina (ID_Marca, ID_Area, Nombre_Modelo, NoSerie, Descripcion_Maquina) VALUES (1, 6, 'SWF/K-UHD1208-45', 'SWF006', 'Máquina SWF Dual de 8 cabezas');
+INSERT INTO Maquina (ID_Marca, ID_Area, Nombre_Modelo, NoSerie, Descripcion_Maquina) VALUES (1, 7, 'SWF/KX-1501C', 'SWF007', 'Máquina SWF de 1 cabezas');
+
+INSERT INTO Maquina (ID_Marca, ID_Area, Nombre_Modelo, NoSerie, Descripcion_Maquina) VALUES (2, 8, 'TFMX-C', 'TAJ001', 'Máquina Tajima cilíndrica');
+INSERT INTO Maquina (ID_Marca, ID_Area, Nombre_Modelo, NoSerie, Descripcion_Maquina) VALUES (2, 9, 'TEHX-C', 'TAJ002', 'Máquina Tajima de 4 cabezas');
+INSERT INTO Maquina (ID_Marca, ID_Area, Nombre_Modelo, NoSerie, Descripcion_Maquina) VALUES (2, 10, 'TME-DC', 'TAJ003', 'Máquina Tajima de 12 cabezas, 9 colores');
+INSERT INTO Maquina (ID_Marca, ID_Area, Nombre_Modelo, NoSerie, Descripcion_Maquina) VALUES (2, 11, 'DM-C', 'TAJ004', 'Máquina Tajima de 15 cabezas 12 colores');
+INSERT INTO Maquina (ID_Marca, ID_Area, Nombre_Modelo, NoSerie, Descripcion_Maquina) VALUES (2, 12, 'HX-C', 'TAJ002', 'Máquina Tajima de 6 cabezas');
+
+INSERT INTO Maquina (ID_Marca, ID_Area, Nombre_Modelo, NoSerie, Descripcion_Maquina) VALUES (3, 13, 'BTH-T1', 'BRO001', 'Máquina Brother de 4 cabezas tipo 1');
+INSERT INTO Maquina (ID_Marca, ID_Area, Nombre_Modelo, NoSerie, Descripcion_Maquina) VALUES (3, 14, 'BTH-T2', 'BRO002', 'Máquina Brother de 1 cabezas tipo 2');
+INSERT INTO Maquina (ID_Marca, ID_Area, Nombre_Modelo, NoSerie, Descripcion_Maquina) VALUES (3, 15, 'BTH-T3', 'BRO003', 'Máquina Brother de 6 cabezas tipo 3');
+
+INSERT INTO Maquina (ID_Marca, ID_Area, Nombre_Modelo, NoSerie, Descripcion_Maquina) VALUES (4, 16, 'HPP1512', 'HPP001', 'Máquina Happy de 15 cabezas 12 colores');
+INSERT INTO Maquina (ID_Marca, ID_Area, Nombre_Modelo, NoSerie, Descripcion_Maquina) VALUES (4, 17, 'HPP1204', 'HPP002', 'Máquina Brother de 12 cabezas 4 colores');
 
 -- PIEZAS
-INSERT INTO Pieza (ID_Categoria, ID_Ubicacion, ID_Marca, ID_Medida, Nombre, Stock_Actual) VALUES (1, 1, 2, 1, 'Aro Magnético', 12);
-
+INSERT INTO Pieza (ID_Categoria, ID_Ubicacion, ID_Marca, ID_Medida, Nombre, Color_Tipo, Stock_Actual) VALUES (1, 1, 2, 1, 'Huaraches Tajima', 'Verde' 34);
 INSERT INTO Pieza (ID_Categoria, ID_Ubicacion, ID_Marca, ID_Medida, Nombre, Color_Tipo, Stock_Actual) VALUES (2, 2, 3, 7, 'Tornillo de ajuste', 'Negro', 45);
+INSERT INTO Pieza (ID_Categoria, ID_Ubicacion, ID_Marca, ID_Medida, Nombre, Color_Tipo, Stock_Actual) VALUES (3, 3, 4, 2, 'Grapa', 'XXL', 24);
+INSERT INTO Pieza (ID_Categoria, ID_Ubicacion, ID_Marca, ID_Medida, Nombre, Color_Tipo, Stock_Actual) VALUES (4, 4, 5, 3, 'Bastidor de gorra', 'Fijo', 4);
+INSERT INTO Pieza (ID_Categoria, ID_Ubicacion, ID_Marca, ID_Medida, Nombre, Color_Tipo, Stock_Actual) VALUES (5, 5, 6, 4, 'Bastidor tubular', 'brazo largo', 65);
+INSERT INTO Pieza (ID_Categoria, ID_Ubicacion, ID_Marca, ID_Medida, Nombre, Color_Tipo, Stock_Actual) VALUES (6, 6, 7, 5, 'Bastidor plano', 'SWF', 20);
+INSERT INTO Pieza (ID_Categoria, ID_Ubicacion, ID_Marca, ID_Medida, Nombre, Color_Tipo, Stock_Actual) VALUES (7, 7, 8, 6, 'Catcher', 'Popote izquierdo', 17);
+INSERT INTO Pieza (ID_Categoria, ID_Ubicacion, ID_Marca, ID_Medida, Nombre, Color_Tipo, Stock_Actual) VALUES (8, 8, 9, 8, 'Catcher', 'Popote derecho', 20);
+INSERT INTO Pieza (ID_Categoria, ID_Ubicacion, ID_Marca, ID_Medida, Nombre, Color_Tipo, Stock_Actual) VALUES (9, 9, 10, 9, 'Barra', 'SWF', 94);
+INSERT INTO Pieza (ID_Categoria, ID_Ubicacion, ID_Marca, ID_Medida, Nombre, Color_Tipo, Stock_Actual) VALUES (10, 10, 11, 10, 'Barra', 'Tajima', 65);
+INSERT INTO Pieza (ID_Categoria, ID_Ubicacion, ID_Marca, ID_Medida, Nombre, Color_Tipo, Stock_Actual) VALUES (11, 11, 12, 11, 'Prensa tela', 'No calibrable', 4);
+INSERT INTO Pieza (ID_Categoria, ID_Ubicacion, ID_Marca, ID_Medida, Nombre, Color_Tipo, Stock_Actual) VALUES (12, 12, 13, 12, 'Prensa tela', 'calibrable', 10);
+INSERT INTO Pieza (ID_Categoria, ID_Ubicacion, ID_Marca, ID_Medida, Nombre, Color_Tipo, Stock_Actual) VALUES (13, 13, 14, 13, 'Resortes', 'Copete', 400);
+INSERT INTO Pieza (ID_Categoria, ID_Ubicacion, ID_Marca, ID_Medida, Nombre, Color_Tipo, Stock_Actual) VALUES (14, 14, 15, 14, 'Tira hilo', 'Curvo', 34);
+INSERT INTO Pieza (ID_Categoria, ID_Ubicacion, ID_Marca, ID_Medida, Nombre, Color_Tipo, Stock_Actual) VALUES (15, 15, 16, 15, 'Manguera', 'tipo hilo', 53);
+INSERT INTO Pieza (ID_Categoria, ID_Ubicacion, ID_Marca, ID_Medida, Nombre, Color_Tipo, Stock_Actual) VALUES (16, 16, 17, 16, 'Manguera', 'tipo lubricación', 56);
+INSERT INTO Pieza (ID_Categoria, ID_Ubicacion, ID_Marca, ID_Medida, Nombre, Color_Tipo, Stock_Actual) VALUES (17, 17, 18, 17, 'Embastador', 'Tajima', 30);
+INSERT INTO Pieza (ID_Categoria, ID_Ubicacion, ID_Marca, ID_Medida, Nombre, Color_Tipo, Stock_Actual) VALUES (18, 18, 19, 18, 'Aro de gorra', 'Cincho simple', 12);
+INSERT INTO Pieza (ID_Categoria, ID_Ubicacion, ID_Marca, ID_Medida, Nombre, Color_Tipo, Stock_Actual) VALUES (19, 19, 20, 19, 'Aro de gorra', 'Doble cincho', 200);
+INSERT INTO Pieza (ID_Categoria, ID_Ubicacion, ID_Marca, ID_Medida, Nombre, Color_Tipo, Stock_Actual) VALUES (20, 20, 21, 20, 'Aro de gorra', 'Media luna', 300);
 
 COMMIT;
 
