@@ -45,17 +45,14 @@ CREATE TABLE Pieza (
     ID_Medida NUMBER NOT NULL,
     ID_Marca NUMBER NOT NULL,
     ID_Ubicacion NUMBER,
-    ID_Area_Bordado NUMBER,
     Nombre VARCHAR2(50) NOT NULL,
-    Modelo VARCHAR2(50),
     Color_Tipo VARCHAR2(50),
     Stock_Actual NUMBER(4) DEFAULT 0 CHECK (Stock_Actual >= 0),
     Estado VARCHAR2(20) DEFAULT 'ACTIVO',
     CONSTRAINT ID_Cat_Pie_Cat FOREIGN KEY (ID_Categoria) REFERENCES Categoria (ID_Categoria),
     CONSTRAINT ID_Ubi_Pie_Ubi FOREIGN KEY (ID_Ubicacion) REFERENCES Ubicacion (ID_Ubicacion),
     CONSTRAINT ID_Med_Pie_Med FOREIGN KEY (ID_Medida) REFERENCES Medida (ID_Medida),
-    CONSTRAINT ID_Mar_Pie_Mar FOREIGN KEY (ID_Marca) REFERENCES Marca (ID_Marca),
-    CONSTRAINT ID_Are_Pie_Are FOREIGN KEY (ID_Area_Bordado) REFERENCES Area_Bordado (ID_Area)
+    CONSTRAINT ID_Mar_Pie_Mar FOREIGN KEY (ID_Marca) REFERENCES Marca (ID_Marca)
 );
 
 CREATE TABLE Compatibilidad (

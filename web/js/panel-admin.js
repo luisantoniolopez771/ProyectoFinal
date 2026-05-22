@@ -153,11 +153,6 @@ async function cargarCatalogos() {
                 selectUbicacion.innerHTML += `<option value="${ubi.ID_UBICACION}"> ${ubi.ANAQUEL} - ${ubi.NIVEL} </option>`;
             });
 
-            const selectAreaBordado = document.getElementById('select-prod-area');
-            resultado.areasbordado.forEach(are => {
-                selectAreaBordado.innerHTML += `<option value="${are.ID_AREA}"> ${are.NOMBRE_AREA} </option>`;
-            });
-
             const selectMarcaMaq = document.getElementById('select-maq-marca');
             resultado.marcas.forEach(mar => {
                 selectMarcaMaq.innerHTML += `<option value="${mar.ID_MARCA}"> ${mar.NOMBRE_MARCA} </option>`;
@@ -325,7 +320,7 @@ async function mostrarPiezasMaquinas() {
 
             const selectPieza = document.getElementById('select-comp-producto');
             resultado.piezas.forEach(pieza => {
-                selectPieza.innerHTML += `<option value="${pieza.ID_PIEZA}">${pieza.NOMBRE}</option>`;
+                selectPieza.innerHTML += `<option value="${pieza.ID_PIEZA}">${pieza.NOMBRE} | ${pieza.COLOR_TIPO} | ${pieza.MARCA}</option>`;
             });
 
             const selectMaquina = document.getElementById('select-comp-maquina');

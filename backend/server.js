@@ -102,21 +102,19 @@ app.get('/api/inventario', async (req, res) => {
         connection = await oracledb.getConnection(dbConfig);
 
         const consultaInventario = `SELECT 
+        p.ID_Pieza,
         p.Nombre, 
         m.Nombre_Marca AS Marca, 
         med.Valor_Medida AS Medida, 
         c.Nombre_Categoria AS Categoria, 
-        u.Anaquel || '-' || u.Nivel AS Ubicacion, 
-        p.Modelo, 
+        u.Anaquel || '-' || u.Nivel AS Ubicacion,  
         p.Color_Tipo,  
-        a.Nombre_Area AS Area,
         p.Stock_Actual
         FROM Pieza p
         INNER JOIN Categoria c ON p.ID_Categoria = c.ID_Categoria
         INNER JOIN Marca m ON p.ID_Marca = m.ID_Marca
         LEFT JOIN Medida med ON p.ID_Medida = med.ID_Medida
         LEFT JOIN Ubicacion u ON p.ID_Ubicacion = u.ID_Ubicacion
-        LEFT JOIN Area_Bordado a ON p.ID_Area_Bordado = a.ID_Area
         WHERE p.Estado = 'ACTIVO'
         ORDER BY p.Nombre ASC`;
 
@@ -151,6 +149,151 @@ app.get('/api/inventario', async (req, res) => {
             } catch (err) {
                 console.error("Error al cerrar la conexion: ", err);
             }
+        }
+    }
+});
+
+//MOSTRAR PIEZAS POR MAQUINA -------------------------------------------------------------------------------------------------------------------------------------
+app.get('/api/piezas-por-maquina/:idMaquina', async (req, res) => {
+    const idMaq = req.params.idMaquina;
+
+    let connection;
+
+    try {
+        connection = await oracledb.getConnection(dbConfig);
+
+        const sqlPiezasMaquina = `SELECT p.Nombre, p.ID_Pieza, p.STOCK_ACTUAL AS STOCK, u.Anaquel || '-' || u.Nivel AS UBICACION FROM Pieza p 
+        INNER JOIN Compatibilidad c ON p.ID_Pieza = c.ID_Pieza
+        INNER JOIN Ubicacion u ON p.ID_Ubicacion = u.ID_Ubicacion
+        WHERE c.ID_Maquina = :idm`;
+
+        const resPiezasMaquina = await connection.execute(sqlPiezasMaquina, { idm: idMaq }, { outFormat: oracledb.OUT_FORMAT_OBJECT });
+
+        res.json({ exito: true, piezas: resPiezasMaquina.rows });
+    } catch (err) {
+        console.error("ERROR AL CONSULTAR LAS PIEZAS DE LA MAQUINA: ", err);
+        res.status(500).json({ exito: false, error: "ERROR AL CONSULTAR LAS PIEZAS DE LA MAQUINA" });
+    } finally {
+        if (connection) {
+            try { await connection.close(); } catch (err) { console.error(err); }
+        }
+    }
+});
+
+//CARGAR DATOS ACTUALES MAQUINA ----------------------------------------------------------------------------------------------------------------------------------
+app.get('/api/datos-maquina/:idMaquina', async (req, res) => {
+    const idMaq = req.params.idMaquina;
+
+    let connection;
+
+    try {
+        connection = await oracledb.getConnection(dbConfig);
+
+        const sqlDatosMaquina = `SELECT * FROM Maquina WHERE ID_Maquina = :idm`;
+
+        const resDatosMaquina = await connection.execute(sqlDatosMaquina, { idm: idMaq }, { outFormat: oracledb.OUT_FORMAT_OBJECT });
+
+        res.json({ exito: true, maquina: resDatosMaquina.rows });
+    } catch (err) {
+        console.error("ERROR AL CONSULTAR LOS DATOS DE LA MAQUINA: ", err);
+        res.status(500).json({ exito: false, error: "ERROR AL CONSULTAR LA MAQUINA" });
+    } finally {
+        if (connection) {
+            try { await connection.close(); } catch (err) { console.error(err); }
+        }
+    }
+});
+
+//ACTUALIZAR MAQUINA ---------------------------------------------------------------------------------------------------------------------------------------------
+app.post('/api/actualizar-maquina', async (req, res) => {
+    const id = req.body.id;
+    const modelo = req.body.modelo;
+    const serie = req.body.serie;
+    const marca = req.body.marca;
+    const area = req.body.area;
+    const bastidor = req.body.bastidor;
+    const descripcion = req.body.descripcion;
+
+    let connection;
+
+    try {
+        connection = await oracledb.getConnection(dbConfig);
+
+        const updateMaquina = `UPDATE Maquina SET Nombre_Modelo = :mod, NoSerie = :nos, ID_Marca = :mar, ID_Area = :are, Tipo_Bastidor = :bas, Descripcion_Maquina = :des WHERE ID_Maquina = :idm`;
+
+        const respuestaUpdateMaquina = await connection.execute(updateMaquina, { mod: modelo, nos: serie, mar: marca, are: area, bas: bastidor, des: descripcion, idm: id });
+
+        await connection.commit();
+
+        res.json({ exito: true, mensaje: "MAQUINA ACTUALIZADA CON EXITO!" });
+    } catch (err) {
+
+        console.error("ERROR AL ACTUALIZAR LA MAQUINA: ", err);
+        res.status(500).json({ exito: false, error: "ERROR AL ACTUALIZAR LA MAQUINA" });
+
+    } finally {
+        if (connection) {
+            try { await connection.close(); } catch (err) { console.error(err); }
+        }
+    }
+})
+
+//CARGAR DATOS ACTUALES PIEZA ------------------------------------------------------------------------------------------------------------------------------------
+app.get('/api/datos-pieza/:idPieza', async (req, res) => {
+    const idPie = req.params.idPieza;
+
+    let connection;
+
+    try {
+        connection = await oracledb.getConnection(dbConfig);
+
+        const sqlDatosPieza = `SELECT * FROM Pieza Where ID_Pieza = :idp`;
+
+        const resDatosPieza = await connection.execute(sqlDatosPieza, { idp: idPie }, { outFormat: oracledb.OUT_FORMAT_OBJECT });
+
+        res.json({ exito: true, pieza: resDatosPieza.rows });
+    } catch (err) {
+        console.error("ERROR AL CONSULTAR LOS DATOS DE LA PIEZA: ", err);
+        res.status(500).json({ exito: false, error: "ERROR AL CONSULTAR LA PIEZA" });
+    } finally {
+        if (connection) {
+            try { await connection.close(); } catch (err) { console.error(err); }
+        }
+    }
+});
+
+//ACTUALIZAR PIEZA -----------------------------------------------------------------------------------------------------------------------------------------------
+app.post('/api/actualizar-pieza', async (req, res) => {
+
+    const id = req.body.id;
+    const nombre = req.body.nombre;
+    const color = req.body.color;
+    const marca = req.body.marca;
+    const ubicacion = req.body.ubicacion;
+    const categoria = req.body.categoria;
+    const medida = req.body.medida;
+
+    let connection;
+
+    try {
+        connection = await oracledb.getConnection(dbConfig);
+
+        const updatePieza = `UPDATE Pieza SET Nombre = :nom, Color_Tipo = :col, ID_Marca = :mar, ID_Ubicacion = :ubi, ID_Categoria = :cat, ID_Medida = :med WHERE ID_Pieza = :idp`;
+
+        const respuestaUpdateRespuesta = await connection.execute(updatePieza, { nom: nombre, col: color, mar: marca, ubi: ubicacion, cat: categoria, med: medida, idp: id }, { outFormat: oracledb.OUT_FORMAT_OBJECT });
+
+        await connection.commit();
+
+        res.json({ exito: true, mensaje: "PIEZA ACTUALIZADA CON EXITO!" });
+
+    } catch (err) {
+
+        console.error("ERROR AL ACTUALIZAR LA PIEZA: ", err);
+        res.status(500).json({ exito: false, error: "ERROR AL ACTUALIZAR LA PIEZA" });
+
+    } finally {
+        if (connection) {
+            try { await connection.close(); } catch (err) { console.error(err); }
         }
     }
 });
@@ -559,7 +702,9 @@ app.get('/api/consulta-piezas-maquinas', async (req, res) => {
     try {
         connection = await oracledb.getConnection(dbConfig);
 
-        const consultaPiezas = `SELECT ID_Pieza, Nombre FROM Pieza`;
+        const consultaPiezas = `SELECT p.ID_Pieza, p.Nombre, p.Color_Tipo, m.Nombre_Marca AS MARCA, me.Valor_Medida AS MEDIDA FROM Pieza p
+        INNER JOIN Marca m ON p.ID_Marca = m.ID_Marca
+        INNER JOIN Medida me ON p.ID_Medida = me.ID_Medida`;
 
         const consultaMaquinas = `SELECT ID_Maquina, Nombre_Modelo FROM Maquina`;
 
