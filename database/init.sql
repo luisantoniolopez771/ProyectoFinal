@@ -32,8 +32,7 @@ CREATE TABLE Maquina (
     ID_Marca NUMBER NOT NULL, 
     ID_Area NUMBER, 
     Nombre_Modelo VARCHAR2(50) NOT NULL,
-    NoSerie VARCHAR2(50) UNIQUE NOT NULL, 
-    Tipo_Bastidor VARCHAR2(50), 
+    NoSerie VARCHAR2(50) UNIQUE NOT NULL,  
     Descripcion_Maquina VARCHAR2(100),
     CONSTRAINT ID_Mar_Maq_Mar FOREIGN KEY (ID_Marca) REFERENCES Marca (ID_Marca),
     CONSTRAINT ID_Are_Maq_Are FOREIGN KEY (ID_Area) REFERENCES Area_Bordado (ID_Area)

@@ -19,9 +19,13 @@ function cerrarSesion() {
 //COMPROBAR ROL ADMINISTRADOR -------------------------------------------------------------------------------------------------------------------------------
 function comprobarRol() {
     const rol = localStorage.getItem('rolUsuario');
+    const estado = localStorage.getItem('estadoUsuario');
     if (!rol || rol.trim().toLocaleLowerCase() !== "administrador") {
         alert("No tienes permisos para acceder a esta pagina");
         window.location.href = "inventario.html";
+    } else if (estado.trim() == 'INACTIVO') {
+        alert("Usuario no activo, contacte con un administrador!");
+        window.location.href = "index.html";
     }
 }
 
@@ -80,11 +84,15 @@ async function mostrarUsuarios() {
                 let accion = usuario.ESTADO === 'INACTIVO' ? 'Reactivar' : 'Desactivar';
                 const colorEstado = usuario.ESTADO === 'ACTIVO' ? 'badge-estado estado-activo' : 'badge-estado estado-inactivo';
                 let botonAccion = "";
+                let botonEditar = "";
 
                 if (usuario.ID_USUARIO == localStorage.getItem('idUsuario')) {
                     botonAccion = `<span style="color: grey; font-weight: bold;">(Tú)</span>`;
+
                 } else {
                     botonAccion = `<a href="#" style="color:#72273b; font-weight:bold;" onclick="cambiarEstadoUsuario(${usuario.ID_USUARIO}, '${usuario.ESTADO}')">${accion}</a>`;
+
+                    botonEditar = ` | <a href="#" style="color:#72273b; font-weight:bold;" onclick="abrirModalUsuario(${usuario.ID_USUARIO})">Editar</a>`;
                 }
 
                 const fila = tbody.insertRow();
@@ -93,7 +101,7 @@ async function mostrarUsuarios() {
                     <td>${usuario.NOMBRE_COMPLETO}</td>
                     <td>${usuario.ROL}</td>
                     <td><span class="${colorEstado}">${usuario.ESTADO}</span></td>
-                    <td>${botonAccion}</td>
+                    <td>${botonAccion}${botonEditar}</td>
                 `;
             });
         } else {
@@ -106,6 +114,7 @@ async function mostrarUsuarios() {
 
 mostrarUsuarios();
 
+//CAMBIAR ESTADO USUARIOS ----------------------------------------------------------------------------------------------------------------------------------
 async function cambiarEstadoUsuario(idUsuario, estadoActual) {
     const datosCambioEstado = { idUsuario: idUsuario, estadoActual: estadoActual };
     try {
@@ -119,10 +128,67 @@ async function cambiarEstadoUsuario(idUsuario, estadoActual) {
             alert(resultado.mensaje);
             mostrarUsuarios();
         } else {
-            console.error("ERROR DESDE EL SERVIDOR:", resultado.error);
+            console.error("ERROR DESDE EL SERVIDOR: ", resultado.error);
         }
     } catch (error) {
-        console.error("NO SE PUDO CONECTAR A LA BASE DE DATOS:", error);
+        console.error("NO SE PUDO CONECTAR A LA BASE DE DATOS: ", error);
+    }
+}
+
+//MODIFICAR USUARIO ---------------------------------------------------------------------------------------------------------------------------------------
+async function abrirModalUsuario(USR) {
+    const idUsuario = USR;
+
+    try {
+        const respuesta = await fetch(`http://localhost:3000/api/datos-usuario/${idUsuario}`);
+        const resultado = await respuesta.json();
+
+        if (resultado.exito){
+            document.getElementById('modal-editar-usuario').classList.add("activo");
+
+            document.getElementById('edit-usr-rol').value = resultado.usuario[0].ROL;
+            document.getElementById('edit-usr-nombre').value = resultado.usuario[0].NOMBRE_COMPLETO;
+            document.getElementById('edit-usr-password').value = resultado.usuario[0].CONTRASENA;
+            document.getElementById('edit-usr-id').value = idUsuario;
+        } else {
+            console.error("Error desde el servidor: ", resultado.error);
+        }
+    } catch (error) {
+        console.error("NO SE PUDO CONECTAR A LA BASE DE DATOS: ", error);
+    }
+}
+
+function cerrarModalUsuario() {
+    document.getElementById('modal-editar-usuario').classList.remove("activo");
+}
+
+//CONFIRMAR EDICION USUARIO -------------------------------------------------------------------------------------------------------------------------------
+async function guardarCambiosUsuario(){
+
+    const datosActualizacionUsuario = {
+        id: document.getElementById('edit-usr-id').value,
+        rol: document.getElementById('edit-usr-rol').value,
+        nombre: document.getElementById('edit-usr-nombre').value,
+        contrasena: document.getElementById('edit-usr-password').value
+    }
+
+    try {
+        const respuesta = await fetch('http://localhost:3000/api/actualizar-usuario', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(datosActualizacionUsuario)
+        });
+        const resultado = await respuesta.json();
+
+        if (resultado.exito) {
+            alert(resultado.mensaje);
+            cerrarModalUsuario();
+            mostrarUsuarios();
+        } else {
+            console.error("Error desde el servidor: ", error);
+        }
+    } catch (error) {
+        console.error("NO SE PUDO CONECTAR A LA BASE DE DATOS: ", error);
     }
 }
 
@@ -266,19 +332,31 @@ async function mostrarTablasSecundarias() {
             tbodyUbicaciones.innerHTML = "";
 
             resultado.categorias.forEach(categoria => {
-                tbodyCategorias.insertRow().innerHTML = `<td>${categoria.ID_CATEGORIA}</td><td>${categoria.NOMBRE_CATEGORIA}</td>`;
+                tbodyCategorias.insertRow().innerHTML = `
+                <td>${categoria.ID_CATEGORIA}</td><td>${categoria.NOMBRE_CATEGORIA}</td>
+                <td><button class="btn-secundario" onclick="abrirModalCatalogo('CATEGORIA', ${categoria.ID_CATEGORIA}, '${categoria.NOMBRE_CATEGORIA}')">Editar Categoria</button></td>
+                `;
             });
             resultado.marcas.forEach(marca => {
-                tbodyMarcas.insertRow().innerHTML = `<td>${marca.ID_MARCA}</td><td>${marca.NOMBRE_MARCA}</td>`;
+                tbodyMarcas.insertRow().innerHTML = `
+                <td>${marca.ID_MARCA}</td><td>${marca.NOMBRE_MARCA}</td>
+                <td><button class="btn-secundario" onclick="abrirModalCatalogo('MARCA', ${marca.ID_MARCA}, '${marca.NOMBRE_MARCA}')">Editar Marca</button></td>`;
             });
             resultado.medidas.forEach(medida => {
-                tbodyMedidas.insertRow().innerHTML = `<td>${medida.ID_MEDIDA}</td><td>${medida.VALOR_MEDIDA}</td>`;
+                tbodyMedidas.insertRow().innerHTML = `
+                <td>${medida.ID_MEDIDA}</td><td>${medida.VALOR_MEDIDA}</td>
+                <td><button class="btn-secundario" onclick="abrirModalCatalogo('MEDIDA', ${medida.ID_MEDIDA}, '${medida.VALOR_MEDIDA}')">Editar Medida</button></td>`;
             });
             resultado.areasbordado.forEach(area => {
-                tbodyAreas.insertRow().innerHTML = `<td>${area.ID_AREA}</td><td>${area.NOMBRE_AREA}</td>`;
+                tbodyAreas.insertRow().innerHTML = `
+                <td>${area.ID_AREA}</td><td>${area.NOMBRE_AREA}</td>
+                <td><button class="btn-secundario" onclick="abrirModalCatalogo('AREA', ${area.ID_AREA}, '${area.NOMBRE_AREA}')">Editar Area</button></td>`;
+                
             });
             resultado.ubicaciones.forEach(ubi => {
-                tbodyUbicaciones.insertRow().innerHTML = `<td>${ubi.ID_UBICACION}</td><td>${ubi.ANAQUEL} - ${ubi.NIVEL}</td>`;
+                tbodyUbicaciones.insertRow().innerHTML = `
+                <td>${ubi.ID_UBICACION}</td><td>${ubi.ANAQUEL} - ${ubi.NIVEL}</td>
+                <td><button class="btn-secundario" onclick="abrirModalCatalogo('UBICACION', ${ubi.ID_UBICACION}, '${ubi.ANAQUEL}', '${ubi.NIVEL}')">Editar NIVEL</button></td>`;
             });
         } else {
             console.error("ERROR DESDE EL SERVIDOR:", resultado.error);
@@ -303,6 +381,69 @@ async function agregarCatalogo(TIPO, DATO) {
         if (resultado.exito) {
             alert(resultado.mensaje);
             mostrarTablasSecundarias();
+        }
+    } catch (error) {
+        console.error("ERROR AL AGREGAR EL PRODUCTO:", error);
+    }
+}
+
+//MODIFICAR TABLAS SECUNDARIAS ----------------------------------------------------------------------------------------------------------------------------
+async function abrirModalCatalogo(TIPO, ID, VALOR1, VALOR2){
+    const tipoTransaccion = TIPO;
+    const idCatalogo = ID;
+    const dato1 = VALOR1;
+    const dato2 = VALOR2;
+
+    try {
+        document.getElementById('modal-editar-catalogo').classList.add("activo");
+        
+        if (tipoTransaccion === 'UBICACION') {
+            document.getElementById('grupo-campo-unico').style.display = 'none';
+            document.getElementById('grupo-campo-doble').style.display = 'grid';
+            document.getElementById('edit-cat-input-anaquel').value = dato1;
+            document.getElementById('edit-cat-input-nivel').value = dato2;
+            document.getElementById('edit-cat-id').value = idCatalogo;
+            document.getElementById('edit-cat-tipo').value = tipoTransaccion;
+        } else {
+            document.getElementById('grupo-campo-unico').style.display = 'grid';
+            document.getElementById('grupo-campo-doble').style.display = 'none';
+            document.getElementById('edit-cat-input-unico').value = dato1;
+            document.getElementById('edit-cat-id').value = idCatalogo;
+            document.getElementById('edit-cat-tipo').value = tipoTransaccion;
+        }
+    } catch (error) {
+        console.error("ERROR AL AGREGAR EL PRODUCTO:", error);
+    }
+}
+
+function cerrarModalCatalogo() {
+    document.getElementById('modal-editar-catalogo').classList.remove("activo");
+}
+
+//CONFIRMAR EDICION CATALOGO ------------------------------------------------------------------------------------------------------------------------------
+async function guardarCambiosCatalogo() {
+    const datosActualizacionCatalogo = {
+        tipo: document.getElementById('edit-cat-tipo').value,
+        id: document.getElementById('edit-cat-id').value,
+        dato1: document.getElementById('edit-cat-input-anaquel').value,
+        dato2: document.getElementById('edit-cat-input-nivel').value,
+        dato3: document.getElementById('edit-cat-input-unico').value
+    }
+
+    try{
+        const respuesta = await fetch('http://localhost:3000/api/editar-catalogo', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(datosActualizacionCatalogo)
+        });
+        const resultado = await respuesta.json();
+
+        if (resultado.exito) {
+            alert(resultado.mensaje);
+            cerrarModalCatalogo();
+            mostrarTablasSecundarias();
+        } else {
+            console.error("Error desde el servidor: ", error);
         }
     } catch (error) {
         console.error("ERROR AL AGREGAR EL PRODUCTO:", error);

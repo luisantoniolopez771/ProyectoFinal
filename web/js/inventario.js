@@ -17,8 +17,12 @@ function comprobarRol() {
 //VALIDAR INICIO DE SESION --------------------------------------------------------------------------------------------------------------
 function validarSesion() {
     const idu = localStorage.getItem('idUsuario');
+    const estado = localStorage.getItem('estadoUsuario')
     if (idu == null) {
         alert("Se necesita iniciar sesion!");
+        window.location.href = "index.html";
+    } else if (estado.trim() == 'INACTIVO') {
+        alert("Usuario no activo, contacte con un administrador!");
         window.location.href = "index.html";
     }
 }
@@ -64,7 +68,6 @@ async function cargarInventario() {
                 <td>${maquina.MARCA}</td>
                 <td>${maquina.MODELO}</td>
                 <td>${maquina.AREA || 'N/A'}</td>
-                <td>${maquina.BASTIDOR || 'N/A'}</td>
                 <td>${maquina.DESCRIPCION || 'N/A'}</td>
                 <td>${botonAccion}</td>
                 `;
@@ -99,7 +102,6 @@ async function cargarInventario() {
                 <td>${maquina.MARCA}</td>
                 <td>${maquina.MODELO}</td>
                 <td>${maquina.AREA || 'N/A'}</td>
-                <td>${maquina.BASTIDOR || 'N/A'}</td>
                 <td>${maquina.DESCRIPCION || 'N/A'}</td>
                 <td>${botonVer}</td>
                 <td>${botonEditar}</td>
@@ -195,7 +197,6 @@ async function abrirModalMaquina(MAQ) {
             document.getElementById('edit-maq-serie').value = resultado.maquina[0].NOSERIE;
             document.getElementById('edit-maq-marca').value = resultado.maquina[0].ID_MARCA;
             document.getElementById('edit-maq-area').value = resultado.maquina[0].ID_AREA;
-            document.getElementById('edit-maq-bastidor').value = resultado.maquina[0].TIPO_BASTIDOR;
             document.getElementById('edit-maq-descripcion').value = resultado.maquina[0].DESCRIPCION_MAQUINA;
             document.getElementById('edit-maq-id').value = idMaquina;
         } else {
@@ -218,7 +219,6 @@ async function guardarCambiosMaquina(){
         serie: document.getElementById('edit-maq-serie').value,
         marca:  document.getElementById('edit-maq-marca').value,
         area:  document.getElementById('edit-maq-area').value,
-        bastidor: document.getElementById('edit-maq-bastidor').value,
         descripcion: document.getElementById('edit-maq-descripcion').value
     }
 

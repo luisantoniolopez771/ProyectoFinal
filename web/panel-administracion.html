@@ -81,6 +81,44 @@
                     </div>
                 </div>
 
+                <div id="modal-editar-usuario" class="modal-contenedor">
+                    <div class="modal-tarjeta" style="max-width: 600px;">
+
+                        <div class="modal-cabecera">
+                            <h3>Editar Usuario <span id="edit-usr-id-texto" style="color: #72273b;"></span></h3>
+                            <button class="btn-cerrar-modal" onclick="cerrarModalUsuario()">&times;</button>
+                        </div>
+
+                        <div class="modal-cuerpo">
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label>Nombre Completo</label>
+                                    <input type="text" class="form-control" id="edit-usr-nombre"
+                                        placeholder="Ej. Juan Pérez">
+                                </div>
+                                <div class="form-group">
+                                    <label>Contraseña</label>
+                                    <input type="text" class="form-control" id="edit-usr-password">
+                                </div>
+                                <div class="form-group" style="grid-column: span 2;">
+                                    <label>Rol del Sistema</label>
+                                    <select class="form-control" id="edit-usr-rol">
+                                        <option value="">Seleccione un rol...</option>
+                                        <option value="Administrador">Administrador</option>
+                                        <option value="Trabajador">Trabajador</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <input type="hidden" id="edit-usr-id">
+
+                            <div class="acciones-form" style="margin-top: 20px; text-align: right;">
+                                <button class="btn-principal" onclick="guardarCambiosUsuario()">Guardar Cambios</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 <div id="sec-productos" class="seccion-admin">
 
                     <div class="form-grid">
@@ -205,6 +243,7 @@
                                         <tr>
                                             <th>ID</th>
                                             <th>Nombre</th>
+                                            <th>Accion</th>
                                         </tr>
                                     </thead>
                                     <tbody id="tabla-categorias-admin"></tbody>
@@ -226,6 +265,7 @@
                                         <tr>
                                             <th>ID</th>
                                             <th>Nombre</th>
+                                            <th>Accion</th>
                                         </tr>
                                     </thead>
                                     <tbody id="tabla-marcas-admin"></tbody>
@@ -248,6 +288,7 @@
                                         <tr>
                                             <th>ID</th>
                                             <th>Medida</th>
+                                            <th>Accion</th>
                                         </tr>
                                     </thead>
                                     <tbody id="tabla-medidas-admin"></tbody>
@@ -268,6 +309,7 @@
                                         <tr>
                                             <th>ID</th>
                                             <th>Área</th>
+                                            <th>Accion</th>
                                         </tr>
                                     </thead>
                                     <tbody id="tabla-areas-admin"></tbody>
@@ -290,14 +332,50 @@
                                         <tr>
                                             <th>ID</th>
                                             <th>Ubicación</th>
+                                            <th>Accion</th>
                                         </tr>
                                     </thead>
                                     <tbody id="tabla-ubicaciones-admin"></tbody>
                                 </table>
                             </div>
                         </div>
+                    </div>
+                </div>
 
-                        <div></div>
+                <div id="modal-editar-catalogo" class="modal-contenedor">
+                    <div class="modal-tarjeta" style="max-width: 500px;">
+
+                        <div class="modal-cabecera">
+                            <h3 id="edit-cat-titulo">Editar Registro <span id="edit-cat-id-texto"
+                                    style="color: #72273b;"></span></h3>
+                            <button class="btn-cerrar-modal" onclick="cerrarModalCatalogo()">&times;</button>
+                        </div>
+
+                        <div class="modal-cuerpo">
+
+                            <div id="grupo-campo-unico" class="form-group" style="display: none;">
+                                <label id="edit-cat-label-unico">Valor</label>
+                                <input type="text" class="form-control" id="edit-cat-input-unico">
+                            </div>
+
+                            <div id="grupo-campo-doble" class="form-grid" style="display: none;">
+                                <div class="form-group">
+                                    <label>Anaquel</label>
+                                    <input type="text" class="form-control" id="edit-cat-input-anaquel">
+                                </div>
+                                <div class="form-group">
+                                    <label>Nivel</label>
+                                    <input type="text" class="form-control" id="edit-cat-input-nivel">
+                                </div>
+                            </div>
+
+                            <input type="hidden" id="edit-cat-id">
+                            <input type="hidden" id="edit-cat-tipo">
+                            <div class="acciones-form" style="margin-top: 20px; text-align: right;">
+                                <button class="btn-principal" onclick="guardarCambiosCatalogo()">Guardar
+                                    Cambios</button>
+                            </div>
+                        </div>
                     </div>
                 </div>
 

@@ -64,11 +64,14 @@ app.post('/api/login', async (req, res) => {
 
             const idUsuarioEncontrado = usuarioEncontrado.ID_USUARIO;
 
+            const estadoEncontrado = usuarioEncontrado.ESTADO;
+
             res.json({
                 exito: true,
                 mensaje: usuarioRecibido,
                 rol: rolEncontrado,
-                idUsuario: idUsuarioEncontrado
+                idUsuario: idUsuarioEncontrado,
+                estado: estadoEncontrado
             });
         } else {
             res.status(401).json({
@@ -124,7 +127,6 @@ app.get('/api/inventario', async (req, res) => {
         a.Nombre_Area AS AREA,
         m.Nombre_Modelo AS MODELO,
         m.NoSerie,
-        m.Tipo_Bastidor AS BASTIDOR,
         m.Descripcion_Maquina AS DESCRIPCION
         FROM Maquina m
         INNER JOIN Marca ma ON m.ID_Marca = ma.ID_Marca
@@ -211,7 +213,6 @@ app.post('/api/actualizar-maquina', async (req, res) => {
     const serie = req.body.serie;
     const marca = req.body.marca;
     const area = req.body.area;
-    const bastidor = req.body.bastidor;
     const descripcion = req.body.descripcion;
 
     let connection;
@@ -219,9 +220,9 @@ app.post('/api/actualizar-maquina', async (req, res) => {
     try {
         connection = await oracledb.getConnection(dbConfig);
 
-        const updateMaquina = `UPDATE Maquina SET Nombre_Modelo = :mod, NoSerie = :nos, ID_Marca = :mar, ID_Area = :are, Tipo_Bastidor = :bas, Descripcion_Maquina = :des WHERE ID_Maquina = :idm`;
+        const updateMaquina = `UPDATE Maquina SET Nombre_Modelo = :mod, NoSerie = :nos, ID_Marca = :mar, ID_Area = :are, Descripcion_Maquina = :des WHERE ID_Maquina = :idm`;
 
-        const respuestaUpdateMaquina = await connection.execute(updateMaquina, { mod: modelo, nos: serie, mar: marca, are: area, bas: bastidor, des: descripcion, idm: id });
+        const respuestaUpdateMaquina = await connection.execute(updateMaquina, { mod: modelo, nos: serie, mar: marca, are: area, des: descripcion, idm: id });
 
         await connection.commit();
 
@@ -534,6 +535,52 @@ app.post('/api/cambiar-estado-usuario', async (req, res) => {
     }
 });
 
+//DATOS ACTUALES USUARIO --------------------------------------------------------------------------------------------------------------------------------------
+app.get('/api/datos-usuario/:idUsuario', async (req, res) => {
+    const idUsr = req.params.idUsuario;
+
+    let connection;
+    try {
+        connection = await oracledb.getConnection(dbConfig);
+
+        const sqlDatosUsuario = `SELECT * FROM Usuario WHERE ID_Usuario = :idu`;
+        const resDatosUsuario = await connection.execute(sqlDatosUsuario, { idu: idUsr }, { outFormat: oracledb.OUT_FORMAT_OBJECT });
+
+        res.json({ exito: true, usuario: resDatosUsuario.rows });
+    } catch (err) {
+        console.error("ERROR AL CONSULTAR EL USUARIO: ", err);
+        res.status(500).json({ exito: false, error: "ERROR AL CONSULTAR EL USUARIO" });
+    } finally {
+        if (connection) {
+            try { await connection.close(); } catch (err) { console.error(err); }
+        }
+    }
+});
+
+//ACTUALIZAR USUARIO ------------------------------------------------------------------------------------------------------------------------------------------
+app.post('/api/actualizar-usuario', async (req, res) => {
+    const id = req.body.id;
+    const rol = req.body.rol;
+    const nombre = req.body.nombre;
+    const contrasena = req.body.contrasena;
+
+    let connection;
+
+    try {
+        connection = await oracledb.getConnection(dbConfig);
+
+        const updateUsuario = `UPDATE Usuario SET Rol = :rol, Nombre_Completo = :nom, Contrasena = :con WHERE ID_Usuario = :idu`;
+        const respuestaUpdateUsuario = await connection.execute(updateUsuario, { rol: rol, nom: nombre, con: contrasena, idu: id });
+
+        await connection.commit();
+
+        res.json({ exito: true, mensaje: "USUARIO ACTUALIZADO CON EXITO!" });
+    } catch (err) {
+        console.error("ERROR AL ACTUALIZAR EL USUARIO: ", err);
+        res.status(500).json({ exito: false, error: "ERROR AL ACTUALIZAR EL USUARIO" });
+    }
+})
+
 //CARGAR LOS CATALOGOS PARA AGREGAR UN NUEVO PRODUCTO ---------------------------------------------------------------------------------------------------------
 app.get('/api/catalogos', async (req, res) => {
     let connection;
@@ -683,10 +730,51 @@ app.post('/api/alta-catalogos', async (req, res) => {
         res.json({ exito: true, mensaje: dato + " AGREGADO CON EXITO " });
 
     } catch (err) {
-
         console.error("ERROR AL REALIZAR LA ALTA: ", err);
         res.status(500).json({ exito: false, error: "ERROR AL DAR LA ALTA" });
+    } finally {
+        if (connection) {
+            try { await connection.close(); } catch (err) { console.error(err); }
+        }
+    }
+});
 
+//EDITAR TABLAS SECUNDARIAS --------------------------------------------------------------------------------------------------------------------------------------------
+app.post('/api/editar-catalogo', async (req, res) => {
+    const tipo = req.body.tipo;
+    const id = req.body.id;
+    const dato1 = req.body.dato1;
+    const dato2 = req.body.dato2;
+    const dato3 = req.body.dato3;
+
+    let connection;
+
+    try {
+        connection = await oracledb.getConnection(dbConfig);
+
+        if (tipo == 'UBICACION') {
+            const updateUbicacion = `UPDATE Ubicacion SET Anaquel = :ana, NIVEL = :niv WHERE ID_Ubicacion = :idu`;
+            const resUpdateUbicacion = await connection.execute(updateUbicacion, { ana: dato1, niv: dato2, idu: id });
+        } else if (tipo == 'CATEGORIA') {
+            const updateCatalogo = `UPDATE Categoria SET Nombre_Categoria = :cat WHERE ID_Categoria = :idc`;
+            const resUpdateCatalogo = await connection.execute(updateCatalogo, { cat: dato3, idc: id });
+        } else if (tipo == 'MARCA') {
+            const updateMarca = `UPDATE Marca SET Nombre_Marca = :mar WHERE ID_Marca = :idm`;
+            const resUpdateMarca = await connection.execute(updateMarca, { mar: dato3, idm: id });
+        } else if ( tipo == 'MEDIDA' ) {
+            const updateMedida = `UPDATE Medida SET Valor_Medida = :med WHERE ID_Medida = :idme`;
+            const resUpdateMedida = await connection.execute(updateMedida, { med: dato3, idme: id});
+        } else if ( tipo == 'AREA') {
+            const updateArea = `UPDATE Area_Bordado SET Nombre_Area = :are WHERE ID_Area = :ida`;
+            const resUpdateArea = await connection.execute(updateArea, { are: dato3, ida: id});
+        }
+
+        await connection.commit();
+        res.json ({ exito: true, mensaje: tipo + " MODIFICADO CON EXITO!"});
+        
+    } catch (err) {
+        console.error("ERROR AL ACTUALIZAR EL CATALOGO: ", err);
+        res.status(500).json({ exito: false, error: "ERROR AL ACTUALIZAR EL CATALOGO" });
     } finally {
         if (connection) {
             try { await connection.close(); } catch (err) { console.error(err); }
