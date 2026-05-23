@@ -494,22 +494,6 @@ BEGIN
 END;
 /
 
---- TRIGGER 7 ---
-CREATE OR REPLACE TRIGGER TRG_ACTUALIZAR_STOCK_AUTO
-AFTER INSERT ON Movimiento
-FOR EACH ROW
-BEGIN
-    -- Si es ENTRADA, sumamos; si es SALIDA, restamos
-    IF :NEW.Tipo_Movimiento = 'ENTRADA' THEN
-        UPDATE Pieza SET Stock_Actual = Stock_Actual + :NEW.Cantidad 
-        WHERE ID_Pieza = :NEW.ID_Pieza;
-    ELSIF :NEW.Tipo_Movimiento = 'SALIDA' THEN
-        UPDATE Pieza SET Stock_Actual = Stock_Actual - :NEW.Cantidad 
-        WHERE ID_Pieza = :NEW.ID_Pieza;
-    END IF;
-END;
-/
-
 --- PAQUETE 2 ---
 CREATE OR REPLACE PACKAGE PKG_OPERACIONES AS
     PROCEDURE SP_Procesar_Salida(
