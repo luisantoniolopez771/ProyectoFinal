@@ -19,9 +19,13 @@ function cerrarSesion() {
 //COMPROBAR ROL ADMINISTRADOR -------------------------------------------------------------------------------------------------------------------------------
 function comprobarRol() {
     const rol = localStorage.getItem('rolUsuario');
+    const estado = localStorage.getItem('estadoUsuario');
     if (!rol || rol.trim().toLocaleLowerCase() !== "administrador") {
         alert("No tienes permisos para acceder a esta pagina");
         window.location.href = "inventario.html";
+    } else if (estado.trim() == 'INACTIVO') {
+        alert("Usuario no activo, contacte con un administrador!");
+        window.location.href = "index.html";
     }
 }
 
@@ -80,11 +84,15 @@ async function mostrarUsuarios() {
                 let accion = usuario.ESTADO === 'INACTIVO' ? 'Reactivar' : 'Desactivar';
                 const colorEstado = usuario.ESTADO === 'ACTIVO' ? 'badge-estado estado-activo' : 'badge-estado estado-inactivo';
                 let botonAccion = "";
+                let botonEditar = "";
 
                 if (usuario.ID_USUARIO == localStorage.getItem('idUsuario')) {
                     botonAccion = `<span style="color: grey; font-weight: bold;">(Tú)</span>`;
+
                 } else {
                     botonAccion = `<a href="#" style="color:#72273b; font-weight:bold;" onclick="cambiarEstadoUsuario(${usuario.ID_USUARIO}, '${usuario.ESTADO}')">${accion}</a>`;
+
+                    botonEditar = ` | <a href="#" style="color:#72273b; font-weight:bold;" onclick="abrirModalUsuario(${usuario.ID_USUARIO})">Editar</a>`;
                 }
 
                 const fila = tbody.insertRow();
@@ -93,7 +101,7 @@ async function mostrarUsuarios() {
                     <td>${usuario.NOMBRE_COMPLETO}</td>
                     <td>${usuario.ROL}</td>
                     <td><span class="${colorEstado}">${usuario.ESTADO}</span></td>
-                    <td>${botonAccion}</td>
+                    <td>${botonAccion}${botonEditar}</td>
                 `;
             });
         } else {
@@ -106,6 +114,7 @@ async function mostrarUsuarios() {
 
 mostrarUsuarios();
 
+//CAMBIAR ESTADO USUARIOS ----------------------------------------------------------------------------------------------------------------------------------
 async function cambiarEstadoUsuario(idUsuario, estadoActual) {
     const datosCambioEstado = { idUsuario: idUsuario, estadoActual: estadoActual };
     try {
@@ -119,10 +128,67 @@ async function cambiarEstadoUsuario(idUsuario, estadoActual) {
             alert(resultado.mensaje);
             mostrarUsuarios();
         } else {
-            console.error("ERROR DESDE EL SERVIDOR:", resultado.error);
+            console.error("ERROR DESDE EL SERVIDOR: ", resultado.error);
         }
     } catch (error) {
-        console.error("NO SE PUDO CONECTAR A LA BASE DE DATOS:", error);
+        console.error("NO SE PUDO CONECTAR A LA BASE DE DATOS: ", error);
+    }
+}
+
+//MODIFICAR USUARIO ---------------------------------------------------------------------------------------------------------------------------------------
+async function abrirModalUsuario(USR) {
+    const idUsuario = USR;
+
+    try {
+        const respuesta = await fetch(`http://localhost:3000/api/datos-usuario/${idUsuario}`);
+        const resultado = await respuesta.json();
+
+        if (resultado.exito){
+            document.getElementById('modal-editar-usuario').classList.add("activo");
+
+            document.getElementById('edit-usr-rol').value = resultado.usuario[0].ROL;
+            document.getElementById('edit-usr-nombre').value = resultado.usuario[0].NOMBRE_COMPLETO;
+            document.getElementById('edit-usr-password').value = resultado.usuario[0].CONTRASENA;
+            document.getElementById('edit-usr-id').value = idUsuario;
+        } else {
+            console.error("Error desde el servidor: ", resultado.error);
+        }
+    } catch (error) {
+        console.error("NO SE PUDO CONECTAR A LA BASE DE DATOS: ", error);
+    }
+}
+
+function cerrarModalUsuario() {
+    document.getElementById('modal-editar-usuario').classList.remove("activo");
+}
+
+//CONFIRMAR EDICION USUARIO -------------------------------------------------------------------------------------------------------------------------------
+async function guardarCambiosUsuario(){
+
+    const datosActualizacionUsuario = {
+        id: document.getElementById('edit-usr-id').value,
+        rol: document.getElementById('edit-usr-rol').value,
+        nombre: document.getElementById('edit-usr-nombre').value,
+        contrasena: document.getElementById('edit-usr-password').value
+    }
+
+    try {
+        const respuesta = await fetch('http://localhost:3000/api/actualizar-usuario', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(datosActualizacionUsuario)
+        });
+        const resultado = await respuesta.json();
+
+        if (resultado.exito) {
+            alert(resultado.mensaje);
+            cerrarModalUsuario();
+            mostrarUsuarios();
+        } else {
+            console.error("Error desde el servidor: ", error);
+        }
+    } catch (error) {
+        console.error("NO SE PUDO CONECTAR A LA BASE DE DATOS: ", error);
     }
 }
 
@@ -148,19 +214,19 @@ async function cargarCatalogos() {
                 selectMedida.innerHTML += `<option value="${med.ID_MEDIDA}"> ${med.VALOR_MEDIDA} </option>`;
             });
 
-            const selectMaquina = document.getElementById('select-prod-maquina');
-            resultado.maquinas.forEach(maq => {
-                selectMaquina.innerHTML += `<option value="${maq.ID_MAQUINA}"> ${maq.NOMBRE_MODELO} </option>`;
-            });
-
             const selectUbicacion = document.getElementById('select-prod-ubi');
             resultado.ubicaciones.forEach(ubi => {
                 selectUbicacion.innerHTML += `<option value="${ubi.ID_UBICACION}"> ${ubi.ANAQUEL} - ${ubi.NIVEL} </option>`;
             });
 
-            const selectAreaBordado = document.getElementById('select-prod-area');
+            const selectMarcaMaq = document.getElementById('select-maq-marca');
+            resultado.marcas.forEach(mar => {
+                selectMarcaMaq.innerHTML += `<option value="${mar.ID_MARCA}"> ${mar.NOMBRE_MARCA} </option>`;
+            });
+
+            const selectAreaBordadoMaq = document.getElementById('select-maq-area');
             resultado.areasbordado.forEach(are => {
-                selectAreaBordado.innerHTML += `<option value="${are.ID_AREA}"> ${are.NOMBRE_AREA} </option>`;
+                selectAreaBordadoMaq.innerHTML += `<option value="${are.ID_AREA}"> ${are.NOMBRE_AREA} </option>`;
             });
         }
     } catch (error) {
@@ -205,9 +271,44 @@ async function altaProducto() {
         const resultado = await respuesta.json();
         if (resultado.exito) {
             alert(resultado.mensaje);
+            mostrarPiezasMaquinas();
         }
     } catch (error) {
         console.error("ERROR AL AGREGAR EL PRODUCTO:", error);
+    }
+}
+
+//ALTA DE MAQUINA ----------------------------------------------------------------------------------------------------------------------------------------
+async function altaMaquina() {
+    const nombreModelo = document.getElementById('input-maq-modelo');
+    const noSerie = document.getElementById('input-maq-serie');
+    const marca = document.getElementById('select-maq-marca');
+    const areaBordado = document.getElementById('select-maq-area');
+    const bastidor = document.getElementById('input-maq-bastidor');
+    const descripcion = document.getElementById('input-maq-descripcion');
+
+    const datosMaquina = {
+        modelo: nombreModelo.value,
+        serie: noSerie.value,
+        marca: marca.value,
+        area: areaBordado.value || 'N/A',
+        bastidor: bastidor.value || 'N/A',
+        descripcion: descripcion.value || 'N/A'
+    };
+
+    try {
+        const respuesta = await fetch('http://localhost:3000/api/registrar-maquina', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(datosMaquina)
+        });
+        const resultado = await respuesta.json();
+        if (resultado.exito) {
+            alert(resultado.mensaje);
+            mostrarPiezasMaquinas();
+        }
+    } catch (error) {
+        console.error("ERROR AL AGREGAR LA MAQUINA: ", error);
     }
 }
 
@@ -220,32 +321,42 @@ async function mostrarTablasSecundarias() {
         if (resultado.exito) {
             const tbodyCategorias = document.getElementById('tabla-categorias-admin');
             const tbodyMarcas = document.getElementById('tabla-marcas-admin');
-            const tbodyMaquinas = document.getElementById('tabla-maquinas-admin');
             const tbodyMedidas = document.getElementById('tabla-medidas-admin');
             const tbodyAreas = document.getElementById('tabla-areas-admin');
             const tbodyUbicaciones = document.getElementById('tabla-ubicaciones-admin');
 
-            tbodyCategorias.innerHTML = ""; tbodyMarcas.innerHTML = "";
-            tbodyMaquinas.innerHTML = ""; tbodyMedidas.innerHTML = "";
-            tbodyAreas.innerHTML = ""; tbodyUbicaciones.innerHTML = "";
+            tbodyCategorias.innerHTML = "";
+            tbodyMarcas.innerHTML = "";
+            tbodyMedidas.innerHTML = "";
+            tbodyAreas.innerHTML = "";
+            tbodyUbicaciones.innerHTML = "";
 
             resultado.categorias.forEach(categoria => {
-                tbodyCategorias.insertRow().innerHTML = `<td>${categoria.ID_CATEGORIA}</td><td>${categoria.NOMBRE_CATEGORIA}</td>`;
+                tbodyCategorias.insertRow().innerHTML = `
+                <td>${categoria.ID_CATEGORIA}</td><td>${categoria.NOMBRE_CATEGORIA}</td>
+                <td><button class="btn-secundario" onclick="abrirModalCatalogo('CATEGORIA', ${categoria.ID_CATEGORIA}, '${categoria.NOMBRE_CATEGORIA}')">Editar Categoria</button></td>
+                `;
             });
             resultado.marcas.forEach(marca => {
-                tbodyMarcas.insertRow().innerHTML = `<td>${marca.ID_MARCA}</td><td>${marca.NOMBRE_MARCA}</td>`;
-            });
-            resultado.maquinas.forEach(maquina => {
-                tbodyMaquinas.insertRow().innerHTML = `<td>${maquina.ID_MAQUINA}</td><td>${maquina.NOMBRE_MODELO}</td>`;
+                tbodyMarcas.insertRow().innerHTML = `
+                <td>${marca.ID_MARCA}</td><td>${marca.NOMBRE_MARCA}</td>
+                <td><button class="btn-secundario" onclick="abrirModalCatalogo('MARCA', ${marca.ID_MARCA}, '${marca.NOMBRE_MARCA}')">Editar Marca</button></td>`;
             });
             resultado.medidas.forEach(medida => {
-                tbodyMedidas.insertRow().innerHTML = `<td>${medida.ID_MEDIDA}</td><td>${medida.VALOR_MEDIDA}</td>`;
+                tbodyMedidas.insertRow().innerHTML = `
+                <td>${medida.ID_MEDIDA}</td><td>${medida.VALOR_MEDIDA}</td>
+                <td><button class="btn-secundario" onclick="abrirModalCatalogo('MEDIDA', ${medida.ID_MEDIDA}, '${medida.VALOR_MEDIDA}')">Editar Medida</button></td>`;
             });
             resultado.areasbordado.forEach(area => {
-                tbodyAreas.insertRow().innerHTML = `<td>${area.ID_AREA}</td><td>${area.NOMBRE_AREA}</td>`;
+                tbodyAreas.insertRow().innerHTML = `
+                <td>${area.ID_AREA}</td><td>${area.NOMBRE_AREA}</td>
+                <td><button class="btn-secundario" onclick="abrirModalCatalogo('AREA', ${area.ID_AREA}, '${area.NOMBRE_AREA}')">Editar Area</button></td>`;
+                
             });
             resultado.ubicaciones.forEach(ubi => {
-                tbodyUbicaciones.insertRow().innerHTML = `<td>${ubi.ID_UBICACION}</td><td>${ubi.ANAQUEL} - ${ubi.NIVEL}</td>`;
+                tbodyUbicaciones.insertRow().innerHTML = `
+                <td>${ubi.ID_UBICACION}</td><td>${ubi.ANAQUEL} - ${ubi.NIVEL}</td>
+                <td><button class="btn-secundario" onclick="abrirModalCatalogo('UBICACION', ${ubi.ID_UBICACION}, '${ubi.ANAQUEL}', '${ubi.NIVEL}')">Editar NIVEL</button></td>`;
             });
         } else {
             console.error("ERROR DESDE EL SERVIDOR:", resultado.error);
@@ -273,6 +384,160 @@ async function agregarCatalogo(TIPO, DATO) {
         }
     } catch (error) {
         console.error("ERROR AL AGREGAR EL PRODUCTO:", error);
+    }
+}
+
+//MODIFICAR TABLAS SECUNDARIAS ----------------------------------------------------------------------------------------------------------------------------
+async function abrirModalCatalogo(TIPO, ID, VALOR1, VALOR2){
+    const tipoTransaccion = TIPO;
+    const idCatalogo = ID;
+    const dato1 = VALOR1;
+    const dato2 = VALOR2;
+
+    try {
+        document.getElementById('modal-editar-catalogo').classList.add("activo");
+        
+        if (tipoTransaccion === 'UBICACION') {
+            document.getElementById('grupo-campo-unico').style.display = 'none';
+            document.getElementById('grupo-campo-doble').style.display = 'grid';
+            document.getElementById('edit-cat-input-anaquel').value = dato1;
+            document.getElementById('edit-cat-input-nivel').value = dato2;
+            document.getElementById('edit-cat-id').value = idCatalogo;
+            document.getElementById('edit-cat-tipo').value = tipoTransaccion;
+        } else {
+            document.getElementById('grupo-campo-unico').style.display = 'grid';
+            document.getElementById('grupo-campo-doble').style.display = 'none';
+            document.getElementById('edit-cat-input-unico').value = dato1;
+            document.getElementById('edit-cat-id').value = idCatalogo;
+            document.getElementById('edit-cat-tipo').value = tipoTransaccion;
+        }
+    } catch (error) {
+        console.error("ERROR AL AGREGAR EL PRODUCTO:", error);
+    }
+}
+
+function cerrarModalCatalogo() {
+    document.getElementById('modal-editar-catalogo').classList.remove("activo");
+}
+
+//CONFIRMAR EDICION CATALOGO ------------------------------------------------------------------------------------------------------------------------------
+async function guardarCambiosCatalogo() {
+    const datosActualizacionCatalogo = {
+        tipo: document.getElementById('edit-cat-tipo').value,
+        id: document.getElementById('edit-cat-id').value,
+        dato1: document.getElementById('edit-cat-input-anaquel').value,
+        dato2: document.getElementById('edit-cat-input-nivel').value,
+        dato3: document.getElementById('edit-cat-input-unico').value
+    }
+
+    try{
+        const respuesta = await fetch('http://localhost:3000/api/editar-catalogo', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(datosActualizacionCatalogo)
+        });
+        const resultado = await respuesta.json();
+
+        if (resultado.exito) {
+            alert(resultado.mensaje);
+            cerrarModalCatalogo();
+            mostrarTablasSecundarias();
+        } else {
+            console.error("Error desde el servidor: ", error);
+        }
+    } catch (error) {
+        console.error("ERROR AL AGREGAR EL PRODUCTO:", error);
+    }
+}
+
+//MOSTRAR PIEZAS Y MAQUINAS -------------------------------------------------------------------------------------------------------------------------------
+async function mostrarPiezasMaquinas() {
+    try {
+        const respuesta = await fetch('http://localhost:3000/api/consulta-piezas-maquinas');
+
+        const resultado = await respuesta.json();
+
+        if (resultado.exito) {
+
+            const selectPieza = document.getElementById('select-comp-producto');
+            resultado.piezas.forEach(pieza => {
+                selectPieza.innerHTML += `<option value="${pieza.ID_PIEZA}">${pieza.NOMBRE} | ${pieza.COLOR_TIPO} | ${pieza.MARCA}</option>`;
+            });
+
+            const selectMaquina = document.getElementById('select-comp-maquina');
+            resultado.maquinas.forEach(maquina => {
+                selectMaquina.innerHTML += `<option value="${maquina.ID_MAQUINA}">${maquina.NOMBRE_MODELO}</option>`;
+            });
+
+            const tbodyComp = document.getElementById('tabla-compatibilidad');
+
+            tbodyComp.innerHTML = "";
+
+            resultado.relaciones.forEach(relacion => {
+
+                botonBorrar = `<a href="#" style="color:red; font-weight:bold;" onclick="eliminarRelacion(${relacion.ID_PIEZA}, ${relacion.ID_MAQUINA})">Eliminar</a>`;
+
+                tbodyComp.insertRow().innerHTML = 
+                `<td>${relacion.PIEZA}</td>
+                <td>${relacion.MAQUINA}</td>
+                <td>${botonBorrar}<td>`
+            })
+        }
+    } catch (error) {
+        console.error("ERROR AL CARGAR LAS PIEZAS Y/O PRODUCTOS: ", error);
+    }
+}
+
+mostrarPiezasMaquinas();
+
+//VINCULAR PIEZA Y MAQUINA --------------------------------------------------------------------------------------------------------------------------------
+async function vincularPiezaMaquina(PIE, MAQ) {
+
+    const datosRelacion = {pieza: PIE, maquina: MAQ};
+
+    try {
+        const respuesta = await fetch ('http://localhost:3000/api/vincular-pieza-maquina', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(datosRelacion)
+        });
+
+        const resultado = await respuesta.json();
+
+        if (resultado.exito) {
+            alert(resultado.mensaje);
+            mostrarPiezasMaquinas();
+        }
+    } catch (error) {
+        console.error("ERROR AL REALIZAR LA VINCULACION: ", error);
+    }
+}
+
+//BORRAR RELACION PIEZA MAQUINA ---------------------------------------------------------------------------------------------------------------------------
+async function eliminarRelacion(PIE, MAQ){
+    const pieza = PIE;
+    const maquina = MAQ;
+
+    const datosBajaRelacion = {
+        pieza: pieza,
+        maquina: maquina
+    }
+
+    try{
+        const respuesta = await fetch ('http://localhost:3000/api/borrar-relacion', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(datosBajaRelacion)
+        });
+
+        const resultado = await respuesta.json();
+
+        if (resultado.exito) {
+            alert(resultado.mensaje);
+            mostrarPiezasMaquinas();
+        }
+    } catch (error) {
+        console.error("ERROR AL BORRAR LA RELACION MAQUINA - PIEZA: ", error);
     }
 }
 

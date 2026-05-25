@@ -8,7 +8,8 @@
     <link rel="icon" type="image/x-icon" href="images/SWF_ICO.ico">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap"
+        rel="stylesheet">
     <link rel="stylesheet" href="css/estilos.css">
 </head>
 
@@ -25,17 +26,23 @@
     <div class="dashboard-container">
         <div class="panel-izquierdo">
             <div class="tarjeta">
+
                 <div class="selector-pestanas">
-                    <button class="btn-tab activo" onclick="cambiarPestana('usuarios', this)">Gestión de Personal</button>
+                    <button class="btn-tab activo" onclick="cambiarPestana('usuarios', this)">Gestión de
+                        Personal</button>
                     <button class="btn-tab" onclick="cambiarPestana('productos', this)">Alta de Productos</button>
+                    <button class="btn-tab" onclick="cambiarPestana('maquinas', this)">Alta de Máquinas</button>
                     <button class="btn-tab" onclick="cambiarPestana('catalogos', this)">Categorías y Marcas</button>
+                    <button class="btn-tab" onclick="cambiarPestana('compatibilidad', this)">Compatibilidad de
+                        Piezas</button>
                 </div>
 
                 <div id="sec-usuarios" class="seccion-admin activa">
                     <div class="form-grid">
                         <div class="form-group">
                             <label>Nombre Completo</label>
-                            <input type="text" class="form-control" id="input-usuario-nombre" placeholder="Ej. Juan Pérez" required>
+                            <input type="text" class="form-control" id="input-usuario-nombre"
+                                placeholder="Ej. Juan Pérez" required>
                         </div>
                         <div class="form-group">
                             <label>Contraseña Temporal</label>
@@ -55,7 +62,8 @@
                         <button class="btn-principal" onclick="registrarUsuario()">Registrar Usuario</button>
                     </div>
 
-                    <h3 style="margin-top: 40px; font-size: 1rem; border-bottom: 1px solid #eee; padding-bottom: 10px;">Directorio de Personal</h3>
+                    <h3 style="margin-top: 40px; font-size: 1rem; border-bottom: 1px solid #eee; padding-bottom: 10px;">
+                        Directorio de Personal</h3>
                     <div class="table-wrapper">
                         <table>
                             <thead>
@@ -73,11 +81,51 @@
                     </div>
                 </div>
 
+                <div id="modal-editar-usuario" class="modal-contenedor">
+                    <div class="modal-tarjeta" style="max-width: 600px;">
+
+                        <div class="modal-cabecera">
+                            <h3>Editar Usuario <span id="edit-usr-id-texto" style="color: #72273b;"></span></h3>
+                            <button class="btn-cerrar-modal" onclick="cerrarModalUsuario()">&times;</button>
+                        </div>
+
+                        <div class="modal-cuerpo">
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label>Nombre Completo</label>
+                                    <input type="text" class="form-control" id="edit-usr-nombre"
+                                        placeholder="Ej. Juan Pérez">
+                                </div>
+                                <div class="form-group">
+                                    <label>Contraseña</label>
+                                    <input type="text" class="form-control" id="edit-usr-password">
+                                </div>
+                                <div class="form-group" style="grid-column: span 2;">
+                                    <label>Rol del Sistema</label>
+                                    <select class="form-control" id="edit-usr-rol">
+                                        <option value="">Seleccione un rol...</option>
+                                        <option value="Administrador">Administrador</option>
+                                        <option value="Trabajador">Trabajador</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <input type="hidden" id="edit-usr-id">
+
+                            <div class="acciones-form" style="margin-top: 20px; text-align: right;">
+                                <button class="btn-principal" onclick="guardarCambiosUsuario()">Guardar Cambios</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 <div id="sec-productos" class="seccion-admin">
+
                     <div class="form-grid">
                         <div class="form-group">
                             <label>Nombre de la Pieza</label>
-                            <input type="text" class="form-control" id="input-prod-nombre" placeholder="Ej. Correa de distribución" required>
+                            <input type="text" class="form-control" id="input-prod-nombre"
+                                placeholder="Ej. Correa de distribución" required>
                         </div>
                         <div class="form-group">
                             <label>Stock Inicial</label>
@@ -88,45 +136,40 @@
                     <div class="form-grid">
                         <div class="form-group">
                             <label>Categoría</label>
-                            <select class="form-control" id="select-prod-cat"><option value="">Seleccionar...</option></select>
+                            <select class="form-control" id="select-prod-cat">
+                                <option value="">Seleccionar...</option>
+                            </select>
                         </div>
                         <div class="form-group">
                             <label>Marca</label>
-                            <select class="form-control" id="select-prod-marca"><option value="">Seleccionar...</option></select>
+                            <select class="form-control" id="select-prod-marca">
+                                <option value="">Seleccionar...</option>
+                            </select>
                         </div>
                     </div>
 
                     <div class="form-grid">
                         <div class="form-group">
                             <label>Medida</label>
-                            <select class="form-control" id="select-prod-medida"><option value="">Seleccionar...</option></select>
-                        </div>
-                        <div class="form-group">
-                            <label>Máquina Destino</label>
-                            <select class="form-control" id="select-prod-maquina"><option value="">N/A</option></select>
-                        </div>
-                    </div>
-
-                    <div class="form-grid">
-                        <div class="form-group">
-                            <label>Modelo</label>
-                            <input type="text" class="form-control" id="input-prod-modelo" placeholder="Ej. TFMX-C">
-                        </div>
-                        <div class="form-group">
-                            <label>Ubicación (Anaquel/Nivel)</label>
-                            <select class="form-control" id="select-prod-ubi"><option value="">Seleccionar...</option></select>
-                        </div>
-                    </div>
-
-                    <div class="form-grid">
-                        <div class="form-group">
-                            <label>Área de Bordado</label>
-                            <select class="form-control" id="select-prod-area"><option value="">N/A</option></select>
+                            <select class="form-control" id="select-prod-medida">
+                                <option value="">Seleccionar...</option>
+                            </select>
                         </div>
                         <div class="form-group">
                             <label>Color / Tipo</label>
-                            <input type="text" class="form-control" id="input-prod-color" placeholder="Ej. Cromo / Nylon">
+                            <input type="text" class="form-control" id="input-prod-color"
+                                placeholder="Ej. Cromo / Nylon">
                         </div>
+                    </div>
+
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label>Ubicación (Anaquel/Nivel)</label>
+                            <select class="form-control" id="select-prod-ubi">
+                                <option value="">Seleccionar...</option>
+                            </select>
+                        </div>
+                        <div></div>
                     </div>
 
                     <div class="acciones-form">
@@ -134,19 +177,75 @@
                     </div>
                 </div>
 
+                <div id="sec-maquinas" class="seccion-admin">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label>Nombre del Modelo</label>
+                            <input type="text" class="form-control" id="input-maq-modelo" placeholder="Ej. SWF/E-T1501C"
+                                required>
+                        </div>
+                        <div class="form-group">
+                            <label>Número de Serie</label>
+                            <input type="text" class="form-control" id="input-maq-serie" placeholder="Ej. SWF001"
+                                required>
+                        </div>
+                    </div>
+
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label>Marca</label>
+                            <select class="form-control" id="select-maq-marca">
+                                <option value="">Seleccionar...</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Área de Bordado</label>
+                            <select class="form-control" id="select-maq-area">
+                                <option value="">Seleccionar...</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label>Tipo de Bastidor</label>
+                            <input type="text" class="form-control" id="input-maq-bastidor"
+                                placeholder="Ej. Cilíndrico">
+                        </div>
+                        <div class="form-group">
+                            <label>Descripción</label>
+                            <input type="text" class="form-control" id="input-maq-descripcion"
+                                placeholder="Ej. Máquina de 1 cabeza">
+                        </div>
+                    </div>
+
+                    <div class="acciones-form">
+                        <button class="btn-principal" onclick="altaMaquina()">Registrar Máquina</button>
+                    </div>
+                </div>
+
                 <div id="sec-catalogos" class="seccion-admin">
-                    <p style="font-size: 12px; color: #666; margin-bottom: 20px;">Gestiona las listas desplegables y visualiza los registros existentes.</p>
+                    <p style="font-size: 12px; color: #666; margin-bottom: 20px;">Gestiona las listas desplegables y
+                        visualiza los registros existentes.</p>
 
                     <div class="form-grid">
                         <div class="form-group">
                             <label>Categorías</label>
                             <div style="display: flex; gap: 10px; margin-bottom: 10px;">
-                                <input type="text" class="form-control" id="input-nueva-cat" placeholder="Nueva categoría">
-                                <button class="btn-principal" onclick="agregarCatalogo('CATEGORIA', document.getElementById('input-nueva-cat').value)">Añadir</button>
+                                <input type="text" class="form-control" id="input-nueva-cat"
+                                    placeholder="Nueva categoría">
+                                <button class="btn-principal"
+                                    onclick="agregarCatalogo('CATEGORIA', document.getElementById('input-nueva-cat').value)">Añadir</button>
                             </div>
                             <div class="table-wrapper" style="max-height: 150px;">
                                 <table>
-                                    <thead><tr><th>ID</th><th>Nombre</th></tr></thead>
+                                    <thead>
+                                        <tr>
+                                            <th>ID</th>
+                                            <th>Nombre</th>
+                                            <th>Accion</th>
+                                        </tr>
+                                    </thead>
                                     <tbody id="tabla-categorias-admin"></tbody>
                                 </table>
                             </div>
@@ -155,82 +254,173 @@
                         <div class="form-group">
                             <label>Marcas</label>
                             <div style="display: flex; gap: 10px; margin-bottom: 10px;">
-                                <input type="text" class="form-control" id="input-nueva-marca" placeholder="Nueva marca">
-                                <button class="btn-principal" onclick="agregarCatalogo('MARCA', document.getElementById('input-nueva-marca').value)">Añadir</button>
+                                <input type="text" class="form-control" id="input-nueva-marca"
+                                    placeholder="Nueva marca">
+                                <button class="btn-principal"
+                                    onclick="agregarCatalogo('MARCA', document.getElementById('input-nueva-marca').value)">Añadir</button>
                             </div>
                             <div class="table-wrapper" style="max-height: 150px;">
                                 <table>
-                                    <thead><tr><th>ID</th><th>Nombre</th></tr></thead>
+                                    <thead>
+                                        <tr>
+                                            <th>ID</th>
+                                            <th>Nombre</th>
+                                            <th>Accion</th>
+                                        </tr>
+                                    </thead>
                                     <tbody id="tabla-marcas-admin"></tbody>
                                 </table>
                             </div>
                         </div>
                     </div>
-
                     <div class="form-grid">
-                        <div class="form-group">
-                            <label>Máquinas / Modelos</label>
-                            <div style="display: flex; gap: 10px; margin-bottom: 10px;">
-                                <input type="text" class="form-control" id="input-nueva-maquina" placeholder="Nombre de máquina">
-                                <button class="btn-principal" onclick="agregarCatalogo('MAQUINA', document.getElementById('input-nueva-maquina').value)">Añadir</button>
-                            </div>
-                            <div class="table-wrapper" style="max-height: 150px;">
-                                <table>
-                                    <thead><tr><th>ID</th><th>Modelo</th></tr></thead>
-                                    <tbody id="tabla-maquinas-admin"></tbody>
-                                </table>
-                            </div>
-                        </div>
-
                         <div class="form-group">
                             <label>Medidas</label>
                             <div style="display: flex; gap: 10px; margin-bottom: 10px;">
-                                <input type="text" class="form-control" id="input-nueva-medida" placeholder="Valor de medida">
-                                <button class="btn-principal" onclick="agregarCatalogo('MEDIDA', document.getElementById('input-nueva-medida').value)">Añadir</button>
+                                <input type="text" class="form-control" id="input-nueva-medida"
+                                    placeholder="Valor de medida">
+                                <button class="btn-principal"
+                                    onclick="agregarCatalogo('MEDIDA', document.getElementById('input-nueva-medida').value)">Añadir</button>
                             </div>
                             <div class="table-wrapper" style="max-height: 150px;">
                                 <table>
-                                    <thead><tr><th>ID</th><th>Medida</th></tr></thead>
+                                    <thead>
+                                        <tr>
+                                            <th>ID</th>
+                                            <th>Medida</th>
+                                            <th>Accion</th>
+                                        </tr>
+                                    </thead>
                                     <tbody id="tabla-medidas-admin"></tbody>
                                 </table>
                             </div>
                         </div>
-                    </div>
 
-                    <div class="form-grid">
                         <div class="form-group">
                             <label>Áreas de Bordado</label>
                             <div style="display: flex; gap: 10px; margin-bottom: 10px;">
                                 <input type="text" class="form-control" id="input-nueva-area" placeholder="Nueva área">
-                                <button class="btn-principal" onclick="agregarCatalogo('AREA', document.getElementById('input-nueva-area').value)">Añadir</button>
+                                <button class="btn-principal"
+                                    onclick="agregarCatalogo('AREA', document.getElementById('input-nueva-area').value)">Añadir</button>
                             </div>
                             <div class="table-wrapper" style="max-height: 150px;">
                                 <table>
-                                    <thead><tr><th>ID</th><th>Área</th></tr></thead>
+                                    <thead>
+                                        <tr>
+                                            <th>ID</th>
+                                            <th>Área</th>
+                                            <th>Accion</th>
+                                        </tr>
+                                    </thead>
                                     <tbody id="tabla-areas-admin"></tbody>
                                 </table>
                             </div>
                         </div>
-
+                    </div>
+                    <div class="form-grid">
                         <div class="form-group">
                             <label>Ubicaciones</label>
                             <div style="display: flex; gap: 10px; margin-bottom: 10px;">
                                 <input type="text" class="form-control" id="input-nuevo-anaquel" placeholder="Anaquel">
                                 <input type="text" class="form-control" id="input-nuevo-nivel" placeholder="Nivel">
-                                <button class="btn-principal" onclick="agregarCatalogo('UBICACION', { anaquel: document.getElementById('input-nuevo-anaquel').value, nivel: document.getElementById('input-nuevo-nivel').value })">Añadir</button>
+                                <button class="btn-principal"
+                                    onclick="agregarCatalogo('UBICACION', { anaquel: document.getElementById('input-nuevo-anaquel').value, nivel: document.getElementById('input-nuevo-nivel').value })">Añadir</button>
                             </div>
                             <div class="table-wrapper" style="max-height: 150px;">
                                 <table>
-                                    <thead><tr><th>ID</th><th>Ubicación</th></tr></thead>
+                                    <thead>
+                                        <tr>
+                                            <th>ID</th>
+                                            <th>Ubicación</th>
+                                            <th>Accion</th>
+                                        </tr>
+                                    </thead>
                                     <tbody id="tabla-ubicaciones-admin"></tbody>
                                 </table>
                             </div>
                         </div>
                     </div>
                 </div>
+
+                <div id="modal-editar-catalogo" class="modal-contenedor">
+                    <div class="modal-tarjeta" style="max-width: 500px;">
+
+                        <div class="modal-cabecera">
+                            <h3 id="edit-cat-titulo">Editar Registro <span id="edit-cat-id-texto"
+                                    style="color: #72273b;"></span></h3>
+                            <button class="btn-cerrar-modal" onclick="cerrarModalCatalogo()">&times;</button>
+                        </div>
+
+                        <div class="modal-cuerpo">
+
+                            <div id="grupo-campo-unico" class="form-group" style="display: none;">
+                                <label id="edit-cat-label-unico">Valor</label>
+                                <input type="text" class="form-control" id="edit-cat-input-unico">
+                            </div>
+
+                            <div id="grupo-campo-doble" class="form-grid" style="display: none;">
+                                <div class="form-group">
+                                    <label>Anaquel</label>
+                                    <input type="text" class="form-control" id="edit-cat-input-anaquel">
+                                </div>
+                                <div class="form-group">
+                                    <label>Nivel</label>
+                                    <input type="text" class="form-control" id="edit-cat-input-nivel">
+                                </div>
+                            </div>
+
+                            <input type="hidden" id="edit-cat-id">
+                            <input type="hidden" id="edit-cat-tipo">
+                            <div class="acciones-form" style="margin-top: 20px; text-align: right;">
+                                <button class="btn-principal" onclick="guardarCambiosCatalogo()">Guardar
+                                    Cambios</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="sec-compatibilidad" class="seccion-admin">
+                    <div class="tarjeta" style="background-color: #f9f9f9; padding: 20px; margin-bottom: 20px;">
+                        <h4>Vincular Pieza con Modelo de Máquina</h4>
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label>Seleccionar Pieza / Producto</label>
+                                <select class="form-control" id="select-comp-producto">
+                                    <option value="">Buscar pieza...</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Modelo de Máquina Compatible</label>
+                                <select class="form-control" id="select-comp-maquina">
+                                    <option value="">Seleccionar modelo...</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="acciones-form">
+                            <button class="btn-principal"
+                                onclick="vincularPiezaMaquina(document.getElementById('select-comp-producto').value, document.getElementById('select-comp-maquina').value)">Vincular
+                                Compatibilidad</button>
+                        </div>
+                    </div>
+
+                    <h4>Listado de Compatibilidades Registradas</h4>
+                    <div class="table-wrapper">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Pieza</th>
+                                    <th>Máquina Compatible</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tabla-compatibilidad">
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
             </div>
         </div>
-
         <div class="panel-derecho">
             <div class="tarjeta" style="border-top-color: #dc3545;">
                 <h3 style="color: #dc3545;">⚠️ Alertas de Stock Crítico</h3>
@@ -239,7 +429,6 @@
             </div>
         </div>
     </div>
-
     <footer>
         @Proyecto final de desarrollo web 2026
     </footer>

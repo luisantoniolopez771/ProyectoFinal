@@ -33,18 +33,19 @@
                     <thead>
                         <tr>
                             <th style="cursor: pointer;" onclick="ordenarTablaMaquinas(0, 'texto', this)">No. Serie
-                                <span class="icono-orden">↕</span></th>
+                                <span class="icono-orden">↕</span>
+                            </th>
                             <th style="cursor: pointer;" onclick="ordenarTablaMaquinas(1, 'texto', this)">Marca <span
                                     class="icono-orden">↕</span></th>
                             <th style="cursor: pointer;" onclick="ordenarTablaMaquinas(2, 'texto', this)">Modelo <span
                                     class="icono-orden">↕</span></th>
                             <th style="cursor: pointer;" onclick="ordenarTablaMaquinas(3, 'texto', this)">Área de
                                 Bordado <span class="icono-orden">↕</span></th>
-                            <th style="cursor: pointer;" onclick="ordenarTablaMaquinas(4, 'texto', this)">Tipo de
-                                Bastidor <span class="icono-orden">↕</span></th>
-                            <th style="cursor: pointer;" onclick="ordenarTablaMaquinas(5, 'texto', this)">Descripción
-                                <span class="icono-orden">↕</span></th>
+                            <th style="cursor: pointer;" onclick="ordenarTablaMaquinas(4, 'texto', this)">Descripción
+                                <span class="icono-orden">↕</span>
+                            </th>
                             <th style="cursor: pointer;">Piezas</th>
+                            <th style="cursor: pointer;" id="cabezera-editar-maquina">Editar</th>
                         </tr>
                     </thead>
                     <tbody id="tabla-maquinas">
@@ -67,21 +68,139 @@
                                     class="icono-orden">↕</span></th>
                             <th style="cursor: pointer;" onclick="ordenarTabla(4, 'texto', this)">Ubicación <span
                                     class="icono-orden">↕</span></th>
-                            <th style="cursor: pointer;" onclick="ordenarTabla(5, 'texto', this)">Modelo <span
+                            <th style="cursor: pointer;" onclick="ordenarTabla(5, 'texto', this)">Color <span
                                     class="icono-orden">↕</span></th>
-                            <th style="cursor: pointer;" onclick="ordenarTabla(6, 'texto', this)">Color <span
+                            <th style="cursor: pointer;" onclick="ordenarTabla(6, 'numero', this)">Stock Actual <span
                                     class="icono-orden">↕</span></th>
-                            <th style="cursor: pointer;" onclick="ordenarTabla(7, 'texto', this)">Area Bordado <span
-                                    class="icono-orden">↕</span></th>
-                            <th style="cursor: pointer;" onclick="ordenarTabla(8, 'texto', this)">Maquina <span
-                                    class="icono-orden">↕</span></th>
-                            <th style="cursor: pointer;" onclick="ordenarTabla(9, 'numero', this)">Stock Actual <span
-                                    class="icono-orden">↕</span></th>
+                            <th style="cursor: pointer;" id="cabezera-editar-pieza">Editar</th>
                         </tr>
                     </thead>
                     <tbody id="tabla-inventario">
                     </tbody>
                 </table>
+            </div>
+        </div>
+    </div>
+
+    <div id="modal-ver-piezas" class="modal-contenedor">
+        <div class="modal-tarjeta">
+
+            <div class="modal-cabecera">
+                <h3>Piezas Compatibles - Modelo: <span id="modal-maquina-titulo" style="color: #72273b;">[Modelo]</span>
+                </h3>
+                <button class="btn-cerrar-modal" onclick="cerrarModalPiezas()">&times;</button>
+            </div>
+
+            <div class="modal-cuerpo">
+                <p style="font-size: 13px; color: #666; margin-bottom: 15px;">Las siguientes piezas del inventario son
+                    compatibles con esta máquina:</p>
+
+                <div class="table-wrapper" style="max-height: 300px;">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>ID Pieza</th>
+                                <th>Nombre</th>
+                                <th>Stock Actual</th>
+                                <th>Ubicación</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tabla-piezas-compatibles">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="modal-editar-pieza" class="modal-contenedor">
+        <div class="modal-tarjeta" style="max-width: 800px;">
+            <div class="modal-cabecera">
+                <h3>Editar Pieza <span id="edit-pieza-id-texto" style="color: #72273b;"></span></h3>
+                <button class="btn-cerrar-modal" onclick="cerrarModalEditar()">&times;</button>
+            </div>
+
+            <div class="modal-cuerpo">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>Nombre de la Pieza</label>
+                        <input type="text" class="form-control" id="edit-prod-nombre">
+                    </div>
+                    <div class="form-group">
+                        <label>Color / Tipo</label>
+                        <input type="text" class="form-control" id="edit-prod-color">
+                    </div>
+                    <div class="form-group">
+                        <label>Categoría</label>
+                        <select class="form-control" id="edit-prod-categoria"></select>
+                    </div>
+                    <div class="form-group">
+                        <label>Marca</label>
+                        <select class="form-control" id="edit-prod-marca"></select>
+                    </div>
+                    <div class="form-group">
+                        <label>Medida</label>
+                        <select class="form-control" id="edit-prod-medida"></select>
+                    </div>
+                    <div class="form-group">
+                        <label>Ubicación</label>
+                        <select class="form-control" id="edit-prod-ubicacion"></select>
+                    </div>
+
+                    <div class="form-group" style="grid-column: span 2;">
+                        <label>Stock Actual <span style="color: #999; font-size: 0.85em;">(Para modificar el stock,
+                                registra una Entrada/Salida como ajuste)</span></label>
+                        <input type="number" class="form-control" id="edit-prod-stock" readonly
+                            style="background-color: #f0f0f0; cursor: not-allowed;">
+                    </div>
+                </div>
+
+                <input type="hidden" id="edit-prod-id">
+
+                <div class="acciones-form" style="margin-top: 20px; text-align: right;">
+                    <button class="btn-principal" onclick="guardarCambiosPieza()">Guardar Cambios</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="modal-editar-maquina" class="modal-contenedor">
+        <div class="modal-tarjeta" style="max-width: 800px;">
+
+            <div class="modal-cabecera">
+                <h3>Editar Máquina <span id="edit-maq-id-texto" style="color: #72273b;"></span></h3>
+                <button class="btn-cerrar-modal" onclick="cerrarModalEditarMaquina()">&times;</button>
+            </div>
+
+            <div class="modal-cuerpo">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>Modelo de Máquina</label>
+                        <input type="text" class="form-control" id="edit-maq-modelo">
+                    </div>
+                    <div class="form-group">
+                        <label>Número de Serie</label>
+                        <input type="text" class="form-control" id="edit-maq-serie">
+                    </div>
+                    <div class="form-group">
+                        <label>Marca</label>
+                        <select class="form-control" id="edit-maq-marca"></select>
+                    </div>
+                    <div class="form-group">
+                        <label>Área de Bordado</label>
+                        <select class="form-control" id="edit-maq-area"></select>
+                    </div>
+                    <div class="form-group">
+                        <label>Descripción</label>
+                        <input type="text" class="form-control" id="edit-maq-descripcion">
+                    </div>
+                </div>
+
+                <input type="hidden" id="edit-maq-id">
+
+                <div class="acciones-form" style="margin-top: 20px; text-align: right;">
+                    <button class="btn-principal" onclick="guardarCambiosMaquina()">Guardar Cambios</button>
+                </div>
             </div>
         </div>
     </div>

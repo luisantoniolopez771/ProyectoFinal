@@ -26,6 +26,7 @@ formulario.addEventListener('submit', async function (event) {
             localStorage.setItem('usuarioLogueado', resultado.mensaje);
             localStorage.setItem('rolUsuario', resultado.rol);
             localStorage.setItem('idUsuario', resultado.idUsuario);
+            localStorage.setItem('estadoUsuario', resultado.estado)
             alert("¡Bienvenido, " + resultado.mensaje + "!");
             window.location.href = "inventario.html";
         } else {
