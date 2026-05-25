@@ -1,5 +1,5 @@
 /* ========================================= */
-/* ESTILOS BASE         */
+/* ESTILOS BASE*/
 /* ========================================= */
 body {
     font-family: "Open Sans", sans-serif;
@@ -17,7 +17,7 @@ body {
 }
 
 /* ========================================= */
-/* NAVEGACIÓN                                */
+/* NAVEGACIÓN*/
 /* ========================================= */
 nav {
     background-color: #332247;
@@ -43,7 +43,7 @@ nav a:hover {
 }
 
 /* ========================================= */
-/* CONTENEDORES Y TARJETAS                   */
+/* CONTENEDORES Y TARJETAS*/
 /* ========================================= */
 .login {
     border: solid 4px #72273b;
@@ -104,7 +104,6 @@ nav a:hover {
     align-items: flex-start;
 }
 
-/* Eliminamos los min-width gigantescos que rompían el celular */
 .panel-izquierdo { flex: 2; min-width: 280px; display: flex; flex-direction: column; gap: 20px; }
 .panel-derecho { flex: 1; min-width: 280px; display: flex; flex-direction: column; gap: 20px; }
 .columna-principal { flex: 3; min-width: 280px; display: flex; flex-direction: column; width: 100%; }
@@ -136,7 +135,7 @@ h1, h2, h3 { color: #272a4d; text-align: center; }
 h3 { text-align: left; margin-top: 0; margin-bottom: 20px; font-size: 1.2rem; }
 
 /* ========================================= */
-/* FORMULARIOS Y ELEMENTOS                   */
+/* FORMULARIOS Y ELEMENTOS*/
 /* ========================================= */
 .input-buscador {
     padding: 12px;
@@ -204,13 +203,55 @@ button:hover, .btn-principal:hover, .btn-add:hover { background-color: #72273b; 
 .btn-delete:hover { background-color: #a71d2a; }
 
 /* ========================================= */
-/* TABLAS Y LISTAS */
+/* TABLAS Y LISTAS*/
 /* ========================================= */
-.table-wrapper { overflow-x: auto; width: 100%; display: block; }
-table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 13px; margin-bottom: 20px;}
-thead { background-color: #72273b; color: white; border-bottom: 2px solid #eee; }
-th { padding: 10px; text-align: center; font-size: 11px; text-transform: uppercase; color: white; }
-td { padding: 12px 10px; border-bottom: 1px solid #eee; color: #333; }
+.table-wrapper { 
+    overflow-x: auto; 
+    width: 100%; 
+    display: block; 
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+table { 
+    width: 100%; 
+    border-collapse: collapse; 
+    margin-top: 0; 
+    font-size: 13px; 
+    background-color: #ffffff;
+}
+
+thead { 
+    background-color: #72273b;
+    color: white; 
+}
+
+th { 
+    padding: 14px 10px;
+    text-align: center;
+    vertical-align: middle;
+    font-size: 11px; 
+    text-transform: uppercase; 
+    color: white; 
+    letter-spacing: 0.5px;
+}
+
+td { 
+    padding: 12px 10px; 
+    border-bottom: 1px solid #eeeeee; 
+    color: #333; 
+    text-align: center;
+    vertical-align: middle;
+}
+
+tbody tr:nth-child(even) {
+    background-color: #fdfdfd;
+}
+
+tbody tr:hover {
+    background-color: #f2e9eb; 
+    transition: background-color 0.2s ease;
+}
 
 .badge-estado { padding: 5px 10px; border-radius: 15px; font-size: 12px; font-weight: bold; display: inline-block; }
 .estado-activo { background-color: #e8f5e9; color: #2e7d32; }
@@ -244,7 +285,7 @@ footer {
 }
 
 /* ========================================================= */
-/* RESPONSIVA   */
+/*RESPONSIVA (REGLAS PARA CELULARES Y TABLETS)*/
 /* ========================================================= */
 @media (max-width: 992px) {
     .dashboard-container { flex-direction: column; padding: 0 10px; margin-top: 15px; }

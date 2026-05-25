@@ -40,4 +40,4 @@ services:
     volumes:
       - ./web:/usr/share/nginx/html
     depends_on:
-      - api
+      - api 
