@@ -97,6 +97,18 @@ INSERT INTO Categoria (Nombre_Categoria) VALUES ('Huaraches');
 INSERT INTO Categoria (Nombre_Categoria) VALUES ('Grapas');
 INSERT INTO Categoria (Nombre_Categoria) VALUES ('Brazos');
 INSERT INTO Categoria (Nombre_Categoria) VALUES ('Embastadores');
+INSERT INTO Categoria (Nombre_Categoria) VALUES ('Catchers');
+INSERT INTO Categoria (Nombre_Categoria) VALUES ('Barras');
+INSERT INTO Categoria (Nombre_Categoria) VALUES ('Prensa Tela');
+INSERT INTO Categoria (Nombre_Categoria) VALUES ('Resortes');
+INSERT INTO Categoria (Nombre_Categoria) VALUES ('Tira Hilo');
+INSERT INTO Categoria (Nombre_Categoria) VALUES ('Mangueras');
+INSERT INTO Categoria (Nombre_Categoria) VALUES ('Refacciones');
+INSERT INTO Categoria (Nombre_Categoria) VALUES ('Accesorios');
+INSERT INTO Categoria (Nombre_Categoria) VALUES ('Herramientas');
+INSERT INTO Categoria (Nombre_Categoria) VALUES ('Aros Especiales');
+INSERT INTO Categoria (Nombre_Categoria) VALUES ('Consumibles');
+INSERT INTO Categoria (Nombre_Categoria) VALUES ('Otros');
 
 -- MARCAS
 INSERT INTO Marca (Nombre_Marca) VALUES ('SWF');
@@ -109,6 +121,18 @@ INSERT INTO Marca (Nombre_Marca) VALUES ('Feiya');
 INSERT INTO Marca (Nombre_Marca) VALUES ('Happy');
 INSERT INTO Marca (Nombre_Marca) VALUES ('ZSK');
 INSERT INTO Marca (Nombre_Marca) VALUES ('Toyota');
+INSERT INTO Marca (Nombre_Marca) VALUES ('Melco');
+INSERT INTO Marca (Nombre_Marca) VALUES ('Ricoma');
+INSERT INTO Marca (Nombre_Marca) VALUES ('Sailrite');
+INSERT INTO Marca (Nombre_Marca) VALUES ('Jack');
+INSERT INTO Marca (Nombre_Marca) VALUES ('Juki');
+INSERT INTO Marca (Nombre_Marca) VALUES ('Singer');
+INSERT INTO Marca (Nombre_Marca) VALUES ('Pfaff');
+INSERT INTO Marca (Nombre_Marca) VALUES ('Bernina');
+INSERT INTO Marca (Nombre_Marca) VALUES ('Janome');
+INSERT INTO Marca (Nombre_Marca) VALUES ('Baby Lock');
+INSERT INTO Marca (Nombre_Marca) VALUES ('Genérica');
+
 
 -- MEDIDAS
 INSERT INTO Medida (Valor_Medida) VALUES ('09x35');
@@ -131,7 +155,7 @@ INSERT INTO Medida (Valor_Medida) VALUES ('15x45');
 INSERT INTO Medida (Valor_Medida) VALUES ('18x45');
 INSERT INTO Medida (Valor_Medida) VALUES ('24x24/45');
 INSERT INTO Medida (Valor_Medida) VALUES ('30x30/45');
-INSERT INTO Medida (Valor_Medida) VALUES ('09x50')
+INSERT INTO Medida (Valor_Medida) VALUES ('09x50');
 INSERT INTO Medida (Valor_Medida) VALUES ('12x50');
 INSERT INTO Medida (Valor_Medida) VALUES ('15x50');
 INSERT INTO Medida (Valor_Medida) VALUES ('18x50');
@@ -184,6 +208,17 @@ INSERT INTO Area_Bordado (Nombre_Area) VALUES ('40x46');
 INSERT INTO Area_Bordado (Nombre_Area) VALUES ('45x51');
 INSERT INTO Area_Bordado (Nombre_Area) VALUES ('50x56');
 INSERT INTO Area_Bordado (Nombre_Area) VALUES ('40x60');
+INSERT INTO Area_Bordado (Nombre_Area) VALUES ('55x60');
+INSERT INTO Area_Bordado (Nombre_Area) VALUES ('60x60');
+INSERT INTO Area_Bordado (Nombre_Area) VALUES ('65x60');
+INSERT INTO Area_Bordado (Nombre_Area) VALUES ('70x60');
+INSERT INTO Area_Bordado (Nombre_Area) VALUES ('75x60');
+INSERT INTO Area_Bordado (Nombre_Area) VALUES ('80x60');
+INSERT INTO Area_Bordado (Nombre_Area) VALUES ('85x60');
+INSERT INTO Area_Bordado (Nombre_Area) VALUES ('90x60');
+INSERT INTO Area_Bordado (Nombre_Area) VALUES ('95x60');
+INSERT INTO Area_Bordado (Nombre_Area) VALUES ('100x60');
+INSERT INTO Area_Bordado (Nombre_Area) VALUES ('110x60');
 
 -- MAQUINAS
 INSERT INTO Maquina (ID_Marca, ID_Area, Nombre_Modelo, NoSerie, Descripcion_Maquina) VALUES (1, 1, 'SWF/E-T1501C', 'SWF001', 'Máquina SWF de 1 cabeza');
@@ -193,22 +228,19 @@ INSERT INTO Maquina (ID_Marca, ID_Area, Nombre_Modelo, NoSerie, Descripcion_Maqu
 INSERT INTO Maquina (ID_Marca, ID_Area, Nombre_Modelo, NoSerie, Descripcion_Maquina) VALUES (1, 5, 'SWF/K-UHD1502-45', 'SWF005', 'Máquina SWF Dual de 2 cabezas');
 INSERT INTO Maquina (ID_Marca, ID_Area, Nombre_Modelo, NoSerie, Descripcion_Maquina) VALUES (1, 6, 'SWF/K-UHD1208-45', 'SWF006', 'Máquina SWF Dual de 8 cabezas');
 INSERT INTO Maquina (ID_Marca, ID_Area, Nombre_Modelo, NoSerie, Descripcion_Maquina) VALUES (1, 7, 'SWF/KX-1501C', 'SWF007', 'Máquina SWF de 1 cabezas');
-
 INSERT INTO Maquina (ID_Marca, ID_Area, Nombre_Modelo, NoSerie, Descripcion_Maquina) VALUES (2, 8, 'TFMX-C', 'TAJ001', 'Máquina Tajima cilíndrica');
 INSERT INTO Maquina (ID_Marca, ID_Area, Nombre_Modelo, NoSerie, Descripcion_Maquina) VALUES (2, 9, 'TEHX-C', 'TAJ002', 'Máquina Tajima de 4 cabezas');
 INSERT INTO Maquina (ID_Marca, ID_Area, Nombre_Modelo, NoSerie, Descripcion_Maquina) VALUES (2, 10, 'TME-DC', 'TAJ003', 'Máquina Tajima de 12 cabezas, 9 colores');
 INSERT INTO Maquina (ID_Marca, ID_Area, Nombre_Modelo, NoSerie, Descripcion_Maquina) VALUES (2, 11, 'DM-C', 'TAJ004', 'Máquina Tajima de 15 cabezas 12 colores');
-INSERT INTO Maquina (ID_Marca, ID_Area, Nombre_Modelo, NoSerie, Descripcion_Maquina) VALUES (2, 12, 'HX-C', 'TAJ002', 'Máquina Tajima de 6 cabezas');
-
+INSERT INTO Maquina (ID_Marca, ID_Area, Nombre_Modelo, NoSerie, Descripcion_Maquina) VALUES (2, 12, 'HX-C', 'TAJ005', 'Máquina Tajima de 6 cabezas');
 INSERT INTO Maquina (ID_Marca, ID_Area, Nombre_Modelo, NoSerie, Descripcion_Maquina) VALUES (3, 13, 'BTH-T1', 'BRO001', 'Máquina Brother de 4 cabezas tipo 1');
 INSERT INTO Maquina (ID_Marca, ID_Area, Nombre_Modelo, NoSerie, Descripcion_Maquina) VALUES (3, 14, 'BTH-T2', 'BRO002', 'Máquina Brother de 1 cabezas tipo 2');
 INSERT INTO Maquina (ID_Marca, ID_Area, Nombre_Modelo, NoSerie, Descripcion_Maquina) VALUES (3, 15, 'BTH-T3', 'BRO003', 'Máquina Brother de 6 cabezas tipo 3');
-
 INSERT INTO Maquina (ID_Marca, ID_Area, Nombre_Modelo, NoSerie, Descripcion_Maquina) VALUES (4, 16, 'HPP1512', 'HPP001', 'Máquina Happy de 15 cabezas 12 colores');
 INSERT INTO Maquina (ID_Marca, ID_Area, Nombre_Modelo, NoSerie, Descripcion_Maquina) VALUES (4, 17, 'HPP1204', 'HPP002', 'Máquina Brother de 12 cabezas 4 colores');
 
 -- PIEZAS
-INSERT INTO Pieza (ID_Categoria, ID_Ubicacion, ID_Marca, ID_Medida, Nombre, Color_Tipo, Stock_Actual) VALUES (1, 1, 2, 1, 'Huaraches Tajima', 'Verde' 34);
+INSERT INTO Pieza (ID_Categoria, ID_Ubicacion, ID_Marca, ID_Medida, Nombre, Color_Tipo, Stock_Actual) VALUES (1, 1, 2, 1, 'Huaraches Tajima', 'Verde', 34);
 INSERT INTO Pieza (ID_Categoria, ID_Ubicacion, ID_Marca, ID_Medida, Nombre, Color_Tipo, Stock_Actual) VALUES (2, 2, 3, 7, 'Tornillo de ajuste', 'Negro', 45);
 INSERT INTO Pieza (ID_Categoria, ID_Ubicacion, ID_Marca, ID_Medida, Nombre, Color_Tipo, Stock_Actual) VALUES (3, 3, 4, 2, 'Grapa', 'XXL', 24);
 INSERT INTO Pieza (ID_Categoria, ID_Ubicacion, ID_Marca, ID_Medida, Nombre, Color_Tipo, Stock_Actual) VALUES (4, 4, 5, 3, 'Bastidor de gorra', 'Fijo', 4);
@@ -232,6 +264,7 @@ INSERT INTO Pieza (ID_Categoria, ID_Ubicacion, ID_Marca, ID_Medida, Nombre, Colo
 COMMIT;
 
 ----------------------------- PROYECTO GESTION BASE DE DATOS -------------------------------
+
 CREATE TABLE Auditoria_Inventario (
     ID_Auditoria NUMBER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     ID_Pieza NUMBER,
@@ -265,7 +298,7 @@ BEGIN
         END IF;
     END IF;
 
-    -- Si se elimina la pieza
+    -- Si se elimina la pieza fisicamente
     IF DELETING THEN
         INSERT INTO Auditoria_Inventario (
             ID_Pieza,
@@ -286,7 +319,7 @@ END;
 
 --- TRIGGER 2 ---
 CREATE OR REPLACE TRIGGER TRG_VALIDAR_CONTRASENA
-BEFORE INSERT ON Usuario
+BEFORE INSERT OR UPDATE OF Contrasena ON Usuario
 FOR EACH ROW
 BEGIN
     IF LENGTH(:NEW.Contrasena) < 8 THEN
@@ -311,6 +344,59 @@ BEGIN
 END;
 /
 
+--- TRIGGER 4 ---
+CREATE OR REPLACE TRIGGER TRG_AUDITORIA_MOV_MASIVO
+AFTER INSERT ON Movimiento
+FOR EACH ROW
+BEGIN
+    -- Si el movimiento es mayor a 50 unidades, dispara la alerta
+    IF :NEW.Cantidad > 50 THEN
+        INSERT INTO Auditoria_Inventario (
+            ID_Pieza, 
+            Nombre_Anterior,
+            Accion, 
+            Usuario_Accion 
+        ) VALUES (
+            :NEW.ID_Pieza,
+            'MOV_GRANDE: ' || :NEW.Tipo_Movimiento,
+            'ALERTA_CANTIDAD',
+            USER
+        );
+        
+        DBMS_OUTPUT.PUT_LINE('Se ha registrado un movimiento masivo de ' || :NEW.Cantidad || ' unidades.');
+    END IF;
+END;
+/
+
+--- TRIGGER 5 ---
+CREATE OR REPLACE TRIGGER TRG_VALIDAR_STOCK_MINIMO
+BEFORE UPDATE OF Stock_Actual ON Pieza
+FOR EACH ROW
+BEGIN
+    -- Comprobamos que el nuevo stock no sea negativo
+    IF :NEW.Stock_Actual < 0 THEN
+        RAISE_APPLICATION_ERROR(-20003, 'Stock Insuficiente para completar la operacion.');
+    END IF;
+END;
+/
+
+--- TRIGGER 6 ---
+CREATE OR REPLACE TRIGGER TRG_SEGURIDAD_CATEGORIAS
+BEFORE DELETE ON Categoria
+FOR EACH ROW
+DECLARE
+    v_conteo NUMBER;
+BEGIN
+    SELECT COUNT(*) INTO v_conteo 
+    FROM Pieza
+    WHERE ID_Categoria = :OLD.ID_Categoria;
+
+    IF v_conteo > 0 THEN
+        RAISE_APPLICATION_ERROR(-20004, 'No se puede eliminar la categoria porque tiene piezas asociadas.');
+    END IF;
+END;
+/
+
 --- PAQUETE 1 ---
 CREATE OR REPLACE PACKAGE PKG_BODEGA AS
 
@@ -328,7 +414,7 @@ CREATE OR REPLACE PACKAGE PKG_BODEGA AS
 END PKG_BODEGA;
 /
 
--- Cuerpo del paquete
+--- Cuerpo del paquete 1 ---
 CREATE OR REPLACE PACKAGE BODY PKG_BODEGA AS
 
     PROCEDURE SP_Alta_Usuario(
@@ -372,6 +458,95 @@ CREATE OR REPLACE PACKAGE BODY PKG_BODEGA AS
     END FN_Movimientos_Del_Mes;
 
 END PKG_BODEGA;
+/
+
+--- PAQUETE 2 ---
+CREATE OR REPLACE PACKAGE PKG_OPERACIONES AS
+    PROCEDURE SP_Procesar_Salida(
+        p_id_pieza IN NUMBER,
+        p_cantidad IN NUMBER,
+        p_id_usuario IN NUMBER
+    );
+
+    FUNCTION FN_Estado_Pieza(
+        p_stock_actual IN NUMBER
+    ) RETURN VARCHAR2;
+END PKG_OPERACIONES;
+/
+
+--- Cuerpo del paquete 2 ---
+CREATE OR REPLACE PACKAGE BODY PKG_OPERACIONES AS
+
+    PROCEDURE SP_Procesar_Salida(
+        p_id_pieza IN NUMBER,
+        p_cantidad IN NUMBER,
+        p_id_usuario IN NUMBER
+    ) IS
+        v_stock_actual Pieza.Stock_Actual%TYPE;
+        v_stock_resultante Pieza.Stock_Actual%TYPE;
+    BEGIN
+        SELECT Stock_Actual
+        INTO v_stock_actual
+        FROM Pieza
+        WHERE ID_Pieza = p_id_pieza;
+
+        IF v_stock_actual < p_cantidad THEN
+            RAISE_APPLICATION_ERROR(
+                -20005,
+                'Stock insuficiente para realizar la salida.'
+            );
+        END IF;
+
+        v_stock_resultante := v_stock_actual - p_cantidad;
+
+        UPDATE Pieza
+        SET Stock_Actual = v_stock_resultante
+        WHERE ID_Pieza = p_id_pieza;
+
+        INSERT INTO Movimiento (
+            ID_Pieza,
+            ID_Usuario,
+            Tipo_Movimiento,
+            Cantidad,
+            Nota,
+            Stock_Resultante
+        ) VALUES (
+            p_id_pieza,
+            p_id_usuario,
+            'SALIDA',
+            p_cantidad,
+            'Salida procesada via PKG',
+            v_stock_resultante
+        );
+
+        COMMIT;
+
+        DBMS_OUTPUT.PUT_LINE(
+            'Salida registrada. Stock restante: ' ||
+            v_stock_resultante
+        );
+
+    EXCEPTION
+        WHEN OTHERS THEN
+            ROLLBACK;
+            DBMS_OUTPUT.PUT_LINE(
+                'ERROR EN OPERACION: ' || SQLERRM
+            );
+            RAISE;
+    END SP_Procesar_Salida;
+
+    FUNCTION FN_Estado_Pieza(
+        p_stock_actual IN NUMBER
+    ) RETURN VARCHAR2 IS
+    BEGIN
+        IF p_stock_actual <= 5 THEN
+            RETURN 'CRÍTICO - Reabastecer';
+        ELSE
+            RETURN 'ÓPTIMO';
+        END IF;
+    END FN_Estado_Pieza;
+
+END PKG_OPERACIONES;
 /
 
 --- CURSOR 1 EXPLICITO ---
@@ -440,123 +615,6 @@ BEGIN
     END LOOP;
 END;
 /
------------------------------------------------------------------------------
---- TRIGGER 4 ---
-CREATE OR REPLACE TRIGGER TRG_AUDITORIA_MOV_MASIVO
-AFTER INSERT ON Movimiento
-FOR EACH ROW
-BEGIN
-    -- Si el movimiento es mayor a 50 unidades, dispara la alerta
-    IF :NEW.Cantidad > 50 THEN
-        INSERT INTO Auditoria_Inventario (
-            ID_Pieza, 
-            Nombre_Anterior,
-            Accion, 
-            Usuario_Accion 
-        ) VALUES (
-            :NEW.ID_Pieza,
-            'MOV_GRANDE: ' || :NEW.Tipo_Movimiento,
-            'ALERTA_CANTIDAD',
-            USER
-        );
-        
-        DBMS_OUTPUT.PUT_LINE('Se ha registrado un movimiento masivo de ' || :NEW.Cantidad || ' unidades.');
-    END IF;
-END;
-/
-
---- TRIGGER 5 ---
-CREATE OR REPLACE TRIGGER TRG_VALIDAR_STOCK_MINIMO
-BEFORE UPDATE OF Stock_Actual ON Pieza
-FOR EACH ROW
-BEGIN
-    -- Comprobamos que el nuevo stock no sea negativo
-    IF :NEW.Stock_Actual < 0 THEN
-        RAISE_APPLICATION_ERROR(-20003, 'Stock Insuficiente para completar la operacion.');
-    END IF;
-END;
-/
-
---- TRIGGER 6 ---
-CREATE OR REPLACE TRIGGER TRG_SEGURIDAD_CATEGORIAS
-BEFORE DELETE ON Categoria
-FOR EACH ROW
-DECLARE
-    v_conteo NUMBER;
-BEGIN
-    SELECT COUNT(*) INTO v_conteo 
-    FROM Pieza
-    WHERE ID_Categoria = :OLD.ID_Categoria;
-
-    IF v_conteo > 0 THEN
-        RAISE_APPLICATION_ERROR(-20004, 'No se puede eliminar la categoria porque tiene piezas asociadas.');
-    END IF;
-END;
-/
-
---- PAQUETE 2 ---
-CREATE OR REPLACE PACKAGE PKG_OPERACIONES AS
-    PROCEDURE SP_Procesar_Salida(
-        p_id_pieza IN NUMBER,
-        p_cantidad IN NUMBER,
-        p_id_usuario IN NUMBER 
-    );
-
-    FUNCTION FN_Estado_Pieza(
-        p_stock_actual IN NUMBER
-    ) RETURN VARCHAR2;
-END PKG_OPERACIONES;
-/
-
-CREATE OR REPLACE PACKAGE BODY PKG_OPERACIONES AS
-
-    -- 1. PROCEDIMIENTO: SP_Procesar_Salida
-    PROCEDURE SP_Procesar_Salida(
-        p_id_pieza IN NUMBER,
-        p_cantidad IN NUMBER,
-        p_id_usuario IN NUMBER
-    ) IS
-    BEGIN
-        INSERT INTO Movimiento (
-            ID_Pieza, 
-            ID_Usuario, 
-            Tipo_Movimiento, 
-            Cantidad, 
-            Nota,
-            Stock_Resultante 
-        ) VALUES (
-            p_id_pieza,
-            p_id_usuario,
-            'SALIDA',
-            p_cantidad,
-            'Salida procesada via PKG',
-            0
-        );
-    
-        DBMS_OUTPUT.PUT_LINE('>>> Intento de salida registrado correctamente.');
-
-    EXCEPTION
-        WHEN OTHERS THEN
-            ROLLBACK;
-            DBMS_OUTPUT.PUT_LINE('ERROR EN OPERACION: ' || SQLERRM);
-            RAISE; 
-    END SP_Procesar_Salida;
-
-    -- 2. FUNCIÓN: FN_Estado_Pieza
-    FUNCTION FN_Estado_Pieza(
-        p_stock_actual IN NUMBER
-    ) RETURN VARCHAR2 IS
-    BEGIN
-        -- Lógica de negocio para stock en la bodega
-        IF p_stock_actual <= 5 THEN
-            RETURN 'CRÍTICO - Reabastecer';
-        ELSE
-            RETURN 'ÓPTIMO';
-        END IF;
-    END FN_Estado_Pieza;
-
-END PKG_OPERACIONES;
-/
 
 --- CURSOR 3 EXPLÍCITO ---
 SET SERVEROUTPUT ON;
@@ -564,8 +622,7 @@ DECLARE
     CURSOR cur_reabastecimiento IS
         SELECT p.Nombre, 
                p.Stock_Actual, 
-               m.Nombre_Marca,
-               p.Modelo
+               m.Nombre_Marca
         FROM Pieza p
         JOIN Marca m ON p.ID_Marca = m.ID_Marca;
     v_estado VARCHAR2(30);

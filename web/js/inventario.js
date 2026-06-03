@@ -77,6 +77,7 @@ async function cargarInventario() {
                 resultado.datosInventario.forEach(pieza => {
 
                     botonAccion = `<button class="btn-secundario" onclick="abrirModalEditar(${pieza.ID_PIEZA})">Editar Pieza</button>`;
+                    const colorEstado = pieza.ESTADO === 'ACTIVO' ? 'badge-estado estado-activo' : 'badge-estado estado-inactivo';
 
                     const fila = tbodyInventario.insertRow();
                     fila.innerHTML = `
@@ -87,6 +88,7 @@ async function cargarInventario() {
                     <td>${pieza.UBICACION || 'N/A'}</td>
                     <td>${pieza.COLOR_TIPO || 'N/A'}</td>
                     <td>${pieza.STOCK_ACTUAL}</td>
+                    <td><span class="${colorEstado}">${pieza.ESTADO}</span></td>
                     <td>${botonAccion}</td>
                 `;
                 });
@@ -277,6 +279,7 @@ async function abrirModalEditar(PIE) {
             resultado.ubicaciones.forEach(ubi => {
                 selectUbicacion.innerHTML += `<option value="${ubi.ID_UBICACION}"> ${ubi.ANAQUEL} - ${ubi.NIVEL} </option>`;
             });
+
         } else {
             console.error("Error desde el servidor: ", resultado.error);
         }
@@ -298,6 +301,7 @@ async function abrirModalEditar(PIE) {
             document.getElementById('edit-prod-ubicacion').value = resultado.pieza[0].ID_UBICACION || 'N/A';
             document.getElementById('edit-prod-id').value = resultado.pieza[0].ID_PIEZA;
             document.getElementById('edit-prod-stock').value = resultado.pieza[0].STOCK_ACTUAL;
+            document.getElementById('edit-prod-estado').value = resultado.pieza[0].ESTADO;
         } else {
             console.error("Error desde el servidor: ", resultado.error);
         }
@@ -320,7 +324,8 @@ async function guardarCambiosPieza() {
         marca: document.getElementById('edit-prod-marca').value,
         ubicacion: document.getElementById('edit-prod-ubicacion').value,
         categoria: document.getElementById('edit-prod-categoria').value,
-        medida: document.getElementById('edit-prod-medida').value
+        medida: document.getElementById('edit-prod-medida').value,
+        estado: document.getElementById('edit-prod-estado').value
     }
 
     try {

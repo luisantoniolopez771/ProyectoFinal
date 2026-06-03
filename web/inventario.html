@@ -72,6 +72,8 @@
                                     class="icono-orden">↕</span></th>
                             <th style="cursor: pointer;" onclick="ordenarTabla(6, 'numero', this)">Stock Actual <span
                                     class="icono-orden">↕</span></th>
+                            <th style="cursor: pointer;" onclick="ordenarTabla(7, 'text', this)">Estado Actual <span
+                                    class="icono-orden">↕</span></th>
                             <th style="cursor: pointer;" id="cabezera-editar-pieza">Editar</th>
                         </tr>
                     </thead>
@@ -145,6 +147,13 @@
                     <div class="form-group">
                         <label>Ubicación</label>
                         <select class="form-control" id="edit-prod-ubicacion"></select>
+                    </div>
+                    <div class="form-group">
+                        <label>Estado</label>
+                        <select class="form-control" id="edit-prod-estado">
+                            <option value="ACTIVO">Activo</option>
+                            <option value="INACTIVO">Inactivo</option>
+                        </select>
                     </div>
 
                     <div class="form-group" style="grid-column: span 2;">

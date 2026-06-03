@@ -356,7 +356,7 @@ async function mostrarTablasSecundarias() {
             resultado.ubicaciones.forEach(ubi => {
                 tbodyUbicaciones.insertRow().innerHTML = `
                 <td>${ubi.ID_UBICACION}</td><td>${ubi.ANAQUEL} - ${ubi.NIVEL}</td>
-                <td><button class="btn-secundario" onclick="abrirModalCatalogo('UBICACION', ${ubi.ID_UBICACION}, '${ubi.ANAQUEL}', '${ubi.NIVEL}')">Editar NIVEL</button></td>`;
+                <td><button class="btn-secundario" onclick="abrirModalCatalogo('UBICACION', ${ubi.ID_UBICACION}, '${ubi.ANAQUEL}', '${ubi.NIVEL}')">Editar Ubicacion</button></td>`;
             });
         } else {
             console.error("ERROR DESDE EL SERVIDOR:", resultado.error);

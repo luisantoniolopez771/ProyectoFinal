@@ -41,7 +41,7 @@ app.get('/api/test', async (req, res) => {
 });
 
 // INICIO DE SESION ---------------------------------------------------------------------------------------------------------------------------------------------------------------
-app.get('/api/login', async (req, res) => {
+app.post('/api/login', async (req, res) => {
     const usuarioRecibido = req.body.usuario;
     const passwordRecibido = req.body.password;
 
@@ -108,13 +108,13 @@ app.get('/api/inventario', async (req, res) => {
         c.Nombre_Categoria AS Categoria, 
         u.Anaquel || '-' || u.Nivel AS Ubicacion,  
         p.Color_Tipo,  
-        p.Stock_Actual
+        p.Stock_Actual,
+        p.Estado
         FROM Pieza p
         INNER JOIN Categoria c ON p.ID_Categoria = c.ID_Categoria
         INNER JOIN Marca m ON p.ID_Marca = m.ID_Marca
         LEFT JOIN Medida med ON p.ID_Medida = med.ID_Medida
         LEFT JOIN Ubicacion u ON p.ID_Ubicacion = u.ID_Ubicacion
-        WHERE p.Estado = 'ACTIVO'
         ORDER BY p.Nombre ASC`;
 
         const consultaMaquina = `SELECT
@@ -263,14 +263,15 @@ app.post('/api/actualizar-pieza', async (req, res) => {
     const ubicacion = req.body.ubicacion;
     const categoria = req.body.categoria;
     const medida = req.body.medida;
+    const estado = req.body.estado;
 
     let connection;
 
     try {
         connection = await oracledb.getConnection(dbConfig);
 
-        const updatePieza = `UPDATE Pieza SET Nombre = :nom, Color_Tipo = :col, ID_Marca = :mar, ID_Ubicacion = :ubi, ID_Categoria = :cat, ID_Medida = :med WHERE ID_Pieza = :idp`;
-        const respuestaUpdateRespuesta = await connection.execute(updatePieza, { nom: nombre, col: color, mar: marca, ubi: ubicacion, cat: categoria, med: medida, idp: id }, { outFormat: oracledb.OUT_FORMAT_OBJECT });
+        const updatePieza = `UPDATE Pieza SET Nombre = :nom, Color_Tipo = :col, ID_Marca = :mar, ID_Ubicacion = :ubi, ID_Categoria = :cat, ID_Medida = :med, Estado = :est WHERE ID_Pieza = :idp`;
+        const respuestaUpdateRespuesta = await connection.execute(updatePieza, { nom: nombre, col: color, mar: marca, ubi: ubicacion, cat: categoria, med: medida, est: estado, idp: id }, { outFormat: oracledb.OUT_FORMAT_OBJECT });
 
         await connection.commit();
 
@@ -323,10 +324,10 @@ app.get('/api/productos-existentes/:idCategoria', async (req, res) => {
         connection = await oracledb.getConnection(dbConfig);
 
         if (idCat !== "x") {
-            sqlProductos = `SELECT p.Nombre, m.Nombre_Marca as Marca, p.Stock_Actual AS Stock, p.ID_Pieza FROM Pieza p INNER JOIN Marca m ON p.ID_Marca =  m.ID_Marca WHERE p.ID_Categoria = :idc`;
+            sqlProductos = `SELECT p.Nombre, m.Nombre_Marca as Marca, p.Stock_Actual AS Stock, p.ID_Pieza FROM Pieza p INNER JOIN Marca m ON p.ID_Marca = m.ID_Marca WHERE p.ID_Categoria = :idc AND p.Estado = 'ACTIVO' ORDER BY p.Nombre ASC`;
             resProductos = await connection.execute(sqlProductos, { idc: idCat }, { outFormat: oracledb.OUT_FORMAT_OBJECT });
         } else {
-            sqlProductos = `SELECT p.Nombre, m.Nombre_Marca as Marca, p.Stock_Actual AS Stock, p.ID_Pieza FROM Pieza p INNER JOIN Marca m ON p.ID_Marca =  m.ID_Marca ORDER BY p.Nombre ASC`;
+            sqlProductos = `SELECT p.Nombre, m.Nombre_Marca as Marca, p.Stock_Actual AS Stock, p.ID_Pieza FROM Pieza p INNER JOIN Marca m ON p.ID_Marca = m.ID_Marca WHERE p.Estado = 'ACTIVO' ORDER BY p.Nombre ASC`;
             resProductos = await connection.execute(sqlProductos, [], { outFormat: oracledb.OUT_FORMAT_OBJECT });
         };
 
