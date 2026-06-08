@@ -46,6 +46,8 @@ async function cargarInventario() {
 
                 resultado.datosInventario.forEach(pieza => {
 
+                    const colorEstado = pieza.ESTADO === 'ACTIVO' ? 'badge-estado estado-activo' : 'badge-estado estado-inactivo';
+                    
                     const fila = tbodyInventario.insertRow();
                     fila.innerHTML = `
                     <td>${pieza.NOMBRE}</td>
@@ -55,6 +57,7 @@ async function cargarInventario() {
                     <td>${pieza.UBICACION || 'N/A'}</td>
                     <td>${pieza.COLOR_TIPO || 'N/A'}</td>
                     <td>${pieza.STOCK_ACTUAL}</td>
+                    <td><span class="${colorEstado}">${pieza.ESTADO}</span></td>
                 `;
                 });
 

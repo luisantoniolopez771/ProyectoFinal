@@ -243,10 +243,7 @@ async function altaProducto() {
     const categoriaProducto = document.getElementById('select-prod-cat');
     const marcaProducto = document.getElementById('select-prod-marca');
     const medidaProducto = document.getElementById('select-prod-medida');
-    const maquinaProducto = document.getElementById('select-prod-maquina');
-    const modeloProducto = document.getElementById('input-prod-modelo');
     const ubicacionProducto = document.getElementById('select-prod-ubi');
-    const areaProducto = document.getElementById('select-prod-area');
     const colorProducto = document.getElementById('input-prod-color');
 
     const datosProducto = {
@@ -255,10 +252,7 @@ async function altaProducto() {
         categoria: categoriaProducto.value,
         marca: marcaProducto.value,
         medida: medidaProducto.value,
-        maquina: maquinaProducto.value,
-        modelo: modeloProducto.value,
         ubicacion: ubicacionProducto.value,
-        area: areaProducto.value,
         color: colorProducto.value
     };
 
@@ -284,7 +278,6 @@ async function altaMaquina() {
     const noSerie = document.getElementById('input-maq-serie');
     const marca = document.getElementById('select-maq-marca');
     const areaBordado = document.getElementById('select-maq-area');
-    const bastidor = document.getElementById('input-maq-bastidor');
     const descripcion = document.getElementById('input-maq-descripcion');
 
     const datosMaquina = {
@@ -292,7 +285,6 @@ async function altaMaquina() {
         serie: noSerie.value,
         marca: marca.value,
         area: areaBordado.value || 'N/A',
-        bastidor: bastidor.value || 'N/A',
         descripcion: descripcion.value || 'N/A'
     };
 

@@ -604,10 +604,7 @@ app.post('/api/registrar-producto', async (req, res) => {
     const categoria = req.body.categoria || null;
     const marca = req.body.marca || null;
     const medida = req.body.medida || null;
-    const maquina = req.body.maquina || null;
-    const modelo = req.body.modelo || null;
     const ubicacion = req.body.ubicacion || null;
-    const area = req.body.area || null;
     const color = req.body.color || null;
 
     let connection;
@@ -615,8 +612,8 @@ app.post('/api/registrar-producto', async (req, res) => {
     try {
         connection = await oracledb.getConnection(dbConfig);
 
-        const altaPieza = `INSERT INTO Pieza (ID_Categoria, ID_Medida, ID_Marca, ID_Maquina, ID_Ubicacion, ID_Area_Bordado, Nombre, Modelo, Color_Tipo, Stock_Actual) VALUES (:idcat, :idmed, :idmar, :idmaq, :idubi, :idare, :nom, :mod, :col, :sto)`;
-        const respuestaAltaPieza = await connection.execute(altaPieza, { idcat: categoria, idmed: medida, idmar: marca, idmaq: maquina, idubi: ubicacion, idare: area, nom: nombre, mod: modelo, col: color, sto: stock }, { outFormat: oracledb.OUT_FORMAT_OBJECT });
+        const altaPieza = `INSERT INTO Pieza (ID_Categoria, ID_Medida, ID_Marca, ID_Ubicacion, Nombre, Color_Tipo, Stock_Actual) VALUES (:idcat, :idmed, :idmar, :idubi, :nom, :col, :sto)`;
+        const respuestaAltaPieza = await connection.execute(altaPieza, { idcat: categoria, idmed: medida, idmar: marca, idubi: ubicacion, nom: nombre, col: color, sto: stock }, { outFormat: oracledb.OUT_FORMAT_OBJECT });
 
         await connection.commit();
 
@@ -641,7 +638,6 @@ app.post('/api/registrar-maquina', async (req, res) => {
     const serie = req.body.serie;
     const marca = req.body.marca;
     const area = req.body.area;
-    const bastidor = req.body.bastidor;
     const descripcion = req.body.descripcion;
 
     let connection;
@@ -649,9 +645,9 @@ app.post('/api/registrar-maquina', async (req, res) => {
     try {
         connection = await oracledb.getConnection(dbConfig);
 
-        const altaMaquina = `INSERT INTO Maquina (ID_Marca, ID_Area, Nombre_Modelo, NoSerie, Tipo_Bastidor, Descripcion_Maquina) VALUES (:idmar, :idare, :nom, :ser, :bas, :des)`;
+        const altaMaquina = `INSERT INTO Maquina (ID_Marca, ID_Area, Nombre_Modelo, NoSerie, Descripcion_Maquina) VALUES (:idmar, :idare, :nom, :ser, :des)`;
 
-        const respuestaAltaMaquina = await connection.execute(altaMaquina, { idmar: marca, idare: area, nom: modelo, ser: serie, bas: bastidor, des: descripcion }, { outFormat: oracledb.OUT_FORMAT_OBJECT });
+        const respuestaAltaMaquina = await connection.execute(altaMaquina, { idmar: marca, idare: area, nom: modelo, ser: serie, des: descripcion }, { outFormat: oracledb.OUT_FORMAT_OBJECT });
 
         await connection.commit();
 
